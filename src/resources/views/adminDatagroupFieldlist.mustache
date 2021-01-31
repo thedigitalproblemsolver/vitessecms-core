@@ -1,0 +1,43 @@
+<h2>DataFields management</h2>
+<table
+        id="{{tableId}}"
+        class="table table-bordered table-hover table-sortable admin-list"
+        data-sortabledrop="admin.saveSorting('{{tableId}}')"
+        data-ajaxurl="{{BASE_URI}}admin/core/admindatagroup/savedatafieldsorting/{{id}}"
+>
+{{#rows}}
+    <tr
+        id="{{fieldId}}"
+        class="{{rowState}}"
+    >
+        <td>
+            <i class="fa fa-sort"></i>
+            {{name}}
+        </td>
+        <td align="right">
+            {{#buttons}}
+                <a
+                    {{#rowId}}
+                        id="{{rowId}}"
+                    {{/rowId}}
+                    href="{{baseLink}}/{{action}}/{{id}}&key={{key}}"
+                    class="{{icon}}"
+                    title="{{text}}"
+                ></a>
+            {{/buttons}}
+            <a
+                href="{{BASE_URL}}/admin/field/admindatafield/edit/{{fieldId}}"
+                class="fa fa-edit"
+                title="Edit Item"
+                target="_blank"
+            ></a>
+            <a
+                id="delete_{{fieldId}}"
+                href="{{baseLink}}/deleteDatafield/{{id}}&key={{key}}"
+                class="fa fa-trash"
+                title="{{DELETE_ITEM}}"
+            ></a>
+        </td>
+    </tr>
+{{/rows}}
+</table>

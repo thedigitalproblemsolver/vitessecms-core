@@ -1,0 +1,35 @@
+<h1>
+    {{{adminEditItem.name}}}
+</h1>
+<table class="table">
+    <tr>
+        <th>Item</th>
+        <td>
+        	<a href="{{BASE_URI}}admin/content/adminitem/edit/{{adminEditItem.item._id}}" target="_blank">
+        		{{adminEditItem.item.name[]}}
+        	</a>
+        </td>
+    </tr>
+    {{#adminEditItem.user}}
+        <tr>
+            <th>User</th>
+            <td>{{adminEditItem.user.email}}</td>
+        </tr>
+    {{/adminEditItem.user}}
+    <tr>
+        <th>ipAddress</th>
+        <td>{{adminEditItem.ipAddress}}</td>
+    </tr>
+    <tr>
+        <th>property</th>
+        <td>{{adminEditItem.property}}</td>
+    </tr>
+    <tr>
+        <th>sourceUri</th>
+        <td>{{adminEditItem.sourceUri}}</td>
+    </tr>
+    <tr>
+        <th>post</th>
+        <td>{{adminEditItem.post}}</td>
+    </tr>
+</table>

@@ -1,0 +1,26 @@
+{{#isAjax}}
+{{/isAjax}}
+{{^isAjax}}
+<div class="row admin-list">
+    <div class="col-12">
+        <div class="btn-group pull-right" role="group">
+            {{{adminListButtons}}}
+            <a
+                class="btn btn-info fa fa-plus openmodal"
+                href="{{editBaseUri}}/edit/"
+                title="{{NEW_ITEM}}"
+            ></a>
+        </div>
+    </div>
+    <div id="ajax-target" class="col-12 col-lg-9">
+{{/isAjax}}
+    {{{list}}}
+{{#isAjax}}
+{{/isAjax}}
+{{^isAjax}}
+    </div>
+    <div class="col-12 col-lg-3">
+        {{{filter}}}
+    </div>
+</div>
+{{/isAjax}}
