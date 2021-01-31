@@ -70,7 +70,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         parent::__construct();
 
         $this->systemDir = str_replace('core/services', '', __DIR__);
-        var_dump($this->systemDir);
         $this->mtime = (int)filemtime(__DIR__ . '/../../composer.json');
     }
 
@@ -79,8 +78,15 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $cacheKey = $this->getCache()->getCacheKey('bootstrap-config-' . $this->mtime);
         $domainConfig = $this->getCache()->get($cacheKey);
         if (!$domainConfig) :
-            $domainConfig = new DomainConfigUtil();
-            $domainConfig->merge(new AccountConfigUtil($domainConfig->getAccount()));
+            $domainConfig = new DomainConfigUtil(__DIR__.'/../../../../../');
+
+            $file = 'config.ini';
+            if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'] ?? '')) :
+                $file = 'config_dev.ini';
+            endif;
+            $accountConfigFile = __DIR__.'/../../../../../config/account/'.$domainConfig->getAccount().'/'.$file;
+
+            $domainConfig->merge(new AccountConfigUtil($accountConfigFile));
             $domainConfig->setDirectories();
             $domainConfig->setTemplate();
 
@@ -185,18 +191,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    public function setCache(int $lifetime = 604800): BootstrapService
+    public function setCache(string $cacheDir, int $lifetime = 604800): BootstrapService
     {
-        $this->setShared(
-            'cache',
-            new CacheService(
-                $this->systemDir .
-                '../../../../cache/' .
-                strtolower($this->getRequest()->getHttpHost()) .
-                '/',
-                $lifetime
-            )
-        );
+        $this->setShared('cache', new CacheService($cacheDir, $lifetime));
 
         return $this;
     }

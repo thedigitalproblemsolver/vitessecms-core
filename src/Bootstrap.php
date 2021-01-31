@@ -2,6 +2,7 @@
 
 namespace VitesseCms\Core;
 
+use Phalcon\Http\Request;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Core\Services\BootstrapService;
 use Phalcon\Exception;
@@ -17,7 +18,6 @@ require_once __DIR__ . '/../../configuration/src/services/ConfigService.php';
 require_once __DIR__ . '/utils/DirectoryUtil.php';
 require_once __DIR__ . '/utils/SystemUtil.php';
 require_once __DIR__ . '/utils/BootstrapUtil.php';
-require_once __DIR__ . '/../../configuration/src/utils/AbstractConfigUtil.php';
 require_once __DIR__ . '/../../configuration/src/utils/AccountConfigUtil.php';
 require_once __DIR__ . '/../../configuration/src/utils/DomainConfigUtil.php';
 require_once __DIR__ . '/utils/DebugUtil.php';
@@ -27,16 +27,14 @@ if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
     $cacheLifeTime = 1;
 endif;
 
-
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
-    ->setCache($cacheLifeTime)
+    ->setCache(__DIR__.'/../../../../cache/'.strtolower((new Request())->getHttpHost()).'/',$cacheLifeTime)
     ->setUrl()
-    //->loadConfig()
+    ->loadConfig()
 ;
-echo 'fff';
-die();
+
 if (
     empty($_POST)
     && empty($_SESSION)
@@ -51,8 +49,7 @@ if (
         die();
     endif;
 endif;
-echo 'fff';
-die();
+
 $bootstrap
     ->loaderSystem()
     ->database()
@@ -76,8 +73,7 @@ $bootstrap
     ->form()
     ->search()
 ;
-echo 'll';
-die();
+
 $application = $bootstrap->application();
 
 try {
