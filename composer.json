@@ -18,5 +18,16 @@
     }
   },
   "require": {
+    "ext-curl": "*",
+    "ext-simplexml": "*",
+    "ext-fileinfo": "*",
+    "ext-mongodb": "*",
+    "ext-json": "*",
+    "ext-zlib": "*",
+    "phalcon/incubator": "3.2.6",
+    "twbs/bootstrap": "^4.3",
+    "components/flag-icon-css": "^2.8",
+    "seiyria/bootstrap-slider": "^4.8",
+    "itsjavi/bootstrap-colorpicker": "^2.5"
   }
 }
