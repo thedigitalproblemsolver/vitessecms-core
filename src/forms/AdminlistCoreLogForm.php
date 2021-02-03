@@ -8,34 +8,13 @@ use VitesseCms\Form\Interfaces\AbstractFormInterface;
 
 class AdminlistCoreLogForm extends AbstractAdminlistFilterForm
 {
-    public static function getAdminlistForm(
-        AbstractFormInterface $form,
-        BaseObjectInterface $item
-    ): void {
-        $form->_(
-            'text',
-            'itemId',
-            'filter[itemId]'
-        );
-        $form->_(
-            'text',
-            'userId',
-            'filter[userId]'
-        );
-        $form->_(
-            'text',
-            'ipAddress',
-            'filter[ipAddress]'
-        );
-        $form->_(
-            'text',
-            'property',
-            'filter[property]'
-        );
-        $form->_(
-            'text',
-            'sourceUri',
-            'filter[sourceUri]'
-        );
+    public static function getAdminlistForm(AbstractFormInterface $form, BaseObjectInterface $item): void
+    {
+        $form->addText('itemId', 'filter[itemId]')
+            ->addText('userId', 'filter[userId]')
+            ->addText('ipAddress', 'filter[ipAddress]')
+            ->addText('property', 'filter[property]')
+            ->addText('sourceUri', 'filter[sourceUri]')
+        ;
     }
 }

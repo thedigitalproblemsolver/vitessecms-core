@@ -8,12 +8,9 @@ use VitesseCms\Form\Interfaces\AbstractFormInterface;
 
 class AdminlistCommunicationEmailForm extends AbstractAdminlistFilterForm
 {
-    public static function getAdminlistForm(
-        AbstractFormInterface $form,
-        BaseObjectInterface $item
-    ): void {
-        $form->_(
-            'text',
+    public static function getAdminlistForm(AbstractFormInterface $form, BaseObjectInterface $item): void
+    {
+        $form->addText(
             'Subject',
             'filter[subject.'. $form->configuration->getLanguageShort() .']'
         );
