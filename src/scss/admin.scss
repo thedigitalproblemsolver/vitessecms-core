@@ -1,0 +1,236 @@
+$colorpicker-img-path: "../images" !default;
+@import '../../../../itsjavi/bootstrap-colorpicker/src/sass/colorpicker';
+
+.admin-toolbar {
+    background-color: black;
+    height: 40px;
+    .form-group {
+        line-height: 40px;
+        color: #dddddd;
+    }
+}
+
+body.admin {
+    > .container-fluid {
+        margin-top: 40px;
+        padding-top: 38px;
+        &.container-filterresult {
+            padding-top: 0;
+        }
+    }
+    #menu-panel {
+        margin-top: 40px;
+        padding-top: 38px;
+    }
+    #menu-aside,
+    .container-topbar {
+        top: 40px;
+    }
+    &.editor-on {
+        .position-toolbar,
+        .blockposition-toolbar {
+            display: block;
+            .fa {
+                display: none;
+            }
+            .fa-edit {
+                display: inline-block !important;
+            }
+        }
+    }
+    &.layout-on {
+        .position-toolbar,
+        .blockposition-toolbar {
+            display: block;
+            .fa {
+                display: inline-block;
+            }
+            .fa-edit {
+                display: none;
+            }
+            .adminform-datagroup {
+                display: block;
+            }
+        }
+    }
+    .position-toolbar,
+    .blockposition-toolbar,
+    .adminform-datagroup {
+        display: none;
+    }
+    .container-topbar {
+        z-index: 500;
+    }
+}
+
+.admin-list {
+    .btn-group {
+        margin-bottom: 15px;
+    }
+    a {
+        color: black;
+        &:hover {
+            color: darkslategray;
+        }
+    }
+    a.fa {
+        color: green;
+        &.red {
+            color: darkred;
+        }
+    }
+    li {
+        padding-right: 0;
+        > .float-right {
+            margin-right: 15px;
+        }
+        > ul {
+            margin-top: 5px;
+            padding-left: 0;
+        }
+        &.list-group-item {
+            display: block;
+        }
+    }
+    .action-buttons {
+        margin-right: 15px;
+        .fa {
+            margin-left: 10px;
+        }
+    }
+}
+
+form {
+    .input-group {
+        margin-bottom: 1rem;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    &[name=adminToolbarForm] {
+        .form-group {
+            min-width: 150px;
+        }
+    }
+}
+
+body.dragging, body.dragging * {
+    cursor: move !important;
+}
+
+.dragged {
+    position: absolute;
+    top: 0;
+    opacity: 0.5;
+    z-index: 2000;
+}
+
+/*.table-sortable tr {
+    cursor: pointer;
+}
+
+.table-sortable tr.placeholder {
+    display: block;
+    background: red;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.table-sortable tr.placeholder:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-left-color: red;
+    margin-top: -5px;
+    left: -5px;
+    border-right: none;
+}*/
+
+.sortable .placeholder {
+    list-style-type: none;
+    /*display: block;
+    background: red;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;*/
+}
+
+.sortable .placeholder:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-left-color: red;
+    margin-top: -5px;
+    left: 10px;
+    border-right: none;
+}
+
+.list-group.sortable.admin-list {
+    .list-group-item {
+        position: static;
+    }
+}
+
+.file-preview {
+    img {
+        height: 150px;
+        width: auto;
+        background-color: lightgray;
+    }
+    margin-bottom: 30px;
+    margin-top: -15px;
+}
+
+.note-editor {
+    &.note-frame {
+        border: 1px solid rgba(0, 0, 0, 0.15) !important;
+        border-radius: 0.25rem;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+    .form-group {
+        .form-control {
+            width: 100% !important;
+        }
+    }
+}
+
+.note-popover.popover {
+    display: none;
+}
+
+.position-toolbar {
+    background-color: #cccccc;
+}
+
+.blockposition-toolbar {
+    background-color: #dddddd;
+}
+
+#container-filemanager {
+    background-color: #ffffff;
+    top:40px;
+    z-index: 200;
+    iframe {
+        border: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+#size-and-color-baserow {
+    display: none;
+}
+
+.select2-container--default {
+    .select2-selection--multiple .select2-selection__choice {
+        float: none !important;
+    }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "vitessecms/core",
+  "type": "library",
+  "description": "Core module for VitesseCms",
+  "keywords": ["php","phalcon","vitessecms"],
+  "homepage": "https://github.com/thedigitalproblemsolver/VitesseCMS",
+  "license": "GPL-2.0-or-later",
+  "version": "0.0.1",
+  "authors": [
+    {
+      "name": "Jasper Jaklofsky",
+      "email": "info@thedigitalproblemsolver.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "VitesseCms\\Core\\": "src/"
+    }
+  },
+  "require": {
+    "ext-curl": "*",
+    "ext-simplexml": "*",
+    "ext-fileinfo": "*",
+    "ext-mongodb": "*",
+    "ext-json": "*",
+    "ext-zlib": "*",
+    "phalcon/incubator": "3.2.6",
+    "twbs/bootstrap": "^4.3",
+    "components/flag-icon-css": "^2.8",
+    "seiyria/bootstrap-slider": "^4.8",
+    "itsjavi/bootstrap-colorpicker": "^2.5"
+  }
+}
