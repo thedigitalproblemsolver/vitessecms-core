@@ -8,15 +8,9 @@ use VitesseCms\Form\Interfaces\AbstractFormInterface;
 
 class AdminlistCommunicationNewsletterListForm extends AbstractAdminlistFilterForm
 {
-    public static function getAdminlistForm(
-        AbstractFormInterface $form,
-        BaseObjectInterface $item
-    ): void {
-        $form->_(
-            'text',
-            '%CORE_NAME%',
-            'filter[name]'
-        );
+    public static function getAdminlistForm(AbstractFormInterface $form, BaseObjectInterface $item): void
+    {
+        $form->addText('%CORE_NAME%', 'filter[name]');
         self::addPublishedField($form);
     }
 }
