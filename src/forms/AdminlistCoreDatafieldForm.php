@@ -8,10 +8,7 @@ use VitesseCms\Form\Interfaces\AbstractFormInterface;
 
 class AdminlistCoreDatafieldForm extends AbstractAdminlistFilterForm
 {
-    public static function getAdminlistForm(
-        AbstractFormInterface $form,
-        BaseObjectInterface $item
-    ): void {
+    public static function getAdminlistForm(AbstractFormInterface $form, BaseObjectInterface $item): void {
         self::addNameField($form);
         self::addPublishedField($form);
     }

@@ -8,16 +8,10 @@ use VitesseCms\Form\Interfaces\AbstractFormInterface;
 
 class AdminlistSefRedirectForm extends AbstractAdminlistFilterForm
 {
-    public static function getAdminlistForm(
-        AbstractFormInterface $form,
-        BaseObjectInterface $item
-    ): void {
+    public static function getAdminlistForm(AbstractFormInterface $form, BaseObjectInterface $item): void
+    {
         self::addPublishedField($form);
 
-        $form->_(
-            'text',
-            '%ADMIN_FROM%',
-            'filter[from]'
-        );
+        $form->addText('%ADMIN_FROM%', 'filter[from]');
     }
 }

@@ -1,53 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace VitesseCms\Core\Forms;
 
 use VitesseCms\Form\AbstractForm;
+use VitesseCms\Form\Models\Attributes;
 
-/**
- * Class JobQueueForm
- */
 class JobQueueForm extends AbstractForm
 {
 
     public function initialize()
     {
-        $this->_(
-            'text',
-            '%CORE_NAME%',
-            'name',
-            [
-                'required' => 'required',
-                'readonly' => true
-            ]
-        )->_(
-            'textarea',
-            'Parameters',
-            'params',
-            ['readonly' => true]
-        )->_(
-            'text',
-            'Job-id',
-            'jobId',
-            [
-                'required' => 'required',
-                'readonly' => true
-            ]
-        )->_(
-            'text',
-            'System message',
-            'message',
-            ['readonly' => true]
-        )->_(
-            'text',
-            'Parse date',
-            'parseDate',
-            ['readonly' => true]
-        )->_(
-            'text',
-            'Parsed',
-            'parsed',
-            ['readonly' => true]
+        $this->addText('%CORE_NAME%', 'name', (new Attributes())->setReadonly())
+            ->addTextarea('Parameters', 'params',(new Attributes())->setReadonly())
+            ->addText('Job-id', 'jobId',(new Attributes())->setReadonly())
+            ->addText('System message', 'message',(new Attributes())->setReadonly())
+            ->addText('Parse date', 'parseDate',(new Attributes())->setReadonly())
+            ->addText('Parsed', 'parsed',(new Attributes())->setReadonly()
         );
     }
 }

@@ -12,6 +12,7 @@ use VitesseCms\Core\Models\Datagroup;
 use VitesseCms\Form\Helpers\ElementHelper;
 use VitesseCms\Form\Interfaces\AbstractFormInterface;
 use Phalcon\Http\Request;
+use VitesseCms\Form\Models\Attributes;
 
 class AdminlistContentItemForm extends AbstractAdminlistFilterForm
 {
@@ -19,11 +20,7 @@ class AdminlistContentItemForm extends AbstractAdminlistFilterForm
         AbstractFormInterface $form,
         BaseObjectInterface $item
     ): void {
-        $form->_(
-            'hidden',
-            null,
-            'filter[datagroup]'
-        );
+        $form->addHidden('filter[datagroup]');
 
         $request = new Request();
         if (isset($request->get('filter')['datagroup'])) :
@@ -41,13 +38,12 @@ class AdminlistContentItemForm extends AbstractAdminlistFilterForm
                 endforeach;
             endforeach;
 
-            $form->_(
-                'select',
+            $form->addDropdown(
                 'Has as parent',
                 'filter[parentId]',
-                [
-                    'options' => ElementHelper::arrayToSelectOptions(self::getParentOptionsFromDatagroup($mainDatagroup)),
-                ]
+                (new Attributes())->setOptions(
+                    ElementHelper::arrayToSelectOptions(self::getParentOptionsFromDatagroup($mainDatagroup))
+                )
             );
 
         endif;
