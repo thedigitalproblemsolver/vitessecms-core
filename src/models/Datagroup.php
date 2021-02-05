@@ -8,6 +8,7 @@ use VitesseCms\Core\Factories\DatagroupFactory;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Form\AbstractForm;
 use VitesseCms\Datafield\AbstractField;
+use VitesseCms\Form\Models\Attributes;
 
 class Datagroup extends AbstractCollection
 {
@@ -76,27 +77,28 @@ class Datagroup extends AbstractCollection
                     $class = $datafield->getClass();
                     /** @var AbstractField $field */
                     $field = new $class();
+                    $attributes = new Attributes();
                     if ($datafield->isMultilang() && AdminUtil::isAdminPage()) :
-                        $field->setOption('multilang', true);
+                        $attributes->setMultilang();
                     endif;
 
                     if (!empty($params['required'])) :
-                        $field->setOption('required', 'required');
+                        $attributes->setRequired();
                     endif;
 
                     if ($data !== null) :
-                        $field->setOption('value', $data->_($datafield->_('calling_name')));
+                        $attributes->setDefaultValue($data->_($datafield->_('calling_name')));
                     elseif (isset($datafield->defaultValue)) :
-                        $field->setOption('defaultValue', $datafield->defaultValue);
+                        $attributes->setDefaultValue($datafield->defaultValue);
                     endif;
 
-                    $field->buildItemFormElement($form, $datafield, $data);
+                    $field->buildItemFormElement($form, $datafield, $attributes,$data);
                 endif;
             endif;
         endforeach;
 
         if ($data !== null && $data->getId()) :
-            $form->_('hidden', 'id', 'id', ['value' => $data->getId()]);
+            $form->addHidden('id', (string)$data->getId());
         endif;
     }
 
