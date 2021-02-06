@@ -5,7 +5,7 @@ namespace VitesseCms\Core\Controllers;
 use VitesseCms\Admin\AbstractAdminController;
 use VitesseCms\Core\Interfaces\RepositoriesInterface;
 use VitesseCms\Database\AbstractCollection;
-use VitesseCms\Core\Helpers\DatagroupHelper;
+use VitesseCms\Datagroup\Helpers\DatagroupHelper;
 use VitesseCms\Core\Helpers\Item;
 use VitesseCms\Core\Helpers\ItemHelper;
 use VitesseCms\Datagroup\Forms\DataGroupForm;
