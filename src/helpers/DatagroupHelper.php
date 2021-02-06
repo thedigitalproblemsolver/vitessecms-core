@@ -3,7 +3,7 @@
 namespace VitesseCms\Core\Helpers;
 
 use VitesseCms\Datafield\Models\Datafield;
-use VitesseCms\Core\Models\Datagroup;
+use VitesseCms\Datagroup\Models\Datagroup;
 
 /**
  * Class DatagroupHelper

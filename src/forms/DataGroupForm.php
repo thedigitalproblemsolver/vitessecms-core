@@ -5,7 +5,7 @@ namespace VitesseCms\Core\Forms;
 use VitesseCms\Block\Utils\BlockUtil;
 use VitesseCms\Core\Interfaces\RepositoriesInterface;
 use VitesseCms\Core\Interfaces\RepositoryInterface;
-use VitesseCms\Core\Models\Datagroup;
+use VitesseCms\Datagroup\Models\Datagroup;
 use VitesseCms\Core\Enum\SystemEnum;
 use VitesseCms\Core\Utils\SystemUtil;
 use VitesseCms\Form\AbstractForm;

@@ -8,7 +8,7 @@ use VitesseCms\Database\AbstractCollection;
 use VitesseCms\Core\Helpers\DatagroupHelper;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
 use VitesseCms\Datafield\Models\Datafield;
-use VitesseCms\Core\Models\Datagroup;
+use VitesseCms\Datagroup\Models\Datagroup;
 use VitesseCms\Form\Helpers\ElementHelper;
 use VitesseCms\Form\Interfaces\AbstractFormInterface;
 use Phalcon\Http\Request;
