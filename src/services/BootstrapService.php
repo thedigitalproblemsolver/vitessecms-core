@@ -336,14 +336,22 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->getEventsManager()->attach('user', new DiscountListener());
 
         foreach (SystemUtil::getModules($this->getConfiguration()) as $path) :
-            $listenerPath = $path . '/listeners/InitiateListeners.php';
             if (AdminUtil::isAdminPage()):
-                $listenerPath = $path . '/listeners/InitiateAdminListeners.php';
+                $listenerPaths = [
+                    $path . '/listeners/InitiateAdminListeners.php',
+                    $path . '/Listeners/InitiateAdminListeners.php',
+                ];
+            else :
+                $listenerPaths = [
+                    $path . '/listeners/InitiateListeners.php',
+                    $path . '/Listeners/InitiateListeners.php',
+                ];
             endif;
-
-            if (is_file($listenerPath)) :
-                SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this->getEventsManager());
-            endif;
+            foreach ($listenerPaths as $listenerPath):
+                if (is_file($listenerPath)) :
+                    SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this->getEventsManager());
+                endif;
+            endforeach;
         endforeach;
 
         return $this;
