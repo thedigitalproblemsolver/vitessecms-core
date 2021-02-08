@@ -25,6 +25,7 @@ use VitesseCms\Core\Utils\SystemUtil;
 use VitesseCms\Content\Repositories\ItemRepository;
 use VitesseCms\Form\Factories\ElementFactory;
 use VitesseCms\Form\Services\FormService;
+use VitesseCms\Job\Services\BeanstalkService;
 use VitesseCms\Language\Models\Language;
 use VitesseCms\Language\Services\LanguageService;
 use VitesseCms\Media\Services\AssetsService;

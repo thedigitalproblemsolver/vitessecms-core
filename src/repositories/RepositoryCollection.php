@@ -9,11 +9,6 @@ use VitesseCms\User\Repositories\UserRepository;
 class RepositoryCollection implements RepositoryInterface
 {
     /**
-     * @var JobQueueRepository
-     */
-    public $jobQueue;
-
-    /**
      * @var UserRepository
      */
     public $user;
@@ -29,12 +24,10 @@ class RepositoryCollection implements RepositoryInterface
     public $datafield;
 
     public function __construct(
-        JobQueueRepository $jobQueueRepository,
         UserRepository $userRepository,
         DatagroupRepository $datagroupRepository,
         DatafieldRepository $datafieldRepository
     ) {
-        $this->jobQueue = $jobQueueRepository;
         $this->user = $userRepository;
         $this->datagroup = $datagroupRepository;
         $this->datafield = $datafieldRepository;
