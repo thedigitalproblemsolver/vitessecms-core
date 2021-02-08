@@ -11,7 +11,7 @@ use VitesseCms\Job\Services\BeanstalkService;
 use VitesseCms\Core\Services\CacheService;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Services\FlashService;
-use VitesseCms\Core\Services\LogService;
+use VitesseCms\Log\Services\LogService;
 use VitesseCms\Core\Services\RouterService;
 use VitesseCms\Core\Services\UrlService;
 use VitesseCms\Core\Services\ViewService;
