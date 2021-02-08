@@ -7,7 +7,7 @@ use VitesseCms\Communication\Services\MailchimpService;
 use VitesseCms\Communication\Services\MailerService;
 use VitesseCms\Content\Models\Item;
 use VitesseCms\Content\Services\ContentService;
-use VitesseCms\Core\Services\BeanstalkService;
+use VitesseCms\Job\Services\BeanstalkService;
 use VitesseCms\Core\Services\CacheService;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Services\FlashService;
