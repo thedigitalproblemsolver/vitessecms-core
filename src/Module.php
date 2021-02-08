@@ -4,8 +4,8 @@ namespace VitesseCms\Core;
 
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Datafield\Repositories\DatafieldRepository;
-use VitesseCms\Datagroup\Repositories\DatagroupRepository;
 use VitesseCms\Core\Repositories\RepositoryCollection;
+use VitesseCms\Datagroup\Repositories\DatagroupRepository;
 use VitesseCms\User\Repositories\UserRepository;
 use Phalcon\DiInterface;
 
