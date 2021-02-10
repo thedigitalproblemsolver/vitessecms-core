@@ -3,7 +3,7 @@
 namespace VitesseCms\Core\Listeners;
 
 use VitesseCms\Core\Controllers\AdminlogController;
-use VitesseCms\Core\Models\Log;
+use VitesseCms\Log\Models\Log;
 use Phalcon\Events\Event;
 
 class AdminlogControllerListener
