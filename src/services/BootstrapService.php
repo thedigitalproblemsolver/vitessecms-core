@@ -28,6 +28,7 @@ use VitesseCms\Form\Services\FormService;
 use VitesseCms\Job\Services\BeanstalkService;
 use VitesseCms\Language\Models\Language;
 use VitesseCms\Language\Services\LanguageService;
+use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Services\AssetsService;
 use VitesseCms\Mustache\Engine;
 use VitesseCms\Mustache\Loader_FilesystemLoader;
