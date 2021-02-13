@@ -18,9 +18,15 @@ class CacheService extends AbstractInjectableService
      */
     protected $cache;
 
-    public function __construct(string $cacheDir, int $lifetime)
+    /**
+     * @var bool
+     */
+    protected $useCache;
+
+    public function __construct(string $cacheDir, bool $useCache, int $lifetime)
     {
         $this->lifetime = $lifetime;
+        $this->useCache = $useCache;
 
         DirectoryUtil::exists($cacheDir, true);
 
@@ -34,7 +40,7 @@ class CacheService extends AbstractInjectableService
 
     public function get(string $cacheKey)
     {
-        if ($this->session->get('cache') === false):
+        if ($this->useCache === false):
             return null;
         endif;
 

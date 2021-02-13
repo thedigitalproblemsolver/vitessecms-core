@@ -39,8 +39,8 @@ class SystemUtil
         $return = [];
 
         foreach (SystemUtil::getModules(Di::getDefault()->get('configuration')) as $moduleName => $modulePath) :
-            DirectoryUtil::getFilelist($modulePath . '/models');
-            $return = array_merge($return, DirectoryUtil::getFilelist($modulePath . '/models'));
+            DirectoryUtil::getFilelist($modulePath . '/Models');
+            $return = array_merge($return, DirectoryUtil::getFilelist($modulePath . '/Models'));
         endforeach;
 
         if ($namespaceAsKey) :

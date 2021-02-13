@@ -164,7 +164,7 @@ class ItemHelper
             'adminitem',
             'edit'
         )) :
-            $item->set('editLink', '/admin/content/adminitem/edit/'.$item->getId());
+            $item->set('editLink', '/Admin/content/adminitem/edit/'.$item->getId());
         endif;
     }
 

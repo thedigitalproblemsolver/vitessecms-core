@@ -53,7 +53,7 @@ use Phalcon\Security;
 use Phalcon\Session\Adapter\Files as Session;
 use Phalcon\Mvc\Collection\Manager as CollectionManager;
 
-require_once __DIR__ . '/../interfaces/InjectableInterface.php';
+require_once __DIR__ . '/../Interfaces/InjectableInterface.php';
 
 class BootstrapService extends FactoryDefault implements InjectableInterface
 {
@@ -71,7 +71,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         parent::__construct();
 
-        $this->systemDir = str_replace('core/services', '', __DIR__);
+        $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../composer.json');
     }
 
@@ -175,14 +175,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             return $this;
         endif;
 
-        $loader = new Loader();
-        $loader->registerDirs([$this->systemDir . 'core/helpers/'], true)
-            ->registerDirs([$this->systemDir . 'core/utils/'], true)
-            ->registerNamespaces(['VitesseCms\\Core\\Helpers' => $this->systemDir . 'core/helpers/'], true)
-            ->registerNamespaces(['VitesseCms\\Core\\Utils' => $this->systemDir . 'core/utils/'], true);
-
         $loader = BootstrapUtil::addModulesToLoader(
-            $loader,
+            new Loader(),
             SystemUtil::getModules($this->getConfiguration()),
             $this->getConfiguration()->getAccount()
         );
@@ -193,9 +187,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    public function setCache(string $cacheDir, int $lifetime = 604800): BootstrapService
+    public function setCache(string $cacheDir, bool $useCache, int $lifetime): BootstrapService
     {
-        $this->setShared('cache', new CacheService($cacheDir, $lifetime));
+        $this->setShared('cache', new CacheService($cacheDir, $useCache, $lifetime));
 
         return $this;
     }
@@ -340,12 +334,10 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         foreach (SystemUtil::getModules($this->getConfiguration()) as $path) :
             if (AdminUtil::isAdminPage()):
                 $listenerPaths = [
-                    $path . '/listeners/InitiateAdminListeners.php',
                     $path . '/Listeners/InitiateAdminListeners.php',
                 ];
             else :
                 $listenerPaths = [
-                    $path . '/listeners/InitiateListeners.php',
                     $path . '/Listeners/InitiateListeners.php',
                 ];
             endif;
