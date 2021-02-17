@@ -6,11 +6,7 @@ use Phalcon\Loader;
 
 class BootstrapUtil
 {
-    public static function addModulesToLoader(
-        Loader $loader,
-        array $moduleDirs,
-        string $account
-    ): Loader {
+    public static function addModulesToLoader(Loader $loader, array $moduleDirs, string $account): Loader {
         foreach ($moduleDirs as $moduleDir) :
             $moduleDirParts = explode('/', $moduleDir);
             $moduleDirParts = array_reverse($moduleDirParts);
@@ -29,8 +25,9 @@ class BootstrapUtil
             foreach ($subDirs as $subDir) :
                 $subDirParts = explode('/', $subDir);
                 $subDirParts = array_reverse($subDirParts);
+                $namespace = 'VitesseCms\\' . $moduleNamespace . '\\' . ucfirst($subDirParts[0]);
                 $loader->registerDirs([$subDir], true);
-                $loader->registerNamespaces(['VitesseCms\\' . $moduleNamespace . '\\' . ucfirst($subDirParts[0]) => $subDir], true);
+                $loader->registerNamespaces([$namespace => $subDir], true);
             endforeach;
         endforeach;
 

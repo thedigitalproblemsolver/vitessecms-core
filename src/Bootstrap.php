@@ -9,28 +9,34 @@ use Phalcon\Exception;
 use VitesseCms\Core\Utils\DebugUtil;
 use VitesseCms\Core\Utils\SystemUtil;
 
-require_once __DIR__ . '/services/BootstrapService.php';
+require_once __DIR__ . '/Services/BootstrapService.php';
 require_once __DIR__ . '/AbstractInjectable.php';
-require_once __DIR__ . '/services/AbstractInjectableService.php';
-require_once __DIR__ . '/services/CacheService.php';
-require_once __DIR__ . '/services/UrlService.php';
-require_once __DIR__ . '/../../configuration/src/services/ConfigService.php';
-require_once __DIR__ . '/utils/DirectoryUtil.php';
-require_once __DIR__ . '/utils/SystemUtil.php';
-require_once __DIR__ . '/utils/BootstrapUtil.php';
-require_once __DIR__ . '/../../configuration/src/utils/AccountConfigUtil.php';
-require_once __DIR__ . '/../../configuration/src/utils/DomainConfigUtil.php';
-require_once __DIR__ . '/utils/DebugUtil.php';
+require_once __DIR__ . '/Services/AbstractInjectableService.php';
+require_once __DIR__ . '/Services/CacheService.php';
+require_once __DIR__ . '/Services/UrlService.php';
+require_once __DIR__ . '/../../configuration/src/Services/ConfigService.php';
+require_once __DIR__ . '/Utils/DirectoryUtil.php';
+require_once __DIR__ . '/Utils/SystemUtil.php';
+require_once __DIR__ . '/Utils/BootstrapUtil.php';
+require_once __DIR__ . '/../../configuration/src/Utils/AccountConfigUtil.php';
+require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
+require_once __DIR__ . '/Utils/DebugUtil.php';
 
 $cacheLifeTime = 604800;
+$useCache = $_SESSIONt['cache']??true;
 if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
     $cacheLifeTime = 1;
+    $useCache = false;
 endif;
 
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
-    ->setCache(__DIR__.'/../../../../cache/'.strtolower((new Request())->getHttpHost()).'/',$cacheLifeTime)
+    ->setCache(
+        __DIR__.'/../../../../cache/'.strtolower((new Request())->getHttpHost()).'/',
+        $useCache,
+        $cacheLifeTime
+    )
     ->setUrl()
     ->loadConfig()
 ;

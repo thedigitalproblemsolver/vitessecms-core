@@ -35,8 +35,8 @@ class ViewService extends View
         string $templatePath,
         array $params = []
     ): string {
-        $search = ['default/','templates/'];
-        $replace = ['core/','template/'];
+        $search = ['default/','templates/', 'Templates/'];
+        $replace = ['core/','Template/','Template/'];
         $template = str_replace($search,$replace,$template);
         $templatePath = str_replace($search,$replace,$templatePath);
 
@@ -67,9 +67,9 @@ class ViewService extends View
         string $templatePath,
         array $params = []
     ): string {
-        $newTtemplatePath = $this->configuration->getVendorNameDir().$module.'/src/resources/views/'.$templatePath;
+        $newTtemplatePath = $this->configuration->getVendorNameDir().$module.'/src/Resources/views/'.$templatePath;
         if(!is_dir($templatePath)) :
-            $newTtemplatePath = $this->configuration->getVendorNameDir().'core/src/resources/views/'.$templatePath;
+            $newTtemplatePath = $this->configuration->getVendorNameDir().'core/src/Resources/views/'.$templatePath;
         endif;
 
         return $this->renderTemplate($template, $newTtemplatePath, $params);
