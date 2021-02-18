@@ -30,27 +30,43 @@ class ViewService extends View
         $this->configuration = $configService;
     }
 
+    public function renderModuleTemplate(
+        string $module,
+        string $template,
+        string $templatePath,
+        array $params = []
+    ): string
+    {
+        $newTtemplatePath = $this->configuration->getVendorNameDir() . $module . '/src/Resources/views/' . $templatePath;
+        if (!is_dir($templatePath)) :
+            $newTtemplatePath = $this->configuration->getVendorNameDir() . 'core/src/Resources/views/' . $templatePath;
+        endif;
+
+        return $this->renderTemplate($template, $newTtemplatePath, $params);
+    }
+
     public function renderTemplate(
         string $template,
         string $templatePath,
         array $params = []
-    ): string {
-        $search = ['default/','templates/', 'Templates/'];
-        $replace = ['core/','Template/','Template/'];
-        $template = str_replace($search,$replace,$template);
-        $templatePath = str_replace($search,$replace,$templatePath);
+    ): string
+    {
+        $search = ['default/', 'templates/', 'Templates/'];
+        $replace = ['core/', 'Template/', 'Template/'];
+        $template = str_replace($search, $replace, $template);
+        $templatePath = str_replace($search, $replace, $templatePath);
 
         if (empty($templatePath)):
-            $templatePath = $this->configuration->getCoreTemplateDir().'../../';
+            $templatePath = $this->configuration->getCoreTemplateDir() . '../../';
         endif;
 
         if (
             !DirectoryUtil::exists($templatePath)
             && !is_file(
-                $this->getViewsDir().$template.'.mustache'
+                $this->getViewsDir() . $template . '.mustache'
             )
         ) :
-            $templatePath = $this->configuration->getCoreTemplateDir().'views/'.$templatePath;
+            $templatePath = $this->configuration->getCoreTemplateDir() . 'views/' . $templatePath;
         endif;
 
         $this->setRenderLevel(View::LEVEL_ACTION_VIEW);
@@ -61,18 +77,17 @@ class ViewService extends View
         return $return;
     }
 
-    public function renderModuleTemplate(
-        string $module,
-        string $template,
-        string $templatePath,
-        array $params = []
-    ): string {
-        $newTtemplatePath = $this->configuration->getVendorNameDir().$module.'/src/Resources/views/'.$templatePath;
-        if(!is_dir($templatePath)) :
-            $newTtemplatePath = $this->configuration->getVendorNameDir().'core/src/Resources/views/'.$templatePath;
-        endif;
+    public function getCurrentItem(): Item
+    {
+        return $this->currentItem;
+    }
 
-        return $this->renderTemplate($template, $newTtemplatePath, $params);
+    public function setCurrentItem(Item $currentItem): ViewService
+    {
+        $this->currentItem = $currentItem;
+        $this->set('currentItem', $currentItem);
+
+        return $this;
     }
 
     public function set(string $key, $value): self
@@ -82,22 +97,9 @@ class ViewService extends View
         return $this;
     }
 
-    public function getCurrentItem(): Item
-    {
-        return $this->currentItem;
-    }
-
     public function hasCurrentItem(): bool
     {
         return $this->currentItem !== null;
-    }
-
-    public function setCurrentItem(Item $currentItem): ViewService
-    {
-        $this->currentItem = $currentItem;
-        $this->set('currentItem', $currentItem);
-
-        return $this;
     }
 
     public function getCurrentId(): string

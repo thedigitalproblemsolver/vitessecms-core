@@ -9,7 +9,9 @@ use VitesseCms\Core\Interfaces\RepositoryCollectionInterface;
 
 abstract class AbstractModule implements ModuleDefinitionInterface
 {
-    public function registerAutoloaders(DiInterface $di = null) {}
+    public function registerAutoloaders(DiInterface $di = null)
+    {
+    }
 
     public function registerServices(DiInterface $di, string $module = null)
     {

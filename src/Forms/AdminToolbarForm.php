@@ -15,10 +15,10 @@ class AdminToolbarForm extends AbstractForm
         $layoutMode = $this->session->get('layoutMode', false);
 
         if (PermissionUtils::check($this->user, 'block', 'adminblockposition', 'edit')) :
-            $this->addToggle('Layout', 'layoutMode',(new Attributes())->setChecked($layoutMode));
+            $this->addToggle('Layout', 'layoutMode', (new Attributes())->setChecked($layoutMode));
         endif;
         if (PermissionUtils::check($this->user, 'block', 'adminblock', 'edit')) :
-            $this->addToggle('Editor', 'editorMode',(new Attributes())->setChecked($editorMode));
+            $this->addToggle('Editor', 'editorMode', (new Attributes())->setChecked($editorMode));
         endif;
 
         $this->addToggle('Cache', 'cache', (new Attributes())->setChecked($cache));

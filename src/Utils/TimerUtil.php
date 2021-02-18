@@ -33,9 +33,9 @@ class TimerUtil
      *
      * @return string
      */
-    public static function Results( bool $sendmail = true )
+    public static function Results(bool $sendmail = true)
     {
-        if(
+        if (
             count(self::$start) > 0
             && $_SERVER['REMOTE_ADDR'] == '145.53.211.29'
         ) :
@@ -46,15 +46,15 @@ class TimerUtil
                           <th>Time (s)</th>
                     </tr>';
             $totaal = 0;
-            foreach(self::$start as $k => $v) :
-                $r .= '<tr><td>'.htmlspecialchars($k).'</td><td>'.$v.'</td></tr>';
+            foreach (self::$start as $k => $v) :
+                $r .= '<tr><td>' . htmlspecialchars($k) . '</td><td>' . $v . '</td></tr>';
                 $totaal += $v;
             endforeach;
             //$r .=  '<tr><td>totaal</td><td>'.$totaal.'</td></tr>';
-            $r .=  '</table>';
-            if( $sendmail ) :
-                if ( $totaal > 5 ) :
-                    mail('jasper@biernavigatie.nl','Website application timer : '.$totaal,$_SERVER['REQUEST_URI']);
+            $r .= '</table>';
+            if ($sendmail) :
+                if ($totaal > 5) :
+                    mail('jasper@biernavigatie.nl', 'Website application timer : ' . $totaal, $_SERVER['REQUEST_URI']);
                 endif;
             else :
                 return $r;

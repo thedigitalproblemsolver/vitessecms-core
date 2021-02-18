@@ -31,7 +31,7 @@ class DirectoryUtil
         foreach ($files as $file) :
             if (is_file($file[0])) :
                 $fileList[] = [
-                    'path'      => $file[0],
+                    'path' => $file[0],
                     'filemtime' => filemtime($file[0]),
                 ];
             endif;
@@ -114,6 +114,28 @@ class DirectoryUtil
     }
 
     /**
+     * @param string $source
+     * @param string $destination
+     */
+    public static function copy(string $source, string $destination): void
+    {
+        self::exists($destination, true);
+        $dir = opendir($source);
+
+        while (false !== ($file = readdir($dir))) :
+            if (
+                $file != '.'
+                && $file != '..'
+                && !is_dir($source . '/' . $file)
+            ) :
+                copy($source . '/' . $file, $destination . '/' . $file);
+            endif;
+        endwhile;
+
+        closedir($dir);
+    }
+
+    /**
      * @param string $path
      * @param bool $createIfNotExists
      *
@@ -128,8 +150,8 @@ class DirectoryUtil
             $subPath = '';
 
             foreach ($pathReverse as $part) :
-                $subPath .= $part.'/';
-                if(!is_dir($subPath)) :
+                $subPath .= $part . '/';
+                if (!is_dir($subPath)) :
                     mkdir($subPath, 0755);
                 endif;
             endforeach;
@@ -138,27 +160,5 @@ class DirectoryUtil
         endif;
 
         return $state;
-    }
-
-    /**
-     * @param string $source
-     * @param string $destination
-     */
-    public static function copy(string $source, string $destination): void
-    {
-        self::exists($destination, true);
-        $dir = opendir($source);
-
-        while(false !== ( $file = readdir($dir)) ) :
-            if (
-                $file != '.'
-                && $file != '..'
-                && !is_dir($source . '/' . $file)
-            ) :
-                copy($source . '/' . $file,$destination . '/' . $file);
-            endif;
-        endwhile;
-
-        closedir($dir);
     }
 }

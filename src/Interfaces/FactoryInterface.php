@@ -13,5 +13,5 @@ interface FactoryInterface
      *
      * @return BaseObjectInterface
      */
-    public static function create(BaseObjectInterface $bindData = null) : BaseObjectInterface;
+    public static function create(BaseObjectInterface $bindData = null): BaseObjectInterface;
 }

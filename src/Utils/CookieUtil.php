@@ -16,13 +16,17 @@ class CookieUtil
     protected static $cookies;
 
     /**
-     * init
+     * @param $name
+     *
+     * @return string
      */
-    protected static function init(): void
+    public static function get($name): string
     {
-        if (!is_object(self::$cookies)) {
-            self::$cookies = Di::getDefault()->get('cookies');
-        }
+        if (CookieUtil::has($name)) :
+            return self::$cookies->get(md5($name))->getValue(null, '');
+        endif;
+
+        return '';
     }
 
     /**
@@ -38,17 +42,25 @@ class CookieUtil
     }
 
     /**
-     * @param $name
-     *
-     * @return string
+     * init
      */
-    public static function get($name): string
+    protected static function init(): void
     {
-        if(CookieUtil::has($name)) :
-            return self::$cookies->get(md5($name))->getValue(null,'');
-        endif;
+        if (!is_object(self::$cookies)) {
+            self::$cookies = Di::getDefault()->get('cookies');
+        }
+    }
 
-        return '';
+    /**
+     * @param string $name
+     */
+    public static function delete(string $name): void
+    {
+        self::init();
+
+        if (CookieUtil::has($name)) :
+            self::set($name, null, -1, true);
+        endif;
     }
 
     /**
@@ -72,17 +84,5 @@ class CookieUtil
         endif;
 
         return self::$cookies;
-    }
-
-    /**
-     * @param string $name
-     */
-    public static function delete(string $name): void
-    {
-        self::init();
-
-        if(CookieUtil::has($name)) :
-            self::set($name, null, -1, true);
-        endif;
     }
 }

@@ -82,13 +82,14 @@ class CacheService extends AbstractInjectableService
         int $expires = 0,
         int $lastModified = 0,
         int $expiresPeriod = 31536000
-    ): void {
+    ): void
+    {
         header('Cache-Control: public');
         if ($expires > 0) :
-            header('Expires: '.gmdate('D, d M Y H:i:s', $expires + $expiresPeriod).' GMT');
+            header('Expires: ' . gmdate('D, d M Y H:i:s', $expires + $expiresPeriod) . ' GMT');
         endif;
         if ($lastModified > 0) :
-            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $lastModified).' GMT');
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
         endif;
     }
 

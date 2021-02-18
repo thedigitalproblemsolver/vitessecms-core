@@ -22,7 +22,7 @@ require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
 require_once __DIR__ . '/Utils/DebugUtil.php';
 
 $cacheLifeTime = 604800;
-$useCache = $_SESSIONt['cache']??true;
+$useCache = $_SESSIONt['cache'] ?? true;
 if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
     $cacheLifeTime = 1;
     $useCache = false;
@@ -32,13 +32,12 @@ $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
     ->setCache(
-        __DIR__.'/../../../../cache/'.strtolower((new Request())->getHttpHost()).'/',
+        __DIR__ . '/../../../../cache/' . strtolower((new Request())->getHttpHost()) . '/',
         $useCache,
         $cacheLifeTime
     )
     ->setUrl()
-    ->loadConfig()
-;
+    ->loadConfig();
 
 if (
     empty($_POST)
@@ -76,8 +75,7 @@ $bootstrap
     ->assets()
     ->block()
     ->form()
-    ->search()
-;
+    ->search();
 
 $application = $bootstrap->application();
 
@@ -97,7 +95,7 @@ try {
         );
     endif;
 } catch (Exception $e) {
-    if(DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
+    if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
         var_dump($e->getMessage());
         die();
     endif;

@@ -28,7 +28,8 @@ class RepositoryCollection implements RepositoryInterface
         UserRepository $userRepository,
         DatagroupRepository $datagroupRepository,
         DatafieldRepository $datafieldRepository
-    ) {
+    )
+    {
         $this->user = $userRepository;
         $this->datagroup = $datagroupRepository;
         $this->datafield = $datafieldRepository;

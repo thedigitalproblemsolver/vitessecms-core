@@ -8,31 +8,6 @@ use VitesseCms\Configuration\Services\ConfigService;
 
 class SystemUtil
 {
-    public static function getModules(ConfigService $configService): array
-    {
-        $return = [];
-        $directories = [
-            'rootdir' => $configService->getRootDir() . 'src',
-            'accountdir' => $configService->getAccountDir() . 'src',
-            'verdornamedir' => $configService->getVendorNameDir()
-        ];
-
-        foreach ($directories as $type => $directory) :
-            if($type === 'verdornamedir') :
-                $children = DirectoryUtil::getChildren($directory);
-                unset($children['vitessecms']);
-                foreach ($children as $key => $dir) :
-                    $return[$key] = $dir.'/src';
-                endforeach;
-            else :
-                $return = array_merge($return, DirectoryUtil::getChildren($directory));
-            endif;
-        endforeach;
-        ksort($return);
-
-        return $return;
-    }
-
     public static function getModels(bool $namespaceAsKey = false): array
     {
         $return = [];
@@ -53,6 +28,31 @@ class SystemUtil
         return $return;
     }
 
+    public static function getModules(ConfigService $configService): array
+    {
+        $return = [];
+        $directories = [
+            'rootdir' => $configService->getRootDir() . 'src',
+            'accountdir' => $configService->getAccountDir() . 'src',
+            'verdornamedir' => $configService->getVendorNameDir()
+        ];
+
+        foreach ($directories as $type => $directory) :
+            if ($type === 'verdornamedir') :
+                $children = DirectoryUtil::getChildren($directory);
+                unset($children['vitessecms']);
+                foreach ($children as $key => $dir) :
+                    $return[$key] = $dir . '/src';
+                endforeach;
+            else :
+                $return = array_merge($return, DirectoryUtil::getChildren($directory));
+            endif;
+        endforeach;
+        ksort($return);
+
+        return $return;
+    }
+
     public static function createNamespaceFromPath(string $path): string
     {
         $handle = fopen($path, 'r');
@@ -69,7 +69,7 @@ class SystemUtil
             fclose($handle);
         }
 
-        return $ns.'\\'.str_replace('.php','',(new \SplFileInfo($path))->getFilename());
+        return $ns . '\\' . str_replace('.php', '', (new \SplFileInfo($path))->getFilename());
     }
 
     public static function getFormclassFromClass(string $class): string
@@ -87,16 +87,16 @@ class SystemUtil
 
     public static function loadClassFromNamespace($namespace): bool
     {
-        $tmp = explode('\\',$namespace);
+        $tmp = explode('\\', $namespace);
         $tmp = array_reverse($tmp);
         $className = $tmp[0];
         unset($tmp[0]);
         $tmp = array_reverse($tmp);
         unset($tmp[0]);
 
-        $path = Di::getDefault()->get('config')->get('rootDir').'src/'.
-            strtolower(implode('/',$tmp)) .'/'.$className. '.php';
-        if(is_file($path)) :
+        $path = Di::getDefault()->get('config')->get('rootDir') . 'src/' .
+            strtolower(implode('/', $tmp)) . '/' . $className . '.php';
+        if (is_file($path)) :
             return include_once($path);
         endif;
 

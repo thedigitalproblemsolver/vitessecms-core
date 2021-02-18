@@ -51,7 +51,7 @@ class FlashService
 
     public function output(): string
     {
-        if(!$this->session->has()):
+        if (!$this->session->has()):
             return '';
         endif;
 

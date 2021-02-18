@@ -22,6 +22,54 @@ trait BaseObjectTrait
 
     public $slug;
 
+    public function getRaw($key)
+    {
+        $return = '';
+        if (isset($this->$key)) :
+            $return = $this->$key;
+        endif;
+
+        return $return;
+    }
+
+    public function add(
+        string $name,
+        $value,
+        string $key = null,
+        bool $multilang = false,
+        string $languageShort = null
+    ): void
+    {
+        if ($multilang) :
+            die('nog te implementeren');
+        else:
+            if (!isset($this->$name)) :
+                $this->$name = [];
+            endif;
+
+            if (is_array($this->$name)) :
+                $this->$name[$key] = $value;
+            endif;
+        endif;
+    }
+
+    public function has(string $key): bool
+    {
+        return !empty($this->$key);
+    }
+
+    public function bind(array $array): void
+    {
+        foreach ($array as $key => $value) :
+            $this->$key = $value;
+        endforeach;
+    }
+
+    public function hasChildren(): bool
+    {
+        return (bool)$this->_('hasChildren');
+    }
+
     public function _(string $key, string $languageShort = null)
     {
         $return = '';
@@ -66,14 +114,27 @@ trait BaseObjectTrait
         return $return;
     }
 
-    public function getRaw($key)
+    public function hasSlug(): bool
     {
-        $return = '';
-        if (isset($this->$key)) :
-            $return = $this->$key;
-        endif;
+        return (bool)$this->_('slug');
 
-        return $return;
+    }
+
+    public function hasParent(): bool
+    {
+        return (bool)$this->_('parentId');
+    }
+
+    public function getParentId(): ?string
+    {
+        return $this->parentId;
+    }
+
+    public function setParent(?string $id): self
+    {
+        $this->set('parentId', $id);
+
+        return $this;
     }
 
     public function set(
@@ -100,67 +161,6 @@ trait BaseObjectTrait
         else :
             $this->$key = $value;
         endif;
-
-        return $this;
-    }
-
-    public function add(
-        string $name,
-        $value,
-        string $key = null,
-        bool $multilang = false,
-        string $languageShort = null
-    ): void
-    {
-        if ($multilang) :
-            die('nog te implementeren');
-        else:
-            if (!isset($this->$name)) :
-                $this->$name = [];
-            endif;
-
-            if (is_array($this->$name)) :
-                $this->$name[$key] = $value;
-            endif;
-        endif;
-    }
-
-    public function has(string $key): bool
-    {
-        return !empty($this->$key);
-    }
-
-    public function bind(array $array): void
-    {
-        foreach ($array as $key => $value) :
-            $this->$key = $value;
-        endforeach;
-    }
-
-    public function hasChildren(): bool
-    {
-        return (bool)$this->_('hasChildren');
-    }
-
-    public function hasSlug(): bool
-    {
-        return (bool)$this->_('slug');
-
-    }
-
-    public function hasParent(): bool
-    {
-        return (bool)$this->_('parentId');
-    }
-
-    public function getParentId(): ?string
-    {
-        return $this->parentId;
-    }
-
-    public function setParent(?string $id): self
-    {
-        $this->set('parentId', $id);
 
         return $this;
     }

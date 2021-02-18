@@ -24,6 +24,15 @@ class FileUtil
      */
     protected static $abstractAdminControllerFunctions;
 
+    public static function sanatize(string $file = null): string
+    {
+        self::setFile($file);
+
+        return Slug::generate(
+                self::$file->getBasename('.' . self::getExtension())
+            ) . '.' . Slug::generate(self::getExtension());
+    }
+
     public static function setFile(string $file = null): void
     {
         if ($file !== null) :
@@ -38,29 +47,13 @@ class FileUtil
         return self::$file->getExtension();
     }
 
-    public static function getName(string $file = null): string
-    {
-        self::setFile($file);
-
-        return self::$file->getBasename('.'.self::getExtension());
-    }
-
-    public static function sanatize(string $file = null): string
-    {
-        self::setFile($file);
-
-        return Slug::generate(
-                self::$file->getBasename('.'.self::getExtension())
-            ).'.'.Slug::generate(self::getExtension());
-    }
-
     public static function getTag(string $file = null, string $class = null, string $style = null): string
     {
         self::setFile($file);
 
         /** @noinspection PhpUndefinedMethodInspection */
         $config = Di::getDefault()->getConfig();
-        $fileRoot = $config->get('uploadDir').$file;
+        $fileRoot = $config->get('uploadDir') . $file;
         $fileWeb = str_replace($config->get('webDir'), '', $fileRoot);
 
         if (is_file($fileRoot)) :
@@ -71,7 +64,7 @@ class FileUtil
                 case 'gif':
                     return Tag::image([
                         $fileWeb,
-                        'alt'   => self::getName(),
+                        'alt' => self::getName(),
                         'class' => $class,
                         'style' => $style,
                     ]);
@@ -80,6 +73,13 @@ class FileUtil
         endif;
 
         return '';
+    }
+
+    public static function getName(string $file = null): string
+    {
+        self::setFile($file);
+
+        return self::$file->getBasename('.' . self::getExtension());
     }
 
     public static function getContent(string $file = null): string
@@ -103,7 +103,7 @@ class FileUtil
         if (substr_count($fileContents, 'AbstractAdminController') > 0) :
             if (!isset(self::$abstractAdminControllerFunctions)) :
                 $fileContents = file_get_contents(
-                    $configuration->getVendorNameDir().'admin/src/AbstractAdminController.php'
+                    $configuration->getVendorNameDir() . 'admin/src/AbstractAdminController.php'
                 );
                 preg_match_all($functionFinder, $fileContents, self::$abstractAdminControllerFunctions);
             endif;
@@ -162,7 +162,7 @@ class FileUtil
         switch (self::getExtension()) :
             case 'csv':
                 header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename='.self::getName().'.'.self::getExtension());
+                header('Content-Disposition: attachment; filename=' . self::getName() . '.' . self::getExtension());
                 break;
             case 'css':
                 header('Content-type: text/css');
@@ -176,7 +176,7 @@ class FileUtil
                 break;
             case 'pdf':
                 header('Content-type:application/pdf');
-                header('Content-Disposition: attachment; filename='.self::getName().'.'.self::getExtension());
+                header('Content-Disposition: attachment; filename=' . self::getName() . '.' . self::getExtension());
                 break;
             case 'png';
                 header('Content-Type: image/png');
@@ -191,7 +191,7 @@ class FileUtil
     {
         return [
             'rasterizedImages' => 'Rasterized images',
-            'vectorImages'     => 'Vector images',
+            'vectorImages' => 'Vector images',
         ];
     }
 
@@ -234,10 +234,10 @@ class FileUtil
         else:
             parse_str($urlParts['query'], $urlQuery);
             if (isset($urlQuery['h']) || isset($urlQuery['w'])) :
-                $file = $di->get('config')->get('webDir').$urlParts['path'];
+                $file = $di->get('config')->get('webDir') . $urlParts['path'];
 
-                return Di::getDefault()->get('config')->get('cacheDir').
-                    'resized/'.
+                return Di::getDefault()->get('config')->get('cacheDir') .
+                    'resized/' .
                     MediaUtil::getResizeFilename(
                         $file,
                         $urlQuery['w'] ?? 0,

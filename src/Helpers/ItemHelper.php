@@ -27,13 +27,13 @@ class ItemHelper
                 $btn = ' btn btn-danger';
             endif;
 
-            return 'publish-toggle fa fa-circle red'.$btn;
+            return 'publish-toggle fa fa-circle red' . $btn;
         endif;
         if ($button) :
             $btn = ' btn btn-success';
         endif;
 
-        return 'publish-toggle fa fa-circle'.$btn;
+        return 'publish-toggle fa fa-circle' . $btn;
     }
 
     public static function getRequiredIcon(bool $required, bool $button = false): string
@@ -44,13 +44,13 @@ class ItemHelper
                 $btn = ' btn btn-danger';
             endif;
 
-            return 'fa fa-asterisk red'.$btn;
+            return 'fa fa-asterisk red' . $btn;
         endif;
         if ($button) :
             $btn = ' btn btn-success';
         endif;
 
-        return 'fa fa-asterisk'.$btn;
+        return 'fa fa-asterisk' . $btn;
     }
 
     public static function getIcon(bool $state, string $type, bool $button = false): string
@@ -61,13 +61,13 @@ class ItemHelper
                 $btn = ' btn btn-danger';
             endif;
 
-            return 'fa fa-'.$type.' red'.$btn;
+            return 'fa fa-' . $type . ' red' . $btn;
         endif;
         if ($button) :
             $btn = ' btn btn-success';
         endif;
 
-        return 'fa fa-'.$type.' '.$btn;
+        return 'fa fa-' . $type . ' ' . $btn;
     }
 
     public static function getPublishText(bool $published): string
@@ -120,15 +120,16 @@ class ItemHelper
         string $parentId = null,
         array $return = [],
         string $postfix = ''
-    ): array {
+    ): array
+    {
         Item::setFindValue('parentId', $parentId);
         Item::addFindOrder('name');
         $items = Item::findAll();
 
         foreach ($items as $item) :
-            $return[(string)$item->getId()] = $postfix.$item->_('name');
+            $return[(string)$item->getId()] = $postfix . $item->_('name');
             if ($item->_('hasChildren') === true) :
-                $return = self::buildItemTree((string)$item->getId(), $return, $postfix.$item->_('name').' > ');
+                $return = self::buildItemTree((string)$item->getId(), $return, $postfix . $item->_('name') . ' > ');
             endif;
         endforeach;
 
@@ -142,7 +143,7 @@ class ItemHelper
     {
         /** @var Datagroup $datagroup */
         $datagroup = Datagroup::findById($item->getDatagroup('datagroup'));
-        if($datagroup) :
+        if ($datagroup) :
             $datafields = $datagroup->getDatafields();
             foreach ($datafields as $datafieldObject) :
                 /** @var Datafield $datafield */
@@ -163,7 +164,7 @@ class ItemHelper
             'adminitem',
             'edit'
         )) :
-            $item->set('editLink', '/Admin/content/adminitem/edit/'.$item->getId());
+            $item->set('editLink', '/Admin/content/adminitem/edit/' . $item->getId());
         endif;
     }
 

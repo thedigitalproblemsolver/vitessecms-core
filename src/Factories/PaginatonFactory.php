@@ -14,12 +14,13 @@ class PaginatonFactory
         Request $request,
         UrlService $url,
         string $urlQueryKey = 'page'
-    ): stdClass {
+    ): stdClass
+    {
         $paginator = new PaginatorModel(
             [
-                'data'  => $items,
+                'data' => $items,
                 'limit' => 15,
-                'page'  => $request->get($urlQueryKey),
+                'page' => $request->get($urlQueryKey),
             ]
         );
 
@@ -27,10 +28,10 @@ class PaginatonFactory
         $pagination->slug = $url->removeParamsFromQuery([$urlQueryKey], $request->getURI());
         $pagination->slugSeperator = '&';
         $pagination->urlQueryKey = $urlQueryKey;
-        if(substr_count($pagination->slug,'?') === 0 ) :
+        if (substr_count($pagination->slug, '?') === 0) :
             $pagination->slugSeperator = '?';
         endif;
-        if($pagination->before === 1) :
+        if ($pagination->before === 1) :
             unset($pagination->before);
         endif;
 

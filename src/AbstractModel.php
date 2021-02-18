@@ -22,18 +22,18 @@ abstract class AbstractModel
     protected static $mysqlConnection = 'db';
 
     /**
-     * initialize
-     */
-    public function onConstruct()
-    {
-        $this->setConnectionService(self::$mysqlConnection);
-    }
-
-    /**
      * @param string $connectionName
      */
     public static function setDatabase(string $connectionName)
     {
         self::$mysqlConnection = $connectionName;
+    }
+
+    /**
+     * initialize
+     */
+    public function onConstruct()
+    {
+        $this->setConnectionService(self::$mysqlConnection);
     }
 }

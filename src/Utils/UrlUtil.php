@@ -20,6 +20,19 @@ class UrlUtil
     public static $urlParsed;
 
     /**
+     * @param string|null $url
+     *
+     * @return bool
+     * @deprecated should be moved to UrlService
+     */
+    public static function exists(string $url = null): bool
+    {
+        self::setUrl($url);
+
+        return strpos(get_headers($url)[0], '200');
+    }
+
+    /**
      * set the file in a SplFileInfo object
      *
      * @param string|null $url
@@ -33,18 +46,5 @@ class UrlUtil
         endif;
 
         Uri::class;
-    }
-
-    /**
-     * @param string|null $url
-     *
-     * @return bool
-     * @deprecated should be moved to UrlService
-     */
-    public static function exists(string $url = null): bool
-    {
-        self::setUrl($url);
-
-        return strpos(get_headers($url)[0], '200');
     }
 }

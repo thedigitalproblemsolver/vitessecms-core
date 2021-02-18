@@ -78,13 +78,13 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $cacheKey = $this->getCache()->getCacheKey('bootstrap-config-' . $this->mtime);
         $domainConfig = $this->getCache()->get($cacheKey);
         if (!$domainConfig) :
-            $domainConfig = new DomainConfigUtil(__DIR__.'/../../../../../');
+            $domainConfig = new DomainConfigUtil(__DIR__ . '/../../../../../');
 
             $file = 'config.ini';
             if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'] ?? '')) :
                 $file = 'config_dev.ini';
             endif;
-            $accountConfigFile = __DIR__.'/../../../../../config/account/'.$domainConfig->getAccount().'/'.$file;
+            $accountConfigFile = __DIR__ . '/../../../../../config/account/' . $domainConfig->getAccount() . '/' . $file;
 
             $domainConfig->merge(new AccountConfigUtil($accountConfigFile));
             $domainConfig->setDirectories();
@@ -113,6 +113,27 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     }
 
     //TODO use repository
+
+    public function getCache(): CacheService
+    {
+        return $this->get('cache');
+    }
+
+    public function getUrl(): UrlService
+    {
+        return $this->get('url');
+    }
+
+    public function getConfiguration(): ConfigService
+    {
+        return $this->get('configuration');
+    }
+
+    public function getRequest(): Request
+    {
+        return $this->get('request');
+    }
+
     public function setLanguage(): BootstrapService
     {
         $domainConfig = $this->getConfiguration();
@@ -263,6 +284,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    public function getLanguage(): LanguageService
+    {
+        return $this->get('language');
+    }
+
     public function user(): BootstrapService
     {
         $this->setShared('user', function (): User {
@@ -281,6 +307,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->getUser();
 
         return $this;
+    }
+
+    public function getUser(): User
+    {
+        return $this->get('user');
     }
 
     public function view(): BootstrapService
@@ -349,11 +380,21 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    public function getEventsManager(): Manager
+    {
+        return $this->get('eventsManager');
+    }
+
     public function content(): BootstrapService
     {
         $this->setShared('content', new ContentService($this->getView()));
 
         return $this;
+    }
+
+    public function getView(): ViewService
+    {
+        return $this->get('view');
     }
 
     public function mailer(): BootstrapService
@@ -369,6 +410,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         );
 
         return $this;
+    }
+
+    public function getSetting(): SettingService
+    {
+        return $this->get('setting');
     }
 
     public function shop(): BootstrapService
@@ -449,6 +495,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    public function getRouter(): RouterService
+    {
+        return $this->get('router');
+    }
+
     public function application(): CoreApplicaton
     {
         $application = new CoreApplicaton($this);
@@ -510,58 +561,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this->get('block');
     }
 
-    public function getConfiguration(): ConfigService
-    {
-        return $this->get('configuration');
-    }
-
-    public function getSetting(): SettingService
-    {
-        return $this->get('setting');
-    }
-
-    public function getCache(): CacheService
-    {
-        return $this->get('cache');
-    }
-
-    public function getUrl(): UrlService
-    {
-        return $this->get('url');
-    }
-
-    public function getRequest(): Request
-    {
-        return $this->get('request');
-    }
-
     public function getSession(): Session
     {
         return $this->get('session');
-    }
-
-    public function getEventsManager(): Manager
-    {
-        return $this->get('eventsManager');
-    }
-
-    public function getUser(): User
-    {
-        return $this->get('user');
-    }
-
-    public function getRouter(): RouterService
-    {
-        return $this->get('router');
-    }
-
-    public function getView(): ViewService
-    {
-        return $this->get('view');
-    }
-
-    public function getLanguage(): LanguageService
-    {
-        return $this->get('language');
     }
 }

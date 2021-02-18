@@ -35,7 +35,7 @@ class UrlService extends Url
         if ($this->request->getPort() === 80) :
             $this->protocol = 'http';
         endif;
-        $this->setBaseUri($this->protocol.'://'.$_SERVER['HTTP_HOST'].'/');
+        $this->setBaseUri($this->protocol . '://' . $_SERVER['HTTP_HOST'] . '/');
     }
 
     public function setUrl(string $url): void
@@ -51,7 +51,7 @@ class UrlService extends Url
 
     public function exists(string $url = null): bool
     {
-        if(filter_var($url, FILTER_VALIDATE_URL)) :
+        if (filter_var($url, FILTER_VALIDATE_URL)) :
             return (bool)strpos(get_headers($url)[0], '200');
         endif;
 
@@ -62,13 +62,13 @@ class UrlService extends Url
     {
         if ($useHttps && $_SERVER['SERVER_PORT'] === '80') :
             header('HTTP/1.1 301 Moved Permanently');
-            header('Location: https://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+            header('Location: https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
             die();
         endif;
 
         if (!$useHttps && $_SERVER['SERVER_PORT'] !== '80') :
             header('HTTP/1.1 301 Moved Permanently');
-            header('Location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+            header('Location: http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
             die();
         endif;
     }
@@ -100,13 +100,13 @@ class UrlService extends Url
         foreach ($queryParts as $key => $part) :
             if (is_array($part)) :
                 $keys = array_keys($part);
-                $query[$key.'['.$keys[0].']'] = $part[$keys[0]];
+                $query[$key . '[' . $keys[0] . ']'] = $part[$keys[0]];
             else :
                 $query[$key] = $part;
             endif;
         endforeach;
 
-        return $urlParsed['path'].'?'.http_build_query($query);
+        return $urlParsed['path'] . '?' . http_build_query($query);
     }
 
     public function addParamsToQuery(string $key, string $value, string $url): string
@@ -120,6 +120,6 @@ class UrlService extends Url
             $queryParts[$key] = $value;
         endif;
 
-        return $urlParsed['path'].'?'.http_build_query($queryParts);
+        return $urlParsed['path'] . '?' . http_build_query($queryParts);
     }
 }

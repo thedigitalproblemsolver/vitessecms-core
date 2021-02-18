@@ -17,16 +17,6 @@ class SessionUtil
     protected static $session;
 
     /**
-     * init
-     */
-    protected static function init(): void
-    {
-        if (!is_object(self::$session)) {
-            self::$session = Di::getDefault()->get('session');
-        }
-    }
-
-    /**
      * @param string $name
      *
      * @return null|string
@@ -36,6 +26,16 @@ class SessionUtil
         self::init();
 
         return self::$session->get($name);
+    }
+
+    /**
+     * init
+     */
+    protected static function init(): void
+    {
+        if (!is_object(self::$session)) {
+            self::$session = Di::getDefault()->get('session');
+        }
     }
 
     /**
