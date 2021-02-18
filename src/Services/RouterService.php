@@ -2,16 +2,16 @@
 
 namespace VitesseCms\Core\Services;
 
+use Phalcon\Http\Request;
+use Phalcon\Mvc\Router;
+use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Content\Models\Item;
-use VitesseCms\Core\Helpers\ItemHelper;
-use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Content\Repositories\ItemRepository;
+use VitesseCms\Core\Helpers\ItemHelper;
 use VitesseCms\Sef\Helpers\SefHelper;
 use VitesseCms\Sef\Utils\SefUtil;
 use VitesseCms\User\Models\User;
-use Phalcon\Http\Request;
-use Phalcon\Mvc\Router;
 
 class RouterService extends Router
 {

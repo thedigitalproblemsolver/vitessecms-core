@@ -2,9 +2,9 @@
 
 namespace VitesseCms\Core\Traits;
 
+use Phalcon\Di;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
 use VitesseCms\Language\Models\Language;
-use Phalcon\Di;
 
 trait BaseObjectTrait
 {

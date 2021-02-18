@@ -2,9 +2,9 @@
 
 namespace VitesseCms\Core\Services;
 
-use VitesseCms\Core\Utils\DirectoryUtil;
 use Phalcon\Cache\Backend\File as BackFile;
 use Phalcon\Cache\Frontend\Data as FrontData;
+use VitesseCms\Core\Utils\DirectoryUtil;
 
 class CacheService extends AbstractInjectableService
 {

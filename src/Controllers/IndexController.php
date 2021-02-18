@@ -2,8 +2,8 @@
 
 namespace VitesseCms\Core\Controllers;
 
-use VitesseCms\Core\AbstractController;
 use VitesseCms\Content\Models\Item;
+use VitesseCms\Core\AbstractController;
 use VitesseCms\Core\Utils\FileUtil;
 
 class IndexController extends AbstractController

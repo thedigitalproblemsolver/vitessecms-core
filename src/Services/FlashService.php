@@ -2,9 +2,8 @@
 
 namespace VitesseCms\Core\Services;
 
-use Phalcon\FlashInterface;
-use VitesseCms\Language\Helpers\LanguageHelper;
 use Phalcon\Flash\Session;
+use VitesseCms\Language\Helpers\LanguageHelper;
 use VitesseCms\Language\Services\LanguageService;
 
 class FlashService

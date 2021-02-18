@@ -2,11 +2,11 @@
 
 namespace VitesseCms\Core\Utils;
 
+use DirectoryIterator;
 use Phalcon\Di;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
-use DirectoryIterator;
 
 /**
  * Class DirectoryUtil

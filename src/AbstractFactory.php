@@ -5,7 +5,6 @@ namespace VitesseCms\Core;
 use VitesseCms\Core\Interfaces\AbstractFactoryInterface;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
 use VitesseCms\Database\AbstractCollection;
-use MongoDB\BSON\ObjectID;
 
 /**
  * Class AbstractFactory

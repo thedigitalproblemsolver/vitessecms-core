@@ -2,8 +2,8 @@
 
 namespace VitesseCms\Core\Models;
 
-use VitesseCms\Database\AbstractCollection;
 use ArrayIterator;
+use VitesseCms\Database\AbstractCollection;
 
 abstract class AbstractIterator extends ArrayIterator implements IteratorInterface
 {

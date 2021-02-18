@@ -2,10 +2,10 @@
 
 namespace VitesseCms\Core\Factories;
 
-use VitesseCms\Core\Services\UrlService;
 use Phalcon\Http\Request;
 use Phalcon\Paginator\Adapter\NativeArray as PaginatorModel;
 use stdClass;
+use VitesseCms\Core\Services\UrlService;
 
 class PaginatonFactory
 {

@@ -3,7 +3,6 @@
 namespace VitesseCms\Core\Utils;
 
 use Phalcon\Di;
-use Phalcon\DiInterface;
 use VitesseCms\Configuration\Services\ConfigService;
 
 

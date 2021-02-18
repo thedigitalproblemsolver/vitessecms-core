@@ -2,12 +2,11 @@
 
 namespace VitesseCms\Core;
 
+use Phalcon\Exception;
 use Phalcon\Http\Request;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Core\Services\BootstrapService;
-use Phalcon\Exception;
 use VitesseCms\Core\Utils\DebugUtil;
-use VitesseCms\Core\Utils\SystemUtil;
 
 require_once __DIR__ . '/Services/BootstrapService.php';
 require_once __DIR__ . '/AbstractInjectable.php';

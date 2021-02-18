@@ -2,10 +2,10 @@
 
 namespace VitesseCms\Core;
 
-use VitesseCms\Core\Interfaces\BaseObjectInterface;
-use VitesseCms\Core\Traits\BaseObjectTrait;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\ModelInterface;
+use VitesseCms\Core\Interfaces\BaseObjectInterface;
+use VitesseCms\Core\Traits\BaseObjectTrait;
 
 /**
  * Class AbstractModel

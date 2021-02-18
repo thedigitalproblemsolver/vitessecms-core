@@ -4,7 +4,6 @@ namespace VitesseCms\Core\Utils;
 
 use Phalcon\Di;
 use Phalcon\Http\Response\Cookies;
-use DateTime;
 
 /**
  * Class CookieUtil

@@ -2,12 +2,12 @@
 
 namespace VitesseCms\Core\Utils;
 
-use VitesseCms\Configuration\Services\ConfigService;
-use VitesseCms\Media\Utils\MediaUtil;
 use Phalcon\Di;
 use Phalcon\Tag;
 use Phalcon\Utils\Slug;
 use SplFileInfo;
+use VitesseCms\Configuration\Services\ConfigService;
+use VitesseCms\Media\Utils\MediaUtil;
 
 /**
  * TODO make really a static util without internal dependancies
