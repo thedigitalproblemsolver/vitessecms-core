@@ -2,8 +2,8 @@
 
 namespace VitesseCms\Core;
 
-use VitesseCms\Core\Interfaces\InjectableInterface;
 use Phalcon\Mvc\User\Component;
+use VitesseCms\Core\Interfaces\InjectableInterface;
 
 abstract class AbstractInjectable extends Component implements InjectableInterface
 {

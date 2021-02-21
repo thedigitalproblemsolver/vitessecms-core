@@ -2,9 +2,9 @@
 
 namespace VitesseCms\Core;
 
+use Phalcon\Mvc\Application;
 use VitesseCms\Content\Services\ContentService;
 use VitesseCms\Core\Interfaces\InjectableInterface;
-use Phalcon\Mvc\Application;
 
 /**
  * @property ContentService $content

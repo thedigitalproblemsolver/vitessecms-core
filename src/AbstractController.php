@@ -2,28 +2,23 @@
 
 namespace VitesseCms\Core;
 
-use VitesseCms\Admin\Repositories\DatagroupRepository;
-use VitesseCms\Admin\Utils\AdminUtil;
-use VitesseCms\Block\Models\BlockPosition;
-use VitesseCms\Block\Repositories\BlockPositionRepository;
-use VitesseCms\Block\Repositories\BlockRepository;
-use VitesseCms\Communication\Helpers\CommunicationHelper;
-use VitesseCms\Content\Factories\OpengraphFactory;
-use VitesseCms\Core\Helpers\HtmlHelper;
-use VitesseCms\Core\Interfaces\InjectableInterface;
-use VitesseCms\Core\Utils\DebugUtil;
-use VitesseCms\Core\Utils\TimerUtil;
-use VitesseCms\Core\Utils\UrlUtil;
-use VitesseCms\Export\Helpers\RssExportHelper;
-use VitesseCms\Export\Models\ExportType;
-use VitesseCms\Media\Enums\AssetsEnum;
-use VitesseCms\Setting\Models\Setting;
-use VitesseCms\User\Utils\PermissionUtils;
 use MongoDB\BSON\ObjectID;
 use Phalcon\Assets\Filters\Cssmin;
 use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Mvc\Controller;
 use Phalcon\Tag;
+use VitesseCms\Admin\Repositories\DatagroupRepository;
+use VitesseCms\Admin\Utils\AdminUtil;
+use VitesseCms\Communication\Helpers\CommunicationHelper;
+use VitesseCms\Content\Factories\OpengraphFactory;
+use VitesseCms\Core\Interfaces\InjectableInterface;
+use VitesseCms\Core\Utils\DebugUtil;
+use VitesseCms\Core\Utils\TimerUtil;
+use VitesseCms\Export\Helpers\RssExportHelper;
+use VitesseCms\Export\Models\ExportType;
+use VitesseCms\Media\Enums\AssetsEnum;
+use VitesseCms\Setting\Models\Setting;
+use VitesseCms\User\Utils\PermissionUtils;
 
 abstract class AbstractController extends Controller implements InjectableInterface
 {
@@ -119,6 +114,20 @@ abstract class AbstractController extends Controller implements InjectableInterf
         $this->disableView();
     }
 
+    public function disableView(): void
+    {
+        CommunicationHelper::sendRedirectEmail($this->router, $this->view);
+        $this->flash->output();
+        $this->view->disable();
+    }
+
+    public function setIsJobProcess(bool $bool): void
+    {
+        $this->isJobProcess = $bool;
+    }
+
+    //TODO to admin controller?
+
     protected function prepareJson(array $data, bool $result = true): void
     {
         $this->response->setContentType('application/json', 'UTF-8');
@@ -139,43 +148,71 @@ abstract class AbstractController extends Controller implements InjectableInterf
         endif;
     }
 
-    //TODO to admin controller?
-    protected function adminToolbar(): string
+    public function prepareAjaxView(): void
     {
-        if (!$this->user->hasAdminAccess()) :
-            return '';
-        endif;
-
-        $this->view->setVar('bodyClass', 'admin');
-
-        return (new AdminUtil(
-            $this->setting,
-            $this->user,
-            $this->eventsManager,
-            $this->view,
-            new DatagroupRepository()
-        ))->toolbar();
+        echo $this->flash->output();
+        echo $this->view->getVar('content');
+        $this->view->disable();
     }
 
-    protected function parsePositions(): void
+    public function prepareEmbeddedView(): void
     {
-        foreach ($this->configuration->getTemplatePositions() as $position => $tmp) :
-            if (
-                $position !== 'maincontent'
-                || (
-                    $position === 'maincontent'
-                    && $this->view->hasCurrentItem()
+        $this->prepareViewValues();
+        $this->view->setVar('embedded', 1);
+        $this->view->setVar('bodyClass', $this->view->getVar('bodyClass') . ' embedded container-fluid');
+
+        if ($this->view->getVar('content') === null) :
+            $this->view->setVar('content',
+                $this->block->parseTemplatePosition(
+                    'maincontent',
+                    $this->setting->get('layout_blockposition-class' . $position)
                 )
-            ) :
-                $this->view->setVar(
-                    $position,
-                    $this->block->parseTemplatePosition(
-                        $position,
-                        $this->setting->get('layout_blockposition-class' . $position)
+            );
+        endif;
+
+        $this->loadAssets();
+    }
+
+    protected function prepareViewValues(): void
+    {
+        $this->view->setVar('flash', $this->flash->output());
+        $this->view->setVar('currentItem', $this->view->getVar('currentItem'));
+        $this->view->setVar('BASE_URI', $this->view->getVar('BASE_URI'));
+        $this->view->setVar('UPLOAD_URI', $this->configuration->getUploadUri());
+        $this->view->setVar('ACCOUNT', $this->config->get('account'));
+        $this->view->setVar('ECOMMERCE', (string)$this->configuration->isEcommerce());
+        $this->view->setVar('hrefLanguages', $this->view->getVar('hrefLanguages'));
+        $this->view->setVar('timer', TimerUtil::Results(false));
+        $this->view->setVar('isDev', DebugUtil::isDev());
+        $this->view->setVar('hideAsideMenu', $this->config->get('hideAsideMenu'));
+        $this->view->setVar('languageLocale', $this->configuration->getLanguageLocale());
+        if (is_string($this->setting->get('SITE_LABEL_MOTTO'))) {
+            $this->view->setVar('SITE_TITLE_LABEL_MOTTO', strip_tags(
+                    str_replace(
+                        '<br>',
+                        ' ',
+                        $this->setting->get('SITE_LABEL_MOTTO')
                     )
-                );
-            endif;
-        endforeach;
+                )
+            );
+        }
+
+        if ($this->view->getVar('currentId')) :
+            $this->view->setVar(
+                'opengraph',
+                OpengraphFactory::createFormItem(
+                    $this->view->getVar('currentItem'),
+                    $this->setting,
+                    $this->configuration
+                )->renderTags()
+            );
+        endif;
+
+        $this->view->setVar('SEO_ROBOTS', 'index, follow');
+        if (AdminUtil::isAdminPage()) :
+            $this->view->setVar('IS_ADMIN', true);
+            $this->view->setVar('SEO_ROBOTS', 'noindex, nofollow');
+        endif;
     }
 
     protected function loadAssets(): void
@@ -291,13 +328,6 @@ abstract class AbstractController extends Controller implements InjectableInterf
         endswitch;
     }
 
-    public function prepareAjaxView(): void
-    {
-        echo $this->flash->output();
-        echo $this->view->getVar('content');
-        $this->view->disable();
-    }
-
     public function prepareHtmlView(): void
     {
         $this->view->setVar('adminToolbar', $this->adminToolbar());
@@ -313,75 +343,41 @@ abstract class AbstractController extends Controller implements InjectableInterf
         $this->view->setVar('rssFeeds', ExportType::findAll());
     }
 
-    public function prepareEmbeddedView(): void
+    protected function adminToolbar(): string
     {
-        $this->prepareViewValues();
-        $this->view->setVar('embedded', 1);
-        $this->view->setVar('bodyClass', $this->view->getVar('bodyClass') . ' embedded container-fluid');
-
-        if ($this->view->getVar('content') === null) :
-            $this->view->setVar('content',
-                $this->block->parseTemplatePosition(
-                    'maincontent',
-                    $this->setting->get('layout_blockposition-class' . $position)
-                )
-            );
+        if (!$this->user->hasAdminAccess()) :
+            return '';
         endif;
 
-        $this->loadAssets();
+        $this->view->setVar('bodyClass', 'admin');
+
+        return (new AdminUtil(
+            $this->setting,
+            $this->user,
+            $this->eventsManager,
+            $this->view,
+            new DatagroupRepository()
+        ))->toolbar();
     }
 
-    protected function prepareViewValues(): void
+    protected function parsePositions(): void
     {
-        $this->view->setVar('flash', $this->flash->output());
-        $this->view->setVar('currentItem', $this->view->getVar('currentItem'));
-        $this->view->setVar('BASE_URI', $this->view->getVar('BASE_URI'));
-        $this->view->setVar('UPLOAD_URI', $this->configuration->getUploadUri());
-        $this->view->setVar('ACCOUNT', $this->config->get('account'));
-        $this->view->setVar('ECOMMERCE', (string)$this->configuration->isEcommerce());
-        $this->view->setVar('hrefLanguages', $this->view->getVar('hrefLanguages'));
-        $this->view->setVar('timer', TimerUtil::Results(false));
-        $this->view->setVar('isDev', DebugUtil::isDev());
-        $this->view->setVar('hideAsideMenu', $this->config->get('hideAsideMenu'));
-        $this->view->setVar('languageLocale', $this->configuration->getLanguageLocale());
-        if (is_string($this->setting->get('SITE_LABEL_MOTTO'))) {
-            $this->view->setVar('SITE_TITLE_LABEL_MOTTO', strip_tags(
-                    str_replace(
-                        '<br>',
-                        ' ',
-                        $this->setting->get('SITE_LABEL_MOTTO')
+        foreach ($this->configuration->getTemplatePositions() as $position => $tmp) :
+            if (
+                $position !== 'maincontent'
+                || (
+                    $position === 'maincontent'
+                    && $this->view->hasCurrentItem()
+                )
+            ) :
+                $this->view->setVar(
+                    $position,
+                    $this->block->parseTemplatePosition(
+                        $position,
+                        $this->setting->get('layout_blockposition-class' . $position)
                     )
-                )
-            );
-        }
-
-        if ($this->view->getVar('currentId')) :
-            $this->view->setVar(
-                'opengraph',
-                OpengraphFactory::createFormItem(
-                    $this->view->getVar('currentItem'),
-                    $this->setting,
-                    $this->configuration
-                )->renderTags()
-            );
-        endif;
-
-        $this->view->setVar('SEO_ROBOTS', 'index, follow');
-        if (AdminUtil::isAdminPage()) :
-            $this->view->setVar('IS_ADMIN', true);
-            $this->view->setVar('SEO_ROBOTS', 'noindex, nofollow');
-        endif;
-    }
-
-    public function disableView(): void
-    {
-        CommunicationHelper::sendRedirectEmail($this->router, $this->view);
-        $this->flash->output();
-        $this->view->disable();
-    }
-
-    public function setIsJobProcess(bool $bool): void
-    {
-        $this->isJobProcess = $bool;
+                );
+            endif;
+        endforeach;
     }
 }
