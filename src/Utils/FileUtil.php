@@ -258,4 +258,22 @@ class FileUtil
 
         return copy($source, $target);
     }
+
+    public static function exists(string $file, $createIfNotExists = false): bool
+    {
+        if($createIfNotExists === false):
+            return is_file($file);
+        endif;
+
+        $path = pathinfo($file);
+        if (!DirectoryUtil::exists($path['dirname'], true)) :
+            return false;
+        endif;
+
+        if(!is_file($file)):
+            fopen($file, 'w');
+        endif;
+
+        return is_file($file);
+    }
 }

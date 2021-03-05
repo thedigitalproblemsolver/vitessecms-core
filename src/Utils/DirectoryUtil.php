@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace VitesseCms\Core\Utils;
 
@@ -8,19 +8,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
 
-/**
- * Class DirectoryUtil
- */
 class DirectoryUtil
 {
-    /**
-     * recursive seach through a directory
-     *
-     * @param string $directory
-     * @param string $pattern
-     *
-     * @return array
-     */
     public static function recursiveSearch(string $directory, string $pattern): array
     {
         $dir = new RecursiveDirectoryIterator($directory);
@@ -40,13 +29,6 @@ class DirectoryUtil
         return $fileList;
     }
 
-    /**
-     * get direct child-directories of a directory
-     *
-     * @param string $directory
-     *
-     * @return array
-     */
     public static function getChildren(string $directory): array
     {
         $dirs = [];
@@ -67,13 +49,6 @@ class DirectoryUtil
         return $dirs;
     }
 
-    /**
-     * get the filelist of a directory
-     *
-     * @param string $directory
-     *
-     * @return array
-     */
     public static function getFilelist(string $directory): array
     {
         $files = [];
@@ -90,13 +65,6 @@ class DirectoryUtil
         return $files;
     }
 
-    /**
-     * get the file and directorylist of a directory
-     *
-     * @param string $directory
-     *
-     * @return array
-     */
     public static function getMixedList(string $directory): array
     {
         $files = [];
@@ -113,10 +81,6 @@ class DirectoryUtil
         return $files;
     }
 
-    /**
-     * @param string $source
-     * @param string $destination
-     */
     public static function copy(string $source, string $destination): void
     {
         self::exists($destination, true);
@@ -135,12 +99,6 @@ class DirectoryUtil
         closedir($dir);
     }
 
-    /**
-     * @param string $path
-     * @param bool $createIfNotExists
-     *
-     * @return bool
-     */
     public static function exists(string $path, $createIfNotExists = false): bool
     {
         $state = is_dir($path);
