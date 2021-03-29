@@ -419,13 +419,15 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function shop(): BootstrapService
     {
-        $this->setShared('shop',
-            new ShopService(
-                new CartHelper(),
-                new DiscountHelper(),
-                new CheckoutHelper()
-            )
-        );
+        if($this->getConfiguration()->isEcommerce()):
+            $this->setShared('shop',
+                new ShopService(
+                    new CartHelper(),
+                    new DiscountHelper(),
+                    new CheckoutHelper()
+                )
+            );
+        endif;
 
         return $this;
     }
