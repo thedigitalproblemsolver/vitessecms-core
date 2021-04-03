@@ -176,7 +176,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         else :
             Language::setFindValue('short', $domainConfig->getLanguageShort());
             $language = Language::findFirst();
-            $this->getConfiguration()->setLanguage($language);
+            if($language) :
+                $this->getConfiguration()->setLanguage($language);
+            endif;
         endif;
         $this->setShared('language', new LanguageService());
 
@@ -357,8 +359,10 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function events(): BootstrapService
     {
-        $this->getEventsManager()->attach('discount', new DiscountListener());
-        $this->getEventsManager()->attach('user', new DiscountListener());
+        if($this->getConfiguration()->isEcommerce()):
+            $this->getEventsManager()->attach('discount', new DiscountListener());
+            $this->getEventsManager()->attach('user', new DiscountListener());
+        endif;
 
         foreach (SystemUtil::getModules($this->getConfiguration()) as $path) :
             if (AdminUtil::isAdminPage()):
