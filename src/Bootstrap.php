@@ -23,7 +23,7 @@ require_once __DIR__ . '/Utils/DebugUtil.php';
 
 $cacheLifeTime = 604800;
 $useCache = $_SESSIONt['cache'] ?? true;
-if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
+if (DebugUtil::isDev()) :
     $cacheLifeTime = 1;
     $useCache = false;
 endif;
@@ -95,7 +95,7 @@ try {
         );
     endif;
 } catch (Exception $e) {
-    if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'])) :
+    if (DebugUtil::isDev()) :
         var_dump($e->getMessage());
         die();
     endif;
