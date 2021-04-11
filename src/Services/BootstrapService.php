@@ -81,7 +81,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             $domainConfig = new DomainConfigUtil(__DIR__ . '/../../../../../');
 
             $file = 'config.ini';
-            if (DebugUtil::isDocker($_SERVER['SERVER_ADDR'] ?? '')) :
+            if (DebugUtil::isDev()) :
                 $file = 'config_dev.ini';
             endif;
             $accountConfigFile = __DIR__ . '/../../../../../config/account/' . $domainConfig->getAccount() . '/' . $file;
@@ -152,7 +152,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 );
 
                 $language = Language::findFirst();
-                if (!$language && DebugUtil::isDocker($this->getRequest()->getServerAddress())):
+                if (!$language && DebugUtil::isDev()):
                     Language::setFindValue(
                         'domain',
                         'https://' . $domainConfig->getHost() . '/' . $uri[1] . '/'
