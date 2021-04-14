@@ -57,7 +57,8 @@ class ViewService extends View
         $templatePath = str_replace($search, $replace, $templatePath);
 
         if (empty($templatePath)):
-            $templatePath = $this->configuration->getCoreTemplateDir() . '../../';
+            $templatePath = $this->configuration->getCoreTemplateDir();
+            $template = str_replace($templatePath, '', $template);
         endif;
 
         if (
