@@ -51,11 +51,6 @@ class ViewService extends View
         array $params = []
     ): string
     {
-        $search = ['default/', 'templates/', 'Templates/'];
-        $replace = ['core/', 'Template/', 'Template/'];
-        $template = str_replace($search, $replace, $template);
-        $templatePath = str_replace($search, $replace, $templatePath);
-
         if (empty($templatePath)):
             $templatePath = $this->configuration->getCoreTemplateDir();
             $template = str_replace($templatePath, '', $template);
