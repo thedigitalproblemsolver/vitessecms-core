@@ -51,16 +51,18 @@ class DirectoryUtil
 
     public static function getFilelist(string $directory): array
     {
-        $files = [];
-        if (is_dir($directory)) :
-            $iterator = new DirectoryIterator($directory);
-            foreach ($iterator as $fileinfo) :
-                if (!$fileinfo->isDir() && !$fileinfo->isDot()) :
-                    $files[$fileinfo->getPathname()] = $fileinfo->getFilename();
-                endif;
-            endforeach;
-            ksort($files);
+        if (!is_dir($directory)) :
+            return [];
         endif;
+
+        $files = [];
+        $iterator = new DirectoryIterator($directory);
+        foreach ($iterator as $fileinfo) :
+            if (!$fileinfo->isDir() && !$fileinfo->isDot()) :
+                $files[$fileinfo->getPathname()] = $fileinfo->getFilename();
+            endif;
+        endforeach;
+        ksort($files);
 
         return $files;
     }
