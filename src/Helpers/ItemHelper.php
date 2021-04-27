@@ -136,9 +136,8 @@ class ItemHelper
         return $return;
     }
 
-    /**
-     * TODO efficenter door middel van DB-toggle?
-     */
+    //TODO efficenter door middel van DB-toggle?
+    //TODO move to listener?
     public static function parseBeforeMainContent(Item $item)
     {
         /** @var Datagroup $datagroup */
