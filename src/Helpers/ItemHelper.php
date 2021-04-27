@@ -142,14 +142,14 @@ class ItemHelper
     public static function parseBeforeMainContent(Item $item)
     {
         /** @var Datagroup $datagroup */
-        $datagroup = Datagroup::findById($item->getDatagroup('datagroup'));
+        $datagroup = Datagroup::findById($item->getDatagroup());
         if ($datagroup) :
             $datafields = $datagroup->getDatafields();
             foreach ($datafields as $datafieldObject) :
                 /** @var Datafield $datafield */
                 $datafield = Datafield::findById($datafieldObject['id']);
                 if ($datafield !== null) :
-                    $datafield->getClass()::beforeMaincontent($item, $datafield);
+                    $datafield->getType()::beforeMaincontent($item, $datafield);
                 endif;
             endforeach;
         endif;
