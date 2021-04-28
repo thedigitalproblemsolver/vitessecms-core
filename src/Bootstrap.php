@@ -13,6 +13,7 @@ require_once __DIR__ . '/AbstractInjectable.php';
 require_once __DIR__ . '/Services/AbstractInjectableService.php';
 require_once __DIR__ . '/Services/CacheService.php';
 require_once __DIR__ . '/Services/UrlService.php';
+require_once __DIR__ . '/../../configuration/src/Services/ConfigServiceInterface.php';
 require_once __DIR__ . '/../../configuration/src/Services/ConfigService.php';
 require_once __DIR__ . '/Utils/DirectoryUtil.php';
 require_once __DIR__ . '/Utils/SystemUtil.php';
