@@ -31,7 +31,7 @@
     "seiyria/bootstrap-slider": "^4.8",
     "itsjavi/bootstrap-colorpicker": "^2.5",
     "vitessecms/form": "~0.0.10",
-    "vitessecms/admin": "~0.0.23",
+    "vitessecms/admin": "~0.0.24",
     "vitessecms/block": "~0.0.17",
     "vitessecms/communication": "~0.0.15",
     "vitessecms/configuration": "~0.0.13",
