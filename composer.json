@@ -39,13 +39,13 @@
     "vitessecms/database": "~0.0.5",
     "vitessecms/datafield": "~0.0.10",
     "vitessecms/language": "~0.0.2",
-    "vitessecms/media": "~0.0.6",
+    "vitessecms/media": "~0.0.7",
     "vitessecms/mustache": "~0.0.4",
     "vitessecms/search": "~0.0.3",
-    "vitessecms/sef": "~0.0.2",
+    "vitessecms/sef": "~0.0.3",
     "vitessecms/setting": "~0.0.7",
     "vitessecms/user": "~0.0.7",
-    "vitessecms/datagroup": "~0.0.6",
+    "vitessecms/datagroup": "~0.0.7",
     "vitessecms/job": "~0.0.5",
     "vitessecms/log": "~0.0.5"
   }
