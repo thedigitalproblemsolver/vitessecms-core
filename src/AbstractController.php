@@ -19,6 +19,7 @@ use VitesseCms\Export\Models\ExportType;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Utils\PermissionUtils;
+use function in_array;
 
 abstract class AbstractController extends Controller implements InjectableInterface
 {
@@ -40,7 +41,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
             $this->router->getControllerName(),
             $this->router->getActionName()
         )) :
-            if (\in_array($this->router->getActionName(), $this->parseAsJob, true)) :
+            if (in_array($this->router->getActionName(), $this->parseAsJob, true)) :
                 $this->jobQueue->createByController($this);
                 $this->redirect();
                 die();
@@ -328,6 +329,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
         endswitch;
     }
 
+    //TODO move stuff to listeners
     public function prepareHtmlView(): void
     {
         $this->view->setVar('adminToolbar', $this->adminToolbar());
@@ -341,6 +343,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
 
         ExportType::setFindValue('type', RssExportHelper::class);
         $this->view->setVar('rssFeeds', ExportType::findAll());
+        $this->eventsManager->fire(AbstractController::class.':prepareHtmlView',$this->view);
     }
 
     protected function adminToolbar(): string
