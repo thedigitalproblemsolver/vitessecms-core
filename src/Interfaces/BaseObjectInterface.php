@@ -30,4 +30,8 @@ interface BaseObjectInterface
     public function hasParent(): bool;
 
     public function getParentId(): ?string;
+
+    public function getBool(string $key, string $languageShort = null): bool;
+
+    public function getInt(string $key, string $languageShort = null): int;
 }
