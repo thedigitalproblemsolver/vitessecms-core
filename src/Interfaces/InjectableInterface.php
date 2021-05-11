@@ -3,6 +3,7 @@
 namespace VitesseCms\Core\Interfaces;
 
 use Phalcon\Config;
+use Phalcon\Events\Manager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Security;
@@ -62,6 +63,7 @@ use VitesseCms\User\Services\AclService;
  * @property BlockService $block
  * @property FormService $form
  * @property Elasticsearch $search
+ * @property Manager $eventsManager
  */
 interface InjectableInterface
 {
