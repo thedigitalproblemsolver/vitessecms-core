@@ -13,13 +13,14 @@ class PaginatonFactory
         array $items,
         Request $request,
         UrlService $url,
-        string $urlQueryKey = 'page'
+        string $urlQueryKey = 'page',
+        int $limit = 15
     ): stdClass
     {
         $paginator = new PaginatorModel(
             [
                 'data' => $items,
-                'limit' => 15,
+                'limit' => $limit,
                 'page' => $request->get($urlQueryKey),
             ]
         );
