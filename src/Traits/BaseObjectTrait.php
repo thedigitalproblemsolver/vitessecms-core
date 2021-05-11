@@ -114,6 +114,11 @@ trait BaseObjectTrait
         return $return;
     }
 
+    public function getBool(string $key, string $languageShort = null): bool
+    {
+        return (bool) $this->_($key, $languageShort);
+    }
+
     public function hasSlug(): bool
     {
         return (bool)$this->_('slug');
