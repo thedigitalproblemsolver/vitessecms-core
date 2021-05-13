@@ -44,7 +44,7 @@
     "vitessecms/search": "~0.0.3",
     "vitessecms/sef": "~0.0.4",
     "vitessecms/setting": "~0.0.10",
-    "vitessecms/user": "~0.0.7",
+    "vitessecms/user": "~0.0.11",
     "vitessecms/datagroup": "~0.0.8",
     "vitessecms/job": "~0.0.5",
     "vitessecms/log": "~0.0.5"
