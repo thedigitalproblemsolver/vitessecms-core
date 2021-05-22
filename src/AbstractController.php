@@ -260,7 +260,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
         if ($this->user->hasAdminAccess()) :
             $this->assets->loadAdmin();
         endif;
-        $this->assets->load('site');
+        $this->assets->loadSite();
         $this->buildAssets('js');
         $this->buildAssets('css');
     }
