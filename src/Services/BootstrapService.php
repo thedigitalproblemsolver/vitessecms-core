@@ -357,6 +357,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    //TODO figure out a better way to setListeners
     public function events(): BootstrapService
     {
         if($this->getConfiguration()->isEcommerce()):
