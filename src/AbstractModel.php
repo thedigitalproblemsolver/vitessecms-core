@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace VitesseCms\Core;
 
@@ -7,33 +7,7 @@ use Phalcon\Mvc\ModelInterface;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
 use VitesseCms\Core\Traits\BaseObjectTrait;
 
-/**
- * Class AbstractModel
- */
-abstract class AbstractModel
-    extends Model
-    implements ModelInterface, BaseObjectInterface
+abstract class AbstractModel extends Model implements ModelInterface, BaseObjectInterface
 {
     use BaseObjectTrait;
-
-    /**
-     * @var string
-     */
-    protected static $mysqlConnection = 'db';
-
-    /**
-     * @param string $connectionName
-     */
-    public static function setDatabase(string $connectionName)
-    {
-        self::$mysqlConnection = $connectionName;
-    }
-
-    /**
-     * initialize
-     */
-    public function onConstruct()
-    {
-        $this->setConnectionService(self::$mysqlConnection);
-    }
 }
