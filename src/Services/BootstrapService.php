@@ -377,7 +377,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             endif;
             foreach ($listenerPaths as $listenerPath):
                 if (is_file($listenerPath)) :
-                    SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this->getEventsManager());
+                    SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this);
                 endif;
             endforeach;
         endforeach;
