@@ -4,7 +4,7 @@ namespace VitesseCms\Core;
 
 abstract class AbstractEnum
 {
-    private function __construct()
+    private final function __construct()
     {
     }
 }
