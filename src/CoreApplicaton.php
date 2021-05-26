@@ -13,7 +13,7 @@ use VitesseCms\Core\Utils\SystemUtil;
  */
 class CoreApplicaton extends Application implements InjectableInterface
 {
-    public function events(): CoreApplicaton
+    public function attachListeners(): CoreApplicaton
     {
         foreach (SystemUtil::getModules($this->configuration) as $path) :
             if (AdminUtil::isAdminPage()):

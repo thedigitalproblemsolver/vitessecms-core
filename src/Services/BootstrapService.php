@@ -13,7 +13,6 @@ use Phalcon\Loader;
 use Phalcon\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Security;
 use Phalcon\Session\Adapter\Files as Session;
-use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -45,7 +44,6 @@ use VitesseCms\Setting\Services\SettingService;
 use VitesseCms\Shop\Helpers\CartHelper;
 use VitesseCms\Shop\Helpers\CheckoutHelper;
 use VitesseCms\Shop\Helpers\DiscountHelper;
-use VitesseCms\Shop\Listeners\DiscountListener;
 use VitesseCms\Shop\Services\ShopService;
 use VitesseCms\User\Factories\UserFactory;
 use VitesseCms\User\Models\User;
@@ -304,9 +302,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             $this->setShared('user', UserFactory::createGuest());
         endif;
 
-        //initialize user to use in Bootstrap
-        $this->getUser();
-
         return $this;
     }
 
@@ -426,6 +421,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    //TODO split in setting service and hadle action in application
     public function router(): BootstrapService
     {
         $this->setShared('router', new RouterService(

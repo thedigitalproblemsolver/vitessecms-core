@@ -77,7 +77,7 @@ $bootstrap
     ->form()
     ->search();
 
-$application = $bootstrap->application()->events();
+$application = $bootstrap->application()->attachListeners();
 
 
 try {
