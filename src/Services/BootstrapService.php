@@ -293,17 +293,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function user(): BootstrapService
     {
-        $this->setShared('user', function (): User {
-            $user = UserFactory::createGuest();
-            if ($this->get('session')->get('auth') !== null) :
-                $result = User::findById($this->get('session')->get('auth')['id']);
-                if ($result) :
-                    $user = $result;
-                endif;
+        if ($this->get('session')->get('auth') !== null) :
+            $result = User::findById($this->get('session')->get('auth')['id']);
+            if ($result) :
+                $this->setShared('user', $result);
+            else :
+                $this->setShared('user', UserFactory::createGuest());
             endif;
-
-            return $user;
-        });
+        else :
+            $this->setShared('user', UserFactory::createGuest());
+        endif;
 
         //initialize user to use in Bootstrap
         $this->getUser();
@@ -353,34 +352,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
             return $beanstalk;
         });
-
-        return $this;
-    }
-
-    //TODO figure out a better way to setListeners
-    public function events(): BootstrapService
-    {
-        if($this->getConfiguration()->isEcommerce()):
-            $this->getEventsManager()->attach('discount', new DiscountListener());
-            $this->getEventsManager()->attach('user', new DiscountListener());
-        endif;
-
-        foreach (SystemUtil::getModules($this->getConfiguration()) as $path) :
-            if (AdminUtil::isAdminPage()):
-                $listenerPaths = [
-                    $path . '/Listeners/InitiateAdminListeners.php',
-                ];
-            else :
-                $listenerPaths = [
-                    $path . '/Listeners/InitiateListeners.php',
-                ];
-            endif;
-            foreach ($listenerPaths as $listenerPath):
-                if (is_file($listenerPath)) :
-                    SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this);
-                endif;
-            endforeach;
-        endforeach;
 
         return $this;
     }
