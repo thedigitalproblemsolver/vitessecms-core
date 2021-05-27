@@ -147,7 +147,7 @@ class ItemHelper
             foreach ($datafields as $datafieldObject) :
                 /** @var Datafield $datafield */
                 $datafield = Datafield::findById($datafieldObject['id']);
-                if ($datafield !== null) :
+                if ($datafield) :
                     $datafield->getType()::beforeMaincontent($item, $datafield);
                 endif;
             endforeach;
