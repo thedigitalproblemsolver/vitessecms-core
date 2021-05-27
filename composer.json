@@ -32,7 +32,7 @@
     "itsjavi/bootstrap-colorpicker": "^2.5",
     "vitessecms/form": "~0.2.5",
     "vitessecms/admin": "~0.2.4",
-    "vitessecms/block": "~0.2.8",
+    "vitessecms/block": "~0.2.10",
     "vitessecms/communication": "~0.2.7",
     "vitessecms/configuration": "~0.2.0",
     "vitessecms/content": "~0.2.10",
