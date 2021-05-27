@@ -13,7 +13,6 @@ use Phalcon\Loader;
 use Phalcon\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Security;
 use Phalcon\Session\Adapter\Files as Session;
-use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -45,7 +44,6 @@ use VitesseCms\Setting\Services\SettingService;
 use VitesseCms\Shop\Helpers\CartHelper;
 use VitesseCms\Shop\Helpers\CheckoutHelper;
 use VitesseCms\Shop\Helpers\DiscountHelper;
-use VitesseCms\Shop\Listeners\DiscountListener;
 use VitesseCms\Shop\Services\ShopService;
 use VitesseCms\User\Factories\UserFactory;
 use VitesseCms\User\Models\User;
@@ -293,20 +291,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function user(): BootstrapService
     {
-        $this->setShared('user', function (): User {
-            $user = UserFactory::createGuest();
-            if ($this->get('session')->get('auth') !== null) :
-                $result = User::findById($this->get('session')->get('auth')['id']);
-                if ($result) :
-                    $user = $result;
-                endif;
+        if ($this->get('session')->get('auth') !== null) :
+            $result = User::findById($this->get('session')->get('auth')['id']);
+            if ($result) :
+                $this->setShared('user', $result);
+            else :
+                $this->setShared('user', UserFactory::createGuest());
             endif;
-
-            return $user;
-        });
-
-        //initialize user to use in Bootstrap
-        $this->getUser();
+        else :
+            $this->setShared('user', UserFactory::createGuest());
+        endif;
 
         return $this;
     }
@@ -353,33 +347,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
             return $beanstalk;
         });
-
-        return $this;
-    }
-
-    public function events(): BootstrapService
-    {
-        if($this->getConfiguration()->isEcommerce()):
-            $this->getEventsManager()->attach('discount', new DiscountListener());
-            $this->getEventsManager()->attach('user', new DiscountListener());
-        endif;
-
-        foreach (SystemUtil::getModules($this->getConfiguration()) as $path) :
-            if (AdminUtil::isAdminPage()):
-                $listenerPaths = [
-                    $path . '/Listeners/InitiateAdminListeners.php',
-                ];
-            else :
-                $listenerPaths = [
-                    $path . '/Listeners/InitiateListeners.php',
-                ];
-            endif;
-            foreach ($listenerPaths as $listenerPath):
-                if (is_file($listenerPath)) :
-                    SystemUtil::createNamespaceFromPath($listenerPath)::setListeners($this->getEventsManager());
-                endif;
-            endforeach;
-        endforeach;
 
         return $this;
     }
@@ -454,6 +421,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
+    //TODO split in setting service and hadle action in application
     public function router(): BootstrapService
     {
         $this->setShared('router', new RouterService(
