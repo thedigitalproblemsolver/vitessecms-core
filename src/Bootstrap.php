@@ -65,7 +65,6 @@ $bootstrap
     ->user()
     ->view()
     ->queue()
-    ->events()
     ->setting()
     ->content()
     ->mailer()
@@ -78,7 +77,8 @@ $bootstrap
     ->form()
     ->search();
 
-$application = $bootstrap->application();
+$application = $bootstrap->application()->attachListeners();
+
 
 try {
     if (!AdminUtil::isAdminPage()) :

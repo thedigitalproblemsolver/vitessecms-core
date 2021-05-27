@@ -7,13 +7,13 @@ use Phalcon\Assets\Filters\Cssmin;
 use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Mvc\Controller;
 use Phalcon\Tag;
-use VitesseCms\Admin\Repositories\DatagroupRepository;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Communication\Helpers\CommunicationHelper;
 use VitesseCms\Content\Factories\OpengraphFactory;
 use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Utils\DebugUtil;
 use VitesseCms\Core\Utils\TimerUtil;
+use VitesseCms\Datagroup\Repositories\DatagroupRepository;
 use VitesseCms\Export\Helpers\RssExportHelper;
 use VitesseCms\Export\Models\ExportType;
 use VitesseCms\Media\Enums\AssetsEnum;
@@ -334,7 +334,20 @@ abstract class AbstractController extends Controller implements InjectableInterf
     //TODO move stuff to listeners
     public function prepareHtmlView(): void
     {
-        $this->view->setVar('adminToolbar', $this->adminToolbar());
+        if ($this->user->hasAdminAccess()) :
+            $this->view->setVar('bodyClass', 'admin');
+            $this->view->setVar('adminToolbar', $this->view->renderTemplate(
+                'navbar',
+                'partials',
+                ['navbar' => (new AdminUtil(
+                    $this->user,
+                    $this->eventsManager,
+                    new DatagroupRepository()
+                ))->getToolbar()
+                ]
+            ));
+        endif;
+
         if ($this->view->hasCurrentItem() && $this->view->getCurrentItem()->isHomepage()) :
             $this->view->setVar('bodyClass', $this->view->getVar('bodyClass') . ' home');
         endif;
@@ -346,23 +359,6 @@ abstract class AbstractController extends Controller implements InjectableInterf
         ExportType::setFindValue('type', RssExportHelper::class);
         $this->view->setVar('rssFeeds', ExportType::findAll());
         $this->eventsManager->fire(AbstractController::class.':prepareHtmlView',$this->view);
-    }
-
-    protected function adminToolbar(): string
-    {
-        if (!$this->user->hasAdminAccess()) :
-            return '';
-        endif;
-
-        $this->view->setVar('bodyClass', 'admin');
-
-        return (new AdminUtil(
-            $this->setting,
-            $this->user,
-            $this->eventsManager,
-            $this->view,
-            new DatagroupRepository()
-        ))->toolbar();
     }
 
     protected function parsePositions(): void
