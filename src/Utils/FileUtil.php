@@ -8,6 +8,7 @@ use Phalcon\Utils\Slug;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Media\Utils\MediaUtil;
+use function PHPUnit\Framework\assertStringEndsWith;
 
 /**
  * TODO make really a static util without internal dependancies
@@ -44,7 +45,18 @@ class FileUtil
     {
         self::setFile($file);
 
-        return self::$file->getExtension();
+        $ext = self::$file->getExtension();
+        if(empty($ext)):
+            $headers = get_headers(self::$file->getPathname());
+            switch ($headers[3]):
+                case 'Content-Type: image/pjpeg';
+                    return 'jpg';
+                default:
+                    return '';
+            endswitch;
+        endif;
+
+        return $ext;
     }
 
     public static function getTag(string $file = null, string $class = null, string $style = null): string
