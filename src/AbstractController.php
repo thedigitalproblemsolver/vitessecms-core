@@ -16,7 +16,6 @@ use VitesseCms\Core\Utils\TimerUtil;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;
 use VitesseCms\Export\Helpers\RssExportHelper;
 use VitesseCms\Export\Models\ExportType;
-use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Setting\Enum\CallingNameEnum;
 use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Utils\PermissionUtils;
@@ -220,14 +219,14 @@ abstract class AbstractController extends Controller implements InjectableInterf
     protected function loadAssets(): void
     {
         $this->assets->loadJquery();
-        $this->assets->load(AssetsEnum::BOOTSTRAP_JS);
-        $this->assets->load(AssetsEnum::MUSTACHE_JS);
-        $this->assets->load(AssetsEnum::FONT_AWESOME);
-        $this->assets->load(AssetsEnum::SHOP);
+        $this->assets->loadBootstrapJs();
+        $this->assets->loadMustache();
+        $this->assets->loadFontAwesome();
+        $this->assets->loadShop();
 
         if (!DebugUtil::isDev()) :
             if ($this->setting->has(CallingNameEnum::FACEBOOK_PIXEL_ID)) :
-                $this->assets->load(AssetsEnum::FACEBOOK);
+                $this->assets->loadFacebook();
             endif;
 
             if ($this->setting->has(CallingNameEnum::GOOGLE_ANALYTICS_TRACKINGID)) :
@@ -250,7 +249,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
                     && $this->cookies->get('cookieconsent_status')->getValue() !== 'dismiss'
                 )
             ) :
-                $this->assets->load(AssetsEnum::COOKIECONSENT);
+                $this->assets->loadCookieConsent();
                 $this->view->setVar('showCookieConsent', true);
             endif;
         else :
