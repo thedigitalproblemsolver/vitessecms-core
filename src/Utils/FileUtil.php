@@ -8,7 +8,6 @@ use Phalcon\Utils\Slug;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Media\Utils\MediaUtil;
-use function PHPUnit\Framework\assertStringEndsWith;
 
 /**
  * TODO make really a static util without internal dependancies
