@@ -8,7 +8,6 @@ use Phalcon\Utils\Slug;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Media\Utils\MediaUtil;
-use function PHPUnit\Framework\assertStringEndsWith;
 
 /**
  * TODO make really a static util without internal dependancies
@@ -46,14 +45,19 @@ class FileUtil
         self::setFile($file);
 
         $ext = self::$file->getExtension();
-        if(empty($ext)):
+        if(empty($ext) && substr_count(self::$file->getPathname(), 'http') ):
             $headers = get_headers(self::$file->getPathname());
-            switch ($headers[3]):
-                case 'Content-Type: image/pjpeg';
-                    return 'jpg';
-                default:
-                    return '';
-            endswitch;
+            if($headers !== false) :
+                switch ($headers[3]):
+                    case 'Content-Type: image/jpeg';
+                    case 'Content-Type: image/pjpeg';
+                        return 'jpg';
+                    case 'Content-Type: image/png':
+                        return 'png';
+                    default:
+                        return '';
+                endswitch;
+            endif;
         endif;
 
         return $ext;
