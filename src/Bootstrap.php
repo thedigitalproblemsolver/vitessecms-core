@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
 require_once __DIR__ . '/Utils/DebugUtil.php';
 
 $cacheLifeTime = 604800;
-$useCache = $_SESSIONt['cache'] ?? true;
+$useCache = $_SESSION['cache'] ?? true;
 if (DebugUtil::isDev()) :
     $cacheLifeTime = 1;
     $useCache = false;
@@ -44,7 +44,8 @@ if (
     empty($_POST)
     && empty($_SESSION)
     && (count($_GET) === 0 || isset($_GET['_url']))
-    && !substr_count('admin', $_SERVER['REQUEST_URI'])
+    && substr_count($_SERVER['REQUEST_URI'], 'admin') === 0
+    && substr_count( $_SERVER['REQUEST_URI'], 'import/index/index') === 0
     && !$bootstrap->getConfiguration()->hasMovedTo()
 ) :
     $cacheKey = str_replace('/', '_', $_SERVER['REQUEST_URI']);
