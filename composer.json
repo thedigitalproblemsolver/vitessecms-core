@@ -37,7 +37,7 @@
     "vitessecms/configuration": "~0.2.0",
     "vitessecms/content": "~0.2.11",
     "vitessecms/database": "~0.2.4",
-    "vitessecms/datafield": "~0.2.11",
+    "vitessecms/datafield": "~0.2.12",
     "vitessecms/language": "~0.2.2",
     "vitessecms/media": "~0.2.6",
     "vitessecms/mustache": "~0.2.0",
