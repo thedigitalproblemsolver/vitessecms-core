@@ -7,7 +7,7 @@ use VitesseCms\Core\Traits\BaseObjectTrait;
 
 class ObjectFactory
 {
-    public static function create(BaseObjectInterface $bindata = null): BaseObjectInterface
+    public static function create(): BaseObjectInterface
     {
         return new class() implements BaseObjectInterface {
             use BaseObjectTrait;
