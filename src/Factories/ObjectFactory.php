@@ -3,10 +3,9 @@
 namespace VitesseCms\Core\Factories;
 
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
-use VitesseCms\Core\Interfaces\FactoryInterface;
 use VitesseCms\Core\Traits\BaseObjectTrait;
 
-class ObjectFactory implements FactoryInterface
+class ObjectFactory
 {
     public static function create(BaseObjectInterface $bindata = null): BaseObjectInterface
     {
