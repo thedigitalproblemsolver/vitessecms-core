@@ -4,6 +4,7 @@ namespace VitesseCms\Core\Services;
 
 use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
+use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Crypt;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Events\Manager;
@@ -454,7 +455,10 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function assets(): BootstrapService
     {
-        $this->setShared('assets', new AssetsService($this->getConfiguration()->getWebDir()));
+        $this->setShared('assets', new AssetsService(
+            $this->getConfiguration()->getWebDir(),
+            new Jsmin()
+        ));
 
         return $this;
     }

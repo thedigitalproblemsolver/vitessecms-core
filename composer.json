@@ -38,15 +38,15 @@
     "vitessecms/content": "~0.2.12",
     "vitessecms/database": "~0.2.4",
     "vitessecms/datafield": "~0.2.12",
-    "vitessecms/language": "~0.2.3",
+    "vitessecms/language": "~0.2.2",
     "vitessecms/media": "~0.2.6",
     "vitessecms/mustache": "~0.2.0",
     "vitessecms/search": "~0.2.1",
     "vitessecms/sef": "~0.2.1",
-    "vitessecms/setting": "~0.2.2",
+    "vitessecms/setting": "~0.2.4",
     "vitessecms/user": "~0.2.4",
-    "vitessecms/datagroup": "~0.2.10",
+    "vitessecms/datagroup": "~0.2.9",
     "vitessecms/job": "~0.2.1",
-    "vitessecms/log": "~0.2.4"
+    "vitessecms/log": "~0.2.3"
   }
 }
