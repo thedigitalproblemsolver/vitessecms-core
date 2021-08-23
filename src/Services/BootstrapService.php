@@ -64,12 +64,18 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
      */
     protected $mtime;
 
+    /**
+     * @var bool
+     */
+    private $isAdmin;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../composer.json');
+        $this->isAdmin = false;
     }
 
     public function loadConfig(): BootstrapService
@@ -542,5 +548,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getSession(): Session
     {
         return $this->get('session');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): BootstrapService
+    {
+        $this->isAdmin = $isAdmin;
+        return $this;
     }
 }

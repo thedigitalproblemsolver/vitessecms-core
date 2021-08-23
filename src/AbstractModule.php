@@ -5,9 +5,10 @@ namespace VitesseCms\Core;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\ModuleDefinitionInterface;
+use VitesseCms\Core\Interfaces\ModuleInterface;
 use VitesseCms\Core\Interfaces\RepositoryCollectionInterface;
 
-abstract class AbstractModule implements ModuleDefinitionInterface
+abstract class AbstractModule implements ModuleInterface
 {
     public function registerAutoloaders(DiInterface $di = null)
     {
@@ -20,6 +21,7 @@ abstract class AbstractModule implements ModuleDefinitionInterface
             function () use ($module): Dispatcher {
                 $dispatcher = new Dispatcher();
                 $dispatcher->setDefaultNamespace('VitesseCms\\' . $module . '\\Controllers');
+                $dispatcher->setModuleName($module);
 
                 return $dispatcher;
             }
