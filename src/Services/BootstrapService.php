@@ -4,6 +4,7 @@ namespace VitesseCms\Core\Services;
 
 use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
+use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Crypt;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Events\Manager;
@@ -63,12 +64,18 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
      */
     protected $mtime;
 
+    /**
+     * @var bool
+     */
+    private $isAdmin;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../composer.json');
+        $this->isAdmin = false;
     }
 
     public function loadConfig(): BootstrapService
@@ -454,7 +461,10 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function assets(): BootstrapService
     {
-        $this->setShared('assets', new AssetsService($this->getConfiguration()->getWebDir()));
+        $this->setShared('assets', new AssetsService(
+            $this->getConfiguration()->getWebDir(),
+            new Jsmin()
+        ));
 
         return $this;
     }
@@ -538,5 +548,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getSession(): Session
     {
         return $this->get('session');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): BootstrapService
+    {
+        $this->isAdmin = $isAdmin;
+        return $this;
     }
 }
