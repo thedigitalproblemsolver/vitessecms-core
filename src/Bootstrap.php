@@ -58,6 +58,7 @@ endif;
 
 $bootstrap
     ->loaderSystem()
+    ->setIsAdmin(AdminUtil::isAdminPage())
     ->database()
     ->setLanguage()
     ->setCookies()
@@ -79,7 +80,6 @@ $bootstrap
     ->search();
 
 $application = $bootstrap->application()->attachListeners();
-
 
 try {
     if (!AdminUtil::isAdminPage()) :

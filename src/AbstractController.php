@@ -218,6 +218,8 @@ abstract class AbstractController extends Controller implements InjectableInterf
 
     protected function loadAssets(): void
     {
+        $this->eventsManager->fire('assets:load', $this->assets);
+
         $this->assets->loadJquery();
         $this->assets->loadBootstrapJs();
         $this->assets->loadMustache();
@@ -225,10 +227,6 @@ abstract class AbstractController extends Controller implements InjectableInterf
         $this->assets->loadShop();
 
         if (!DebugUtil::isDev()) :
-            if ($this->setting->has(CallingNameEnum::FACEBOOK_PIXEL_ID)) :
-                $this->assets->loadFacebook();
-            endif;
-
             if ($this->setting->has(CallingNameEnum::GOOGLE_ANALYTICS_TRACKINGID)) :
                 $this->assets->loadTheGoogle();
             endif;
@@ -262,6 +260,7 @@ abstract class AbstractController extends Controller implements InjectableInterf
         $this->assets->loadSite();
         $this->buildAssets('js');
         $this->buildAssets('css');
+        $this->view->set('inlinejavascript', $this->assets->getInlineJs());
     }
 
     protected function buildAssets(string $type): void
