@@ -6,7 +6,8 @@ use VitesseCms\Core\Enum\FlashEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Interfaces\InitiateListenersInterface;
 use VitesseCms\Core\Interfaces\InjectableInterface;
-use VitesseCms\Core\Services\FlashService;
+use VitesseCms\Core\Listeners\Services\FlashServiceListener;
+use VitesseCms\Core\Listeners\Services\ViewServiceListener;
 
 class InitiateAdminListeners implements InitiateListenersInterface
 {
