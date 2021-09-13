@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VitesseCms\Core\Listeners;
+namespace VitesseCms\Core\Listeners\Services;
 
 use Phalcon\Events\Event;
 use VitesseCms\Core\Services\ViewService;
