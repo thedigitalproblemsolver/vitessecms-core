@@ -40,7 +40,7 @@
     "vitessecms/datafield": "~0.2.12",
     "vitessecms/language": "~0.2.2",
     "vitessecms/media": "~0.2.7",
-    "vitessecms/mustache": "~0.2.2",
+    "vitessecms/mustache": "~0.2.3",
     "vitessecms/search": "~0.2.1",
     "vitessecms/sef": "~0.2.1",
     "vitessecms/setting": "~0.2.5",
