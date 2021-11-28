@@ -12,6 +12,8 @@ use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Loader;
 use Phalcon\Mvc\Collection\Manager as CollectionManager;
+use Phalcon\Mvc\View;
+use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Security;
 use Phalcon\Session\Adapter\Files as Session;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
@@ -320,12 +322,18 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function view(): BootstrapService
     {
         $this->setShared('view', function (): ViewService {
-            $view = new ViewService($this->getConfiguration());
-            $view->setViewsDir($this->getConfiguration()->getTemplateDir() . 'views/');
-            $view->setPartialsDir($this->getConfiguration()->getTemplateDir() . 'views/partials/');
-            $view->registerEngines(
+            $view = new View();
+            $view->setDI(new FactoryDefault());
+            $viewService = new ViewService(
+                $this->getConfiguration()->getCoreTemplateDir(),
+                $this->getConfiguration()->getVendorNameDir(),
+                $view
+            );
+            $viewService->setViewsDir($this->getConfiguration()->getTemplateDir() . 'views/');
+            $viewService->setPartialsDir($this->getConfiguration()->getTemplateDir() . 'views/partials/');
+            $viewService->registerEngines(
                 [
-                    '.mustache' => function (ViewService $view): MustacheEngine {
+                    '.mustache' => function (ViewBaseInterface $view): MustacheEngine {
                         return new MustacheEngine(
                             $view,
                             new Engine(['partials_loader' => new Loader_FilesystemLoader($this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]),
@@ -335,7 +343,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 ]
             );
 
-            return $view;
+            return $viewService;
         });
 
         return $this;
