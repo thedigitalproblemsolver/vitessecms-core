@@ -3,16 +3,22 @@
 namespace VitesseCms\Core\Services;
 
 use Phalcon\Mvc\View;
+use Phalcon\Mvc\ViewInterface;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Content\Models\Item;
 use VitesseCms\Core\Utils\DirectoryUtil;
 
-class ViewService extends View
+class ViewService implements ViewInterface
 {
     /**
      * @var ConfigService
      */
     protected $configuration;
+
+    /**
+     * @var ViewInterface
+     */
+    protected $view;
 
     /**
      * @var Item
@@ -24,51 +30,50 @@ class ViewService extends View
      */
     protected $currentId;
 
-    public function __construct(ConfigService $configService, array $options = [])
+    /**
+     * @var string
+     */
+    protected $coreTemplateDir;
+
+    /**
+     * @var string
+     */
+    protected $vendorNameDir;
+
+    public function __construct(string $coreTemplateDir, string $vendorNameDir, ViewInterface $view)
     {
-        parent::__construct($options);
-        $this->configuration = $configService;
+        $this->coreTemplateDir = $coreTemplateDir;
+        $this->vendorNameDir = $vendorNameDir;
+        $this->view = $view;
     }
 
-    public function renderModuleTemplate(
-        string $module,
-        string $template,
-        string $templatePath,
-        array $params = []
-    ): string
-    {
-        $newTtemplatePath = $this->configuration->getVendorNameDir() . $module . '/src/Resources/views/' . $templatePath;
-        if (!is_dir($templatePath)) :
-            $newTtemplatePath = $this->configuration->getVendorNameDir() . 'core/src/Resources/views/' . $templatePath;
-        endif;
-
-        return $this->renderTemplate($template, $newTtemplatePath, $params);
-    }
-
+    /**
+     * @deprecated move to view listener
+     */
     public function renderTemplate(
         string $template,
         string $templatePath,
-        array $params = []
+        array  $params = []
     ): string
     {
         if (empty($templatePath)):
-            $templatePath = $this->configuration->getCoreTemplateDir();
+            $templatePath = $this->coreTemplateDir;
             $template = str_replace($templatePath, '', $template);
         endif;
 
         if (
             !DirectoryUtil::exists($templatePath)
             && !is_file(
-                $this->getViewsDir() . $template . '.mustache'
+                $this->view->getViewsDir() . $template . '.mustache'
             )
         ) :
-            $templatePath = $this->configuration->getCoreTemplateDir() . 'views/' . $templatePath;
+            $templatePath = $this->coreTemplateDir . 'views/' . $templatePath;
         endif;
 
-        $this->setRenderLevel(View::LEVEL_ACTION_VIEW);
-        $this->render($templatePath, $template, $params);
-        $return = $this->getContent();
-        $this->setRenderLevel(View::LEVEL_MAIN_LAYOUT);
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+        $this->view->render($templatePath, $template, $params);
+        $return = $this->view->getContent();
+        $this->view->setRenderLevel(View::LEVEL_MAIN_LAYOUT);
 
         return $return;
     }
@@ -109,5 +114,200 @@ class ViewService extends View
         $this->set('currentId', $currentId);
 
         return $this;
+    }
+
+    function setViewsDir($viewsDir)
+    {
+        $this->view->setViewsDir($viewsDir);
+    }
+
+    function setPartialsDir($partialsDir)
+    {
+        $this->view->setPartialsDir($partialsDir);
+    }
+
+    public function getPartialsDir(): string
+    {
+        return $this->view->getPartialsDir();
+    }
+
+    function registerEngines(array $engines): void
+    {
+        $this->view->registerEngines($engines);
+    }
+
+    function setVar($key, $value)
+    {
+        $this->view->setVar($key, $value);
+    }
+
+    function getVar(string $key)
+    {
+        return $this->view->getVar($key);
+    }
+
+    public function setLayoutsDir($layoutsDir)
+    {
+        $this->view->setLayoutsDir($layoutsDir);
+    }
+
+    public function getLayoutsDir(): string
+    {
+        return $this->view->getLayoutsDir();
+    }
+
+    public function setBasePath($basePath)
+    {
+        $this->view->setBasePath($basePath);
+    }
+
+    public function getBasePath(): string
+    {
+        return $this->view->getBasePath();
+    }
+
+    public function setRenderLevel($level)
+    {
+        $this->view->setRenderLevel($level);
+    }
+
+    public function setMainView($viewPath)
+    {
+        $this->view->setMainView($viewPath);
+    }
+
+    public function getMainView(): string
+    {
+        return $this->view->getMainView();
+    }
+
+    public function setLayout($layout)
+    {
+        $this->view->setLayout($layout);
+    }
+
+    public function getLayout(): string
+    {
+        return $this->view->getLayout();
+    }
+
+    public function setTemplateBefore($templateBefore): void
+    {
+        $this->view->setTemplateBefore($templateBefore);
+    }
+
+    public function cleanTemplateBefore(): void
+    {
+        $this->view->cleanTemplateBefore();
+    }
+
+    public function setTemplateAfter($templateAfter): void
+    {
+        $this->view->setTemplateAfter();
+    }
+
+    public function cleanTemplateAfter()
+    {
+        $this->view->cleanTemplateAfter();
+    }
+
+    public function getControllerName(): string
+    {
+        return $this->view->getControllerName();
+    }
+
+    public function getActionName(): string
+    {
+        return $this->view->getActionName();
+    }
+
+    public function getParams(): array
+    {
+        return $this->view->getParams();
+    }
+
+    public function start()
+    {
+        $this->view->start();
+    }
+
+    public function render($controllerName, $actionName, $params = [])
+    {
+        $this->view->render($controllerName, $actionName, $params);
+    }
+
+    public function pick($renderView)
+    {
+        $this->view->pick($renderView);
+    }
+
+    public function finish()
+    {
+        $this->view->finish();
+    }
+
+    public function getActiveRenderPath(): string
+    {
+        return $this->view->getActiveRenderPath();
+    }
+
+    public function disable(): void
+    {
+        $this->view->disable();
+    }
+
+    public function enable(): void
+    {
+        $this->view->enable();
+    }
+
+    public function reset(): void
+    {
+        $this->view->reset();
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->view->isDisabled();
+    }
+
+    public function getContent(): string
+    {
+        return $this->view->getContent();
+    }
+
+    public function getViewsDir()
+    {
+        return $this->view->getViewsDir();
+    }
+
+    public function setParamToView($key, $value)
+    {
+        $this->view->setParamToView($key, $value);
+    }
+
+    public function getParamsToView()
+    {
+        return $this->view->getParamsToView();
+    }
+
+    public function getCache()
+    {
+        return $this->view->getCache();
+    }
+
+    public function cache($options = true)
+    {
+        $this->view->cache($options);
+    }
+
+    public function setContent($content)
+    {
+        $this->view->setContent($content);
+    }
+
+    public function partial($partialPath, $params = null)
+    {
+        $this->view->partial($partialPath, $params);
     }
 }
