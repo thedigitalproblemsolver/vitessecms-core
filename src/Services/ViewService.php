@@ -47,16 +47,9 @@ class ViewService implements ViewInterface
         $this->view = $view;
     }
 
-    public function renderModuleTemplate(
-        string $module,
-        string $template,
-        string $templatePath,
-        array  $params = []
-    ): string
-    {
-        return $this->renderTemplate($template, $this->vendorNameDir . $module . '/src/Resources/views/' . $templatePath, $params);
-    }
-
+    /**
+     * @deprecated move to view listener
+     */
     public function renderTemplate(
         string $template,
         string $templatePath,
@@ -71,16 +64,16 @@ class ViewService implements ViewInterface
         if (
             !DirectoryUtil::exists($templatePath)
             && !is_file(
-                $this->getViewsDir() . $template . '.mustache'
+                $this->view->getViewsDir() . $template . '.mustache'
             )
         ) :
             $templatePath = $this->coreTemplateDir . 'views/' . $templatePath;
         endif;
 
-        $this->setRenderLevel(View::LEVEL_ACTION_VIEW);
-        $this->render($templatePath, $template, $params);
-        $return = $this->getContent();
-        $this->setRenderLevel(View::LEVEL_MAIN_LAYOUT);
+        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+        $this->view->render($templatePath, $template, $params);
+        $return = $this->view->getContent();
+        $this->view->setRenderLevel(View::LEVEL_MAIN_LAYOUT);
 
         return $return;
     }
