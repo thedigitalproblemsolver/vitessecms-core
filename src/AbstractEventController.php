@@ -261,6 +261,7 @@ abstract class AbstractEventController extends Controller
         $this->buildAssets('js');
         $this->buildAssets('css');
         $this->view->set('inlinejavascript', $this->assets->getInlineJs());
+        $this->view->set('inlinestylesheet', $this->assets->getInlineCss());
     }
 
     protected function buildAssets(string $type): void

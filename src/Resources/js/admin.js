@@ -78,6 +78,7 @@ var admin = {
         admin.shopPriceCalculator();
         admin.addPublish();
         admin.initNewsletter();
+        admin.initGridUi();
         ui.addSortable();
         ui.addEditor();
     },
@@ -94,6 +95,13 @@ var admin = {
             e.preventDefault();
             ajax._('queueNewsletter', {}, sys.baseUri+'/admin/communication/adminnewsletter/queueNewsletter/'+$('#newsletterId').html())
         });
+    },
+    initGridUi: function() {
+        if( $.isFunction($.fn.gridEditor) && $('#myGrid').length > 0) {
+            $('#myGrid').gridEditor({
+                new_row_layouts: [[12], [6, 6], [9, 3]],
+            });
+        }
     },
     checkAdminState:function() {
         if($('#layoutMode').prop('checked')) {
