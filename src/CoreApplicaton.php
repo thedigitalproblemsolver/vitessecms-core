@@ -4,13 +4,9 @@ namespace VitesseCms\Core;
 
 use Phalcon\Mvc\Application;
 use VitesseCms\Admin\Utils\AdminUtil;
-use VitesseCms\Content\Services\ContentService;
 use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Utils\SystemUtil;
 
-/**
- * @property ContentService $content
- */
 class CoreApplicaton extends Application implements InjectableInterface
 {
     public function attachListeners(): CoreApplicaton
