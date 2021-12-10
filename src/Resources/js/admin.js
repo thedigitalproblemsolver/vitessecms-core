@@ -97,10 +97,14 @@ var admin = {
         });
     },
     initGridUi: function() {
-        if( $.isFunction($.fn.gridEditor) && $('#myGrid').length > 0) {
-            $('#myGrid').gridEditor({
-                new_row_layouts: [[12], [6, 6], [9, 3]],
+        var layoutEditor = $('#layout_editor');
+        if( $.isFunction($.fn.gridEditor) && layoutEditor.length > 0) {
+            layoutEditor.gridEditor({
+                new_row_layouts: [[12], [6, 6], [9, 3],[3, 9],[3, 3, 3, 3]],
             });
+            $('#layout_editor_button_save').on('mouseover', function (e) {
+                $('#html').val(layoutEditor.gridEditor('getHtml'));
+            })
         }
     },
     checkAdminState:function() {
