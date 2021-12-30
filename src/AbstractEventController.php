@@ -16,6 +16,7 @@ use VitesseCms\Core\Utils\TimerUtil;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;
 use VitesseCms\Export\Helpers\RssExportHelper;
 use VitesseCms\Export\Models\ExportType;
+use VitesseCms\Media\Enums\MediaEnum;
 use VitesseCms\Setting\Enum\CallingNameEnum;
 use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Utils\PermissionUtils;
@@ -218,7 +219,12 @@ abstract class AbstractEventController extends Controller
 
     protected function loadAssets(): void
     {
-        $this->eventsManager->fire('assets:load', $this->assets);
+        $this->eventsManager->fire(MediaEnum::ASSETS_INIT_START, $this->assets);
+        $this->eventsManager->fire(MediaEnum::ASSETS_LOAD_GENERIC, $this);
+
+        foreach ($this->assets->getEventLoaders() as $event):
+            $this->eventsManager->fire($event, $this->assets);
+        endforeach;
 
         $this->assets->loadJquery();
         $this->assets->loadBootstrapJs();
@@ -258,6 +264,8 @@ abstract class AbstractEventController extends Controller
             $this->assets->loadAdmin();
         endif;
         $this->assets->loadSite();
+
+        $this->eventsManager->fire(MediaEnum::ASSETS_INIT_END, $this->assets);
         $this->buildAssets('js');
         $this->buildAssets('css');
         $this->view->set('inlinejavascript', $this->assets->getInlineJs());
