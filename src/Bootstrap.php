@@ -25,6 +25,9 @@ require_once __DIR__ . '/Utils/DebugUtil.php';
 require_once __DIR__ . '/../../core/src/AbstractEnum.php';
 require_once __DIR__ . '/Enum/EnvEnum.php';
 
+$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__.'/../../../../');
+$dotenv->load();
+
 $cacheLifeTime = (int)getenv(EnvEnum::CACHE_LIFE_TIME);
 
 $cacheKey = null;
