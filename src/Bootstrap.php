@@ -5,6 +5,7 @@ namespace VitesseCms\Core;
 use Phalcon\Exception;
 use Phalcon\Http\Request;
 use VitesseCms\Admin\Utils\AdminUtil;
+use VitesseCms\Core\Enum\EnvEnum;
 use VitesseCms\Core\Services\BootstrapService;
 use VitesseCms\Core\Utils\DebugUtil;
 
@@ -21,20 +22,16 @@ require_once __DIR__ . '/Utils/BootstrapUtil.php';
 require_once __DIR__ . '/../../configuration/src/Utils/AccountConfigUtil.php';
 require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
 require_once __DIR__ . '/Utils/DebugUtil.php';
+require_once __DIR__ . '/../../core/src/AbstractEnum.php';
+require_once __DIR__ . '/Enum/EnvEnum.php';
 
-$cacheLifeTime = 604800;
-$useCache = $_SESSION['cache'] ?? true;
-if (DebugUtil::isDev()) :
-    $cacheLifeTime = 1;
-    $useCache = false;
-endif;
+$cacheLifeTime = (int)getenv(EnvEnum::CACHE_LIFE_TIME);
 
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
     ->setCache(
         __DIR__ . '/../../../../cache/' . strtolower((new Request())->getHttpHost()) . '/',
-        $useCache,
         $cacheLifeTime
     )
     ->setUrl()
@@ -82,7 +79,7 @@ $bootstrap
 $application = $bootstrap->application()->attachListeners();
 
 try {
-    if (!AdminUtil::isAdminPage()) :
+    if (!$bootstrap->getUser()->hasAdminAccess()) :
         $content = $application->content->parseContent($application->handle()->getContent());
         if ($cacheKey !== null) :
             $application->cache->save($cacheKey, $content);
@@ -90,6 +87,7 @@ try {
 
         echo $content;
     else :
+        $application->cache->delete($cacheKey);
         echo $application->content->parseContent(
             $application->handle()->getContent(),
             false,
