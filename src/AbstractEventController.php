@@ -10,7 +10,6 @@ use Phalcon\Tag;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Communication\Helpers\CommunicationHelper;
 use VitesseCms\Content\Factories\OpengraphFactory;
-use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Utils\DebugUtil;
 use VitesseCms\Core\Utils\TimerUtil;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;
