@@ -78,7 +78,7 @@ $bootstrap
 $application = $bootstrap->application()->attachListeners();
 
 try {
-    if (!AdminUtil::isAdminPage() && !$bootstrap->getUser()->hasAdminAccess()) :
+    if (!$bootstrap->getUser()->hasAdminAccess()) :
         $content = $application->content->parseContent($application->handle()->getContent());
         if ($cacheKey !== null) :
             $application->cache->save($cacheKey, $content);
@@ -86,6 +86,7 @@ try {
 
         echo $content;
     else :
+        $application->cache->delete($cacheKey);
         echo $application->content->parseContent(
             $application->handle()->getContent(),
             false,
