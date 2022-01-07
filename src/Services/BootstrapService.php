@@ -215,9 +215,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    public function setCache(string $cacheDir, bool $useCache, int $lifetime): BootstrapService
+    public function setCache(string $cacheDir, int $lifetime): BootstrapService
     {
-        $this->setShared('cache', new CacheService($cacheDir, $useCache, $lifetime));
+        $this->setShared('cache', new CacheService($cacheDir, $lifetime));
 
         return $this;
     }

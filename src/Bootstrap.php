@@ -5,6 +5,7 @@ namespace VitesseCms\Core;
 use Phalcon\Exception;
 use Phalcon\Http\Request;
 use VitesseCms\Admin\Utils\AdminUtil;
+use VitesseCms\Core\Enum\EnvEnum;
 use VitesseCms\Core\Services\BootstrapService;
 use VitesseCms\Core\Utils\DebugUtil;
 
@@ -21,16 +22,16 @@ require_once __DIR__ . '/Utils/BootstrapUtil.php';
 require_once __DIR__ . '/../../configuration/src/Utils/AccountConfigUtil.php';
 require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
 require_once __DIR__ . '/Utils/DebugUtil.php';
+require_once __DIR__ . '/../../core/src/AbstractEnum.php';
+require_once __DIR__ . '/Enum/EnvEnum.php';
 
-$cacheLifeTime = (int)getenv('CACHE_LIFE_TIME');
-$useCache = $_SESSION['cache'] ?? true;
+$cacheLifeTime = (int)getenv(EnvEnum::CACHE_LIFE_TIME);
 
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
     ->setCache(
         __DIR__ . '/../../../../cache/' . strtolower((new Request())->getHttpHost()) . '/',
-        $useCache,
         $cacheLifeTime
     )
     ->setUrl()
