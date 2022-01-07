@@ -166,8 +166,8 @@ var form = {
         }
 
         var formId = $(formElement).attr('id');
-        var form = $('#' + formId);
-        if( form.attr('name') !== 'filter' && form.attr('target') !== '_blank' ) {
+        var formToValidate = $('#' + formId);
+        if( formToValidate.attr('name') !== 'filter' && formToValidate.attr('target') !== '_blank' ) {
             var useAjax = true;
             $('#' + formId + ' .form-control').each(function () {
                 if($(this).prop('required') === true ) {
@@ -183,7 +183,7 @@ var form = {
                 return true;
             }
 
-            if (form.children('.is-invalid').length === 0) {
+            if (formToValidate.children('.is-invalid').length === 0) {
                 ajax._(formId);
                 return false;
             }
