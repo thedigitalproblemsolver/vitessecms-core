@@ -22,12 +22,8 @@ require_once __DIR__ . '/../../configuration/src/Utils/AccountConfigUtil.php';
 require_once __DIR__ . '/../../configuration/src/Utils/DomainConfigUtil.php';
 require_once __DIR__ . '/Utils/DebugUtil.php';
 
-$cacheLifeTime = 604800;
+$cacheLifeTime = (int)getenv('CACHE_LIFE_TIME');
 $useCache = $_SESSION['cache'] ?? true;
-if (DebugUtil::isDev()) :
-    $cacheLifeTime = 1;
-    $useCache = false;
-endif;
 
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
@@ -82,7 +78,7 @@ $bootstrap
 $application = $bootstrap->application()->attachListeners();
 
 try {
-    if (!AdminUtil::isAdminPage()) :
+    if (!AdminUtil::isAdminPage() && !$bootstrap->getUser()->hasAdminAccess()) :
         $content = $application->content->parseContent($application->handle()->getContent());
         if ($cacheKey !== null) :
             $application->cache->save($cacheKey, $content);
