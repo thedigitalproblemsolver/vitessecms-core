@@ -237,6 +237,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
             return $session;
         });
+        $this->getSession();
 
         return $this;
     }
