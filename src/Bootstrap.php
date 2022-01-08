@@ -90,7 +90,10 @@ try {
 
         echo $content;
     else :
-        $application->cache->delete($cacheKey);
+        if ($cacheKey !== null) :
+            $application->cache->delete($cacheKey);
+        endif;
+
         echo $application->content->parseContent(
             $application->handle()->getContent(),
             false,
