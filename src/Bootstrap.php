@@ -113,7 +113,9 @@ try {
     endif;
 } catch (Exception $e) {
     if (DebugUtil::isDev()) :
+        echo '<pre>';
         var_dump($e->getMessage());
+        var_dump($e->getTraceAsString());
         die();
     endif;
     $application->router->doRedirect($application->url->getBaseUri());
