@@ -12,19 +12,14 @@
                 });
             }
 
-            select.select2({
-                width: '100%',
-                createTag: function () {
-                    return undefined;
-                }
-            });
+            select.select2({width: '100%'});
 
             var ul = select.next('.select2-container').find('.select2-selection__rendered');
             ul.sortable({
                 onDrop: function () {
                     $($(ul).find('.select2-selection__choice').get().reverse()).each(function () {
-                        var id = $(this).data('data').id;
-                        var option = select.find('option[value="' + id + '"]')[0];
+                        var title = $(this).attr('title');
+                        var option = select.find('option:contains(\''+title+'\')');
                         select.prepend(option);
                     });
 
