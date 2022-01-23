@@ -43,6 +43,10 @@ $bootstrap = (new BootstrapService())
 if (
     empty($_POST)
     && empty($_SESSION)
+    && (
+        empty($_SESSION)
+        || (is_array($_SESSION) && !isset($_SESSION['cache']))
+    )
     && (count($_GET) === 0 || isset($_GET['_url']))
     && substr_count($_SERVER['REQUEST_URI'], 'admin') === 0
     && substr_count( $_SERVER['REQUEST_URI'], 'import/index/index') === 0
@@ -94,15 +98,24 @@ try {
             $application->cache->delete($cacheKey);
         endif;
 
+        $parseTags= false;
+        $parseSettings = false;
+        if(!AdminUtil::isAdminPage()):
+            $parseTags= true;
+            $parseSettings = true;
+        endif;
+
         echo $application->content->parseContent(
             $application->handle()->getContent(),
-            false,
-            false
+            $parseTags,
+            $parseSettings
         );
     endif;
 } catch (Exception $e) {
     if (DebugUtil::isDev()) :
+        echo '<pre>';
         var_dump($e->getMessage());
+        var_dump($e->getTraceAsString());
         die();
     endif;
     $application->router->doRedirect($application->url->getBaseUri());
