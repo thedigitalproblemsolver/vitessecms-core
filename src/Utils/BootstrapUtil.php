@@ -16,7 +16,7 @@ class BootstrapUtil
                 $moduleNamespace = ucfirst($moduleDirParts[1]);
             endif;
             if ($moduleDirParts[2] === $account) :
-                $moduleNamespace = ucfirst($moduleDirParts[2]) . '\\' . $moduleNamespace;
+                $moduleNamespace = SystemUtil::createNamespaceFromPath($moduleDir.'/Module.php',false);
             endif;
 
             $loader->registerDirs([$moduleDir], true);
@@ -26,7 +26,13 @@ class BootstrapUtil
             foreach ($subDirs as $subDir) :
                 $subDirParts = explode('/', $subDir);
                 $subDirParts = array_reverse($subDirParts);
+
                 $namespace = 'VitesseCms\\' . $moduleNamespace . '\\' . ucfirst($subDirParts[0]);
+                if ($subDirParts[3] === $account) :
+                    $files = DirectoryUtil::getFilelist($subDir);
+                    $namespace = SystemUtil::createNamespaceFromPath(array_key_first($files),false);
+                endif;
+
                 $loader->registerDirs([$subDir], true);
                 $loader->registerNamespaces([$namespace => $subDir], true);
             endforeach;
