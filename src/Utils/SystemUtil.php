@@ -3,6 +3,7 @@
 namespace VitesseCms\Core\Utils;
 
 use Phalcon\Di;
+use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 
 
@@ -33,16 +34,17 @@ class SystemUtil
         $return = [];
         $directories = [
             'rootdir' => $configService->getRootDir() . 'src',
-            'accountdir' => $configService->getAccountDir() . 'src',
+            'accountdir' => $configService->getAccountDir(),
             'verdornamedir' => $configService->getVendorNameDir()
         ];
-
         foreach ($directories as $type => $directory) :
-            if ($type === 'verdornamedir') :
+            if ($type === 'verdornamedir' || $type === 'accountdir') :
                 $children = DirectoryUtil::getChildren($directory);
                 unset($children['vitessecms']);
                 foreach ($children as $key => $dir) :
-                    $return[$key] = $dir . '/src';
+                    if(is_dir($dir . '/src')):
+                        $return[$key] = $dir . '/src';
+                    endif;
                 endforeach;
             else :
                 $return = array_merge($return, DirectoryUtil::getChildren($directory));
@@ -53,7 +55,7 @@ class SystemUtil
         return $return;
     }
 
-    public static function createNamespaceFromPath(string $path): string
+    public static function createNamespaceFromPath(string $path, bool $attachFilename = true): string
     {
         $handle = fopen($path, 'r');
         $ns = '';
@@ -69,7 +71,11 @@ class SystemUtil
             fclose($handle);
         }
 
-        return $ns . '\\' . str_replace('.php', '', (new \SplFileInfo($path))->getFilename());
+        if (!$attachFilename) :
+            return $ns;
+        endif;
+
+        return $ns . '\\' . str_replace('.php', '', (new SplFileInfo($path))->getFilename());
     }
 
     public static function getFormclassFromClass(string $class): string
