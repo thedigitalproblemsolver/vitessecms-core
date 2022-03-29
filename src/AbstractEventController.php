@@ -64,7 +64,8 @@ abstract class AbstractEventController extends Controller
             );
 
             $this->flash->setError('USER_NO_ACCESS');
-            $this->response->setStatusCode(401, 'Unauthorized')->redirect('');
+            $this->response->setStatusCode(401, 'Unauthorized');
+            $this->redirect('/');
             die();
         endif;
     }
