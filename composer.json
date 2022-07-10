@@ -31,7 +31,7 @@
     "seiyria/bootstrap-slider": "^4.8",
     "itsjavi/bootstrap-colorpicker": "^2.5",
     "vlucas/phpdotenv": "~5.4",
-    "vitessecms/form": "~0.2.8",
+    "vitessecms/form": "~0.2.9",
     "vitessecms/admin": "~0.2.9",
     "vitessecms/block": "~0.2.20",
     "vitessecms/communication": "~0.2.12",
