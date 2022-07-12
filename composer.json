@@ -43,7 +43,7 @@
     "vitessecms/media": "~0.2.11",
     "vitessecms/mustache": "~0.2.8",
     "vitessecms/search": "~0.2.1",
-    "vitessecms/sef": "~0.2.1",
+    "vitessecms/sef": "~0.2.2",
     "vitessecms/setting": "~0.2.5",
     "vitessecms/user": "~0.2.10",
     "vitessecms/datagroup": "~0.2.9",
