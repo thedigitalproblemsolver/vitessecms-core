@@ -180,6 +180,7 @@ abstract class AbstractEventController extends Controller implements InjectableI
     {
         $this->view->setVar('flash', $this->flash->output());
         $this->view->setVar('currentItem', $this->view->getCurrentItem());
+        $this->view->setVar('PAGE_NUMBER', $this->request->get('page'));
         $this->view->setVar('BASE_URI', $this->view->getVar('BASE_URI'));
         $this->view->setVar('UPLOAD_URI', $this->configuration->getUploadUri());
         $this->view->setVar('ACCOUNT', $this->configuration->getAccount());
