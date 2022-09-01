@@ -2,8 +2,6 @@
 
 namespace VitesseCms\Core;
 
-use VitesseCms\Core\Interfaces\InjectableInterface;
-
-abstract class AbstractController extends AbstractEventController implements InjectableInterface
+abstract class AbstractController extends AbstractEventController
 {
 }
