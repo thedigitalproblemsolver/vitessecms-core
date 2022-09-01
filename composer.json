@@ -5,7 +5,7 @@
   "keywords": ["php","phalcon","vitessecms"],
   "homepage": "https://github.com/thedigitalproblemsolver/VitesseCMS",
   "license": "GPL-2.0-or-later",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "authors": [
     {
       "name": "Jasper Jaklofsky",
@@ -31,23 +31,23 @@
     "seiyria/bootstrap-slider": "^4.8",
     "itsjavi/bootstrap-colorpicker": "^2.5",
     "vlucas/phpdotenv": "~5.4",
-    "vitessecms/form": "~0.2.8",
+    "vitessecms/form": "~0.2.9",
     "vitessecms/admin": "~0.2.9",
     "vitessecms/block": "~0.2.20",
     "vitessecms/communication": "~0.2.12",
     "vitessecms/configuration": "~0.2.2",
-    "vitessecms/content": "~0.2.17",
+    "vitessecms/content": "~0.2.21",
     "vitessecms/database": "~0.2.5",
     "vitessecms/datafield": "~0.2.13",
-    "vitessecms/language": "~0.2.2",
+    "vitessecms/language": "~0.2.4",
     "vitessecms/media": "~0.2.11",
-    "vitessecms/mustache": "~0.2.7",
+    "vitessecms/mustache": "~0.2.8",
     "vitessecms/search": "~0.2.1",
-    "vitessecms/sef": "~0.2.1",
+    "vitessecms/sef": "~0.2.2",
     "vitessecms/setting": "~0.2.5",
-    "vitessecms/user": "~0.2.6",
+    "vitessecms/user": "~0.2.10",
     "vitessecms/datagroup": "~0.2.9",
-    "vitessecms/job": "~0.2.1",
-    "vitessecms/log": "~0.2.5"
+    "vitessecms/job": "~0.2.2",
+    "vitessecms/log": "~0.2.6"
   }
 }

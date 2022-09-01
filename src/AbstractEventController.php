@@ -10,6 +10,7 @@ use Phalcon\Tag;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Communication\Helpers\CommunicationHelper;
 use VitesseCms\Content\Factories\OpengraphFactory;
+use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Utils\DebugUtil;
 use VitesseCms\Core\Utils\TimerUtil;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;
@@ -21,7 +22,7 @@ use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Utils\PermissionUtils;
 use function in_array;
 
-abstract class AbstractEventController extends Controller
+abstract class AbstractEventController extends Controller implements InjectableInterface
 {
     /**
      * @var array
@@ -64,7 +65,8 @@ abstract class AbstractEventController extends Controller
             );
 
             $this->flash->setError('USER_NO_ACCESS');
-            $this->response->setStatusCode(401, 'Unauthorized')->redirect('');
+            $this->response->setStatusCode(401, 'Unauthorized');
+            $this->redirect('/');
             die();
         endif;
     }
@@ -177,32 +179,33 @@ abstract class AbstractEventController extends Controller
     protected function prepareViewValues(): void
     {
         $this->view->setVar('flash', $this->flash->output());
-        $this->view->setVar('currentItem', $this->view->getVar('currentItem'));
+        $this->view->setVar('currentItem', $this->view->getCurrentItem());
+        $this->view->setVar('PAGE_NUMBER', $this->request->get('page'));
         $this->view->setVar('BASE_URI', $this->view->getVar('BASE_URI'));
         $this->view->setVar('UPLOAD_URI', $this->configuration->getUploadUri());
-        $this->view->setVar('ACCOUNT', $this->config->get('account'));
+        $this->view->setVar('ACCOUNT', $this->configuration->getAccount());
         $this->view->setVar('ECOMMERCE', (string)$this->configuration->isEcommerce());
         $this->view->setVar('hrefLanguages', $this->view->getVar('hrefLanguages'));
         $this->view->setVar('timer', TimerUtil::Results(false));
         $this->view->setVar('isDev', DebugUtil::isDev());
         $this->view->setVar('hideAsideMenu', $this->config->get('hideAsideMenu'));
         $this->view->setVar('languageLocale', $this->configuration->getLanguageLocale());
-        if (is_string($this->setting->get('SITE_LABEL_MOTTO'))) {
+        if ($this->setting->has('SITE_LABEL_MOTTO')) {
             $this->view->setVar('SITE_TITLE_LABEL_MOTTO', strip_tags(
                     str_replace(
                         '<br>',
                         ' ',
-                        $this->setting->get('SITE_LABEL_MOTTO')
+                        $this->setting->getString('SITE_LABEL_MOTTO')
                     )
                 )
             );
         }
 
-        if ($this->view->getVar('currentId')) :
+        if ($this->view->hasCurrentItem()) :
             $this->view->setVar(
                 'opengraph',
                 OpengraphFactory::createFormItem(
-                    $this->view->getVar('currentItem'),
+                    $this->view->getCurrentItem(),
                     $this->setting,
                     $this->configuration
                 )->renderTags()

@@ -29,13 +29,13 @@ class PaginatonFactory
         $pagination->slug = $url->removeParamsFromQuery([$urlQueryKey], $request->getURI());
         $pagination->slugSeperator = '&';
         $pagination->urlQueryKey = $urlQueryKey;
+        $pagination->totalPages = count($items);
         if (substr_count($pagination->slug, '?') === 0) :
             $pagination->slugSeperator = '?';
         endif;
         if ($pagination->before === 1) :
             unset($pagination->before);
         endif;
-
         return $pagination;
     }
 }
