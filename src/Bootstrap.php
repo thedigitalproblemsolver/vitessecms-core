@@ -32,7 +32,7 @@ $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
     ->setCache(
-        __DIR__ . '/../../../../cache/' . strtolower($_SERVER["HTTP_HOST"]) . '/',
+        __DIR__ . '/../../../../cache/' . strtolower($_SERVER['HTTP_HOST']) . '/',
         $cacheLifeTime
     )
     ->setUrl()
