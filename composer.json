@@ -37,7 +37,7 @@
     "vitessecms/communication": "~0.2.12",
     "vitessecms/configuration": "~0.2.2",
     "vitessecms/content": "~0.2.21",
-    "vitessecms/database": "~0.2.5",
+    "vitessecms/database": "~0.2.6",
     "vitessecms/datafield": "~0.2.13",
     "vitessecms/language": "~0.2.4",
     "vitessecms/media": "~0.2.11",
@@ -47,7 +47,7 @@
     "vitessecms/setting": "~0.2.5",
     "vitessecms/user": "~0.2.10",
     "vitessecms/datagroup": "~0.2.9",
-    "vitessecms/job": "~0.2.2",
+    "vitessecms/job": "~0.2.3",
     "vitessecms/log": "~0.2.6"
   }
 }
