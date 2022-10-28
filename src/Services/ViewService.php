@@ -78,7 +78,7 @@ class ViewService implements ViewInterface
         return $return;
     }
 
-    public function getCurrentItem(): Item
+    public function getCurrentItem(): ?Item
     {
         return $this->currentItem;
     }

@@ -12,6 +12,7 @@ use VitesseCms\Core\Helpers\ItemHelper;
 use VitesseCms\Sef\Helpers\SefHelper;
 use VitesseCms\Sef\Utils\SefUtil;
 use VitesseCms\User\Models\User;
+use function strlen;
 
 class RouterService extends Router
 {
@@ -121,6 +122,7 @@ class RouterService extends Router
     public function doRedirect(string $location): void
     {
         header('HTTP/1.1 301 Moved Permanently');
+        header('X-Robots-Tag: noindex');
         header('Location: ' . $location);
         die();
     }
@@ -172,19 +174,19 @@ class RouterService extends Router
             $item = $this->itemRepository->getHomePage();
         else :
             $item = $this->itemRepository->findBySlug(
-                substr($this->urlParts['path'], 1, \strlen($this->urlParts['path'])),
+                substr($this->urlParts['path'], 1, strlen($this->urlParts['path'])),
                 $this->config->getLanguageShort()
             );
 
             if ($item === null) :
                 $item = $this->itemRepository->findBySlug(
-                    substr($this->urlParts['path'], 1, \strlen($this->urlParts['path'])) . '/',
+                    substr($this->urlParts['path'], 1, strlen($this->urlParts['path'])) . '/',
                     $this->config->getLanguageShort()
                 );
                 if ($item !== null) :
                     header('HTTP/1.1 301 Moved Permanently');
                     header('Location: ' . $this->url->getBaseUri() . substr($this->urlParts['path'], 1,
-                            \strlen($this->urlParts['path'])) . '/');
+                            strlen($this->urlParts['path'])) . '/');
                     die();
                 endif;
             endif;

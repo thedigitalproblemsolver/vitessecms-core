@@ -238,28 +238,8 @@ abstract class AbstractEventController extends Controller implements InjectableI
             if ($this->setting->has(CallingNameEnum::GOOGLE_ANALYTICS_TRACKINGID)) :
                 $this->assets->loadTheGoogle();
             endif;
-
-            if (
-                !$this->user->hasAdminAccess()
-                && $this->view->getVar('embedded') !== 1
-                && $this->setting->has('COOKIECONSENT_POPUP_BACKGROUNDCOLOR')
-                && $this->setting->has('COOKIECONSENT_POPUP_TEXTCOLOR')
-                && $this->setting->has('COOKIECONSENT_BUTTON_BACKGROUNDCOLOR')
-                && $this->setting->has('COOKIECONSENT_BUTTON_TEXTCOLOR')
-                && $this->setting->has('COOKIECONSENT_CONTENT_MESSAGE')
-                && $this->setting->has('COOKIECONSENT_CONTENT_DISMISS')
-                && $this->setting->has('COOKIECONSENT_CONTENT_LINK')
-                && $this->setting->has('COOKIECONSENT_CONTENT_URL')
-                && (
-                    $this->cookies->has('cookieconsent_status')
-                    && $this->cookies->get('cookieconsent_status')->getValue() !== 'dismiss'
-                )
-            ) :
-                $this->assets->loadCookieConsent();
-                $this->view->setVar('showCookieConsent', true);
-            endif;
         else :
-            $this->assets->loadTheGoogle();
+          $this->assets->loadTheGoogle();
         endif;
 
         if ($this->user->hasAdminAccess()) :
