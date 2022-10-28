@@ -47,7 +47,7 @@
     "vitessecms/setting": "~0.2.6",
     "vitessecms/user": "~0.2.10",
     "vitessecms/datagroup": "~0.2.9",
-    "vitessecms/job": "~0.2.3",
+    "vitessecms/job": "~0.2.4",
     "vitessecms/log": "~0.2.6"
   }
 }
