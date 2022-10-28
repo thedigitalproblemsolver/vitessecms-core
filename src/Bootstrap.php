@@ -3,12 +3,10 @@
 namespace VitesseCms\Core;
 
 use Dotenv\Dotenv;
-use Phalcon\Exception;
-use Phalcon\Http\Request;
+use Exception;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Core\Enum\EnvEnum;
 use VitesseCms\Core\Services\BootstrapService;
-use VitesseCms\Core\Utils\DebugUtil;
 
 require_once __DIR__ . '/Services/BootstrapService.php';
 require_once __DIR__ . '/AbstractInjectable.php';
@@ -30,12 +28,11 @@ $dotenv = Dotenv::createUnsafeImmutable(__DIR__.'/../../../../');
 $dotenv->load();
 
 $cacheLifeTime = (int)getenv(EnvEnum::CACHE_LIFE_TIME);
-
 $cacheKey = null;
 $bootstrap = (new BootstrapService())
     ->setSession()
     ->setCache(
-        __DIR__ . '/../../../../cache/' . strtolower((new Request())->getHttpHost()) . '/',
+        __DIR__ . '/../../../../cache/' . strtolower($_SERVER['HTTP_HOST']) . '/',
         $cacheLifeTime
     )
     ->setUrl()
@@ -114,7 +111,7 @@ try {
         );
     endif;
 } catch (Exception $e) {
-    if (DebugUtil::isDev()) :
+    if (getenv(EnvEnum::ENVIRONMENT) !== EnvEnum::ENVIRONMENT_PRODUCTION) :
         echo '<pre>';
         var_dump($e->getMessage());
         var_dump($e->getTraceAsString());
