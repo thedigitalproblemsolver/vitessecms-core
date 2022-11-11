@@ -2,10 +2,14 @@
   "name": "vitessecms/core",
   "type": "library",
   "description": "Core module for VitesseCms",
-  "keywords": ["php","phalcon","vitessecms"],
+  "keywords": [
+    "php",
+    "phalcon",
+    "vitessecms"
+  ],
   "homepage": "https://github.com/thedigitalproblemsolver/VitesseCMS",
   "license": "GPL-2.0-or-later",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "authors": [
     {
       "name": "Jasper Jaklofsky",
@@ -24,8 +28,7 @@
     "ext-mongodb": "*",
     "ext-json": "*",
     "ext-zlib": "*",
-    "php": "^7.2",
-    "phalcon/incubator": "3.2.6",
+    "php": "^7.4",
     "twbs/bootstrap": "^4.3",
     "components/flag-icon-css": "^2.8",
     "seiyria/bootstrap-slider": "^4.8",
