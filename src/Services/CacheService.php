@@ -2,19 +2,21 @@
 
 namespace VitesseCms\Core\Services;
 
-use Phalcon\Cache\Backend\File as BackFile;
-use Phalcon\Cache\Frontend\Data as FrontData;
+use Phalcon\Cache\AdapterFactory;
+use Phalcon\Cache\Cache;
+use Phalcon\Storage\SerializerFactory;
 use VitesseCms\Core\Utils\DirectoryUtil;
+use function is_string;
 
 class CacheService extends AbstractInjectableService
 {
     /**
      * @var int
      */
-    protected $lifetime;
+    protected int $lifetime;
 
     /**
-     * @var BackFile
+     * @var Cache
      */
     protected $cache;
 
@@ -24,12 +26,14 @@ class CacheService extends AbstractInjectableService
 
         DirectoryUtil::exists($cacheDir, true);
 
-        $this->cache = new BackFile(
-            new FrontData(['lifetime' => $this->lifetime]),
-            [
-                'cacheDir' => $cacheDir,
-            ]
-        );
+        $adapterFactory = new AdapterFactory(new SerializerFactory());
+
+        $adapter = $adapterFactory->newInstance('stream', [
+            'lifetime' => $this->lifetime,
+            'storageDir' => $cacheDir
+        ]);
+
+        $this->cache = new Cache($adapter);
     }
 
     public function get(string $cacheKey)
@@ -39,12 +43,7 @@ class CacheService extends AbstractInjectableService
 
     public function save(string $cacheKey, $content): bool
     {
-        return $this->cache->save($cacheKey, $content);
-    }
-
-    public function delete(string $cacheKey): bool
-    {
-        return $this->cache->delete($cacheKey);
+        return $this->cache->set($cacheKey, $content);
     }
 
     public function setTimetoLife(int $time): void
@@ -54,7 +53,7 @@ class CacheService extends AbstractInjectableService
 
     public function getCacheKey($input): string
     {
-        if (!\is_string($input)) :
+        if (!is_string($input)) :
             $input = serialize($input);
         endif;
 
@@ -85,6 +84,11 @@ class CacheService extends AbstractInjectableService
 
     public function flush(): bool
     {
-        return $this->cache->flush();
+        return $this->cache->clear();
+    }
+
+    public function delete(string $cacheKey): bool
+    {
+        return $this->cache->delete($cacheKey);
     }
 }

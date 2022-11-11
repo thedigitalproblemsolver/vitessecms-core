@@ -5,17 +5,18 @@ namespace VitesseCms\Core\Services;
 use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
 use Phalcon\Assets\Filters\Jsmin;
+use Phalcon\Autoload\Loader;
 use Phalcon\Crypt;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Events\Manager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
-use Phalcon\Loader;
 use Phalcon\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Security;
-use Phalcon\Session\Adapter\Files as Session;
+use Phalcon\Session\Adapter\Stream;
+use Phalcon\Session\Manager as Session;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -183,7 +184,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         else :
             Language::setFindValue('short', $domainConfig->getLanguageShort());
             $language = Language::findFirst();
-            if($language) :
+            if ($language) :
                 $this->getConfiguration()->setLanguage($language);
             endif;
         endif;
@@ -233,6 +234,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('session', function (): Session {
             $session = new Session();
+            $session->setAdapter(new Stream(['savePath' => '/tmp']));
             $session->start();
 
             return $session;
@@ -240,6 +242,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->getSession();
 
         return $this;
+    }
+
+    public function getSession(): Session
+    {
+        return $this->get('session');
     }
 
     public function setCookies(): BootstrapService
@@ -313,11 +320,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         endif;
 
         return $this;
-    }
-
-    public function getUser(): User
-    {
-        return $this->get('user');
     }
 
     public function view(): BootstrapService
@@ -406,7 +408,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function shop(): BootstrapService
     {
-        if($this->getConfiguration()->isEcommerce()):
+        if ($this->getConfiguration()->isEcommerce()):
             $this->setShared('shop',
                 new ShopService(
                     new CartHelper(),
@@ -466,6 +468,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->set('currentItem', $this->getView()->getVar('currentItem'));
 
         return $this;
+    }
+
+    public function getUser(): User
+    {
+        return $this->get('user');
     }
 
     public function assets(): BootstrapService
@@ -552,11 +559,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getBlock(): BlockService
     {
         return $this->get('block');
-    }
-
-    public function getSession(): Session
-    {
-        return $this->get('session');
     }
 
     public function isAdmin(): bool
