@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Interfaces;
 
-use Phalcon\Config;
+use Phalcon\Di\DiInterface;
 use Phalcon\Events\Manager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
@@ -65,6 +65,6 @@ use VitesseCms\User\Services\AclService;
  * @property Elasticsearch $search
  * @property Manager $eventsManager
  */
-interface InjectableInterface
+interface InjectableInterface extends DiInterface
 {
 }

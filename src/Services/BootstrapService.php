@@ -11,7 +11,7 @@ use Phalcon\Di\FactoryDefault;
 use Phalcon\Events\Manager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
-use Phalcon\Mvc\Collection\Manager as CollectionManager;
+use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Security;
@@ -280,7 +280,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 ->selectDatabase($configuration->getMongoDatabase())
         );
 
-        $this->setShared('collectionManager', new CollectionManager());
+        $this->setShared('collectionsManager', new CollectionManager());
 
         return $this;
     }

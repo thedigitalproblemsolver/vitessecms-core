@@ -8,7 +8,7 @@ use Phalcon\Storage\SerializerFactory;
 use VitesseCms\Core\Utils\DirectoryUtil;
 use function is_string;
 
-class CacheService extends AbstractInjectableService
+class CacheService
 {
     /**
      * @var int
