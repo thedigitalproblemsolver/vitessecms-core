@@ -10,35 +10,17 @@ use VitesseCms\Core\Utils\DirectoryUtil;
 
 class ViewService implements ViewInterface
 {
-    /**
-     * @var ConfigService
-     */
-    protected $configuration;
+    protected ConfigService $configuration;
 
-    /**
-     * @var ViewInterface
-     */
-    protected $view;
+    protected ViewInterface $view;
 
-    /**
-     * @var Item
-     */
-    protected $currentItem;
+    protected ?Item $currentItem;
 
-    /**
-     * @var string
-     */
-    protected $currentId;
+    protected string $currentId;
 
-    /**
-     * @var string
-     */
-    protected $coreTemplateDir;
+    protected string $coreTemplateDir;
 
-    /**
-     * @var string
-     */
-    protected $vendorNameDir;
+    protected string $vendorNameDir;
 
     public function __construct(string $coreTemplateDir, string $vendorNameDir, ViewInterface $view)
     {
@@ -78,6 +60,26 @@ class ViewService implements ViewInterface
         return $return;
     }
 
+    public function getViewsDir()
+    {
+        return $this->view->getViewsDir();
+    }
+
+    public function setRenderLevel(int $level): ViewInterface
+    {
+        return $this->view->setRenderLevel($level);
+    }
+
+    public function render($controllerName, $actionName, $params = [])
+    {
+        $this->view->render($controllerName, $actionName, $params);
+    }
+
+    public function getContent(): string
+    {
+        return $this->view->getContent();
+    }
+
     public function getCurrentItem(): ?Item
     {
         return $this->currentItem;
@@ -96,6 +98,11 @@ class ViewService implements ViewInterface
         $this->setVar($key, $value);
 
         return $this;
+    }
+
+    function setVar($key, $value)
+    {
+        $this->view->setVar($key, $value);
     }
 
     public function hasCurrentItem(): bool
@@ -136,11 +143,6 @@ class ViewService implements ViewInterface
         $this->view->registerEngines($engines);
     }
 
-    function setVar($key, $value)
-    {
-        $this->view->setVar($key, $value);
-    }
-
     function getVar(string $key)
     {
         return $this->view->getVar($key);
@@ -164,11 +166,6 @@ class ViewService implements ViewInterface
     public function getBasePath(): string
     {
         return $this->view->getBasePath();
-    }
-
-    public function setRenderLevel($level)
-    {
-        $this->view->setRenderLevel($level);
     }
 
     public function setMainView($viewPath)
@@ -203,7 +200,7 @@ class ViewService implements ViewInterface
 
     public function setTemplateAfter($templateAfter): void
     {
-        $this->view->setTemplateAfter();
+        $this->view->setTemplateAfter($templateAfter);
     }
 
     public function cleanTemplateAfter()
@@ -229,11 +226,6 @@ class ViewService implements ViewInterface
     public function start()
     {
         $this->view->start();
-    }
-
-    public function render($controllerName, $actionName, $params = [])
-    {
-        $this->view->render($controllerName, $actionName, $params);
     }
 
     public function pick($renderView)
@@ -271,22 +263,12 @@ class ViewService implements ViewInterface
         return $this->view->isDisabled();
     }
 
-    public function getContent(): string
-    {
-        return $this->view->getContent();
-    }
-
-    public function getViewsDir()
-    {
-        return $this->view->getViewsDir();
-    }
-
     public function setParamToView($key, $value)
     {
         $this->view->setParamToView($key, $value);
     }
 
-    public function getParamsToView()
+    public function getParamsToView(): array
     {
         return $this->view->getParamsToView();
     }

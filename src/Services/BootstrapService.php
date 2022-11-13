@@ -6,15 +6,16 @@ use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
 use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Autoload\Loader;
-use Phalcon\Crypt;
 use Phalcon\Di\FactoryDefault;
+use Phalcon\Encryption\Crypt;
+use Phalcon\Encryption\Security;
 use Phalcon\Events\Manager;
+use Phalcon\Flash\Session as Flash;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\ViewBaseInterface;
-use Phalcon\Security;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Manager as Session;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
@@ -188,7 +189,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 $this->getConfiguration()->setLanguage($language);
             endif;
         endif;
-        $this->setShared('language', new LanguageService());
+        $this->setShared('language', new LanguageService($this->getConfiguration()));
 
         return $this;
     }
@@ -289,7 +290,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('flash', new FlashService (
                 $this->getLanguage(),
-                new \Phalcon\Flash\Session([
+                (new Flash())->setCssClasses([
                     'error' => 'alert alert-danger',
                     'success' => 'alert alert-success',
                     'notice' => 'alert alert-info',
@@ -308,8 +309,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function user(): BootstrapService
     {
-        if ($this->get('session')->get('auth') !== null) :
-            $result = User::findById($this->get('session')->get('auth')['id']);
+        if ($this->getSession()->get('auth') !== null) :
+            $result = User::findById($this->getSession()->get('auth')['id']);
             if ($result) :
                 $this->setShared('user', $result);
             else :
