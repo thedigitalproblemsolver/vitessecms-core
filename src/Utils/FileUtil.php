@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Utils;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Tag;
 use Phalcon\Utils\Slug;
 use SplFileInfo;
@@ -45,9 +45,9 @@ class FileUtil
         self::setFile($file);
 
         $ext = self::$file->getExtension();
-        if(empty($ext) && substr_count(self::$file->getPathname(), 'http') ):
+        if (empty($ext) && substr_count(self::$file->getPathname(), 'http')):
             $headers = get_headers(self::$file->getPathname());
-            if($headers !== false) :
+            if ($headers !== false) :
                 switch ($headers[3]):
                     case 'Content-Type: image/jpeg';
                     case 'Content-Type: image/pjpeg';
@@ -277,7 +277,7 @@ class FileUtil
 
     public static function exists(string $file, $createIfNotExists = false): bool
     {
-        if($createIfNotExists === false):
+        if ($createIfNotExists === false):
             return is_file($file);
         endif;
 
@@ -286,7 +286,7 @@ class FileUtil
             return false;
         endif;
 
-        if(!is_file($file)):
+        if (!is_file($file)):
             fopen($file, 'w');
         endif;
 

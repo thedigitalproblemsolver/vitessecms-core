@@ -11,6 +11,8 @@ use Phalcon\Encryption\Crypt;
 use Phalcon\Encryption\Security;
 use Phalcon\Events\Manager;
 use Phalcon\Flash\Session as Flash;
+use Phalcon\Html\Escaper;
+use Phalcon\Html\TagFactory;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
@@ -480,7 +482,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('assets', new AssetsService(
             $this->getConfiguration()->getWebDir(),
-            new Jsmin()
+            new Jsmin(),
+            new TagFactory(new Escaper())
         ));
 
         return $this;

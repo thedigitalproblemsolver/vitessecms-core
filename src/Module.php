@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core;
 
-use Phalcon\DiInterface;
+use Phalcon\Di\DiInterface;
 use VitesseCms\Core\Repositories\RepositoryCollection;
 use VitesseCms\Datafield\Repositories\DatafieldRepository;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;

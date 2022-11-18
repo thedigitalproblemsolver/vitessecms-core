@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Traits;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
 use VitesseCms\Language\Models\Language;
 
@@ -34,9 +34,9 @@ trait BaseObjectTrait
 
     public function add(
         string $name,
-        $value,
+               $value,
         string $key = null,
-        bool $multilang = false,
+        bool   $multilang = false,
         string $languageShort = null
     ): void
     {
@@ -116,12 +116,12 @@ trait BaseObjectTrait
 
     public function getBool(string $key, string $languageShort = null): bool
     {
-        return (bool) $this->_($key, $languageShort);
+        return (bool)$this->_($key, $languageShort);
     }
 
     public function getInt(string $key, string $languageShort = null): int
     {
-        return (int) $this->_($key, $languageShort);
+        return (int)$this->_($key, $languageShort);
     }
 
     public function hasSlug(): bool
@@ -149,8 +149,8 @@ trait BaseObjectTrait
 
     public function set(
         string $key,
-        $value,
-        bool $multilang = false,
+               $value,
+        bool   $multilang = false,
         string $languageShort = null
     ): BaseObjectInterface
     {
