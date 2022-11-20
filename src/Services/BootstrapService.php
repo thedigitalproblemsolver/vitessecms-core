@@ -17,7 +17,6 @@ use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Manager as Session;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
@@ -290,14 +289,18 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function flash(): BootstrapService
     {
+        $flash = new Flash();
+        $flash->setCssClasses([
+            'error' => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice' => 'alert alert-info',
+            'warning' => 'alert alert-warning',
+        ]);
+        $flash->setDI($this);
+
         $this->setShared('flash', new FlashService (
                 $this->getLanguage(),
-                (new Flash())->setCssClasses([
-                    'error' => 'alert alert-danger',
-                    'success' => 'alert alert-success',
-                    'notice' => 'alert alert-info',
-                    'warning' => 'alert alert-warning',
-                ])
+                $flash
             )
         );
 
@@ -337,17 +340,15 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             );
             $viewService->setViewsDir($this->getConfiguration()->getTemplateDir() . 'views/');
             $viewService->setPartialsDir($this->getConfiguration()->getTemplateDir() . 'views/partials/');
-            $viewService->registerEngines(
-                [
-                    '.mustache' => function (ViewBaseInterface $view): MustacheEngine {
-                        return new MustacheEngine(
-                            $view,
-                            new Engine(['partials_loader' => new Loader_FilesystemLoader($this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]),
-                            null
-                        );
-                    },
-                ]
+            $loader_FilesystemLoader = new Engine(['partials_loader' => new Loader_FilesystemLoader(
+                    $this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]
             );
+            $mustacheEngine = new MustacheEngine(
+                $view,
+                $loader_FilesystemLoader,
+                null
+            );
+            $viewService->registerEngines(['.mustache' => $mustacheEngine]);
 
             return $viewService;
         });
@@ -372,14 +373,15 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    public function getEventsManager(): Manager
-    {
-        return $this->get('eventsManager');
-    }
-
     public function content(): BootstrapService
     {
-        $this->setShared('content', new ContentService($this->getView()));
+        $this->setShared('content', new ContentService(
+            $this->getView(),
+            $this->getUrl(),
+            $this->getEventsManager(),
+            $this->getLanguage(),
+            $this->getSetting()
+        ));
 
         return $this;
     }
@@ -387,6 +389,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getView(): ViewService
     {
         return $this->get('view');
+    }
+
+    public function getEventsManager(): Manager
+    {
+        return $this->get('eventsManager');
+    }
+
+    public function getSetting(): SettingService
+    {
+        return $this->get('setting');
     }
 
     public function mailer(): BootstrapService
@@ -402,11 +414,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         );
 
         return $this;
-    }
-
-    public function getSetting(): SettingService
-    {
-        return $this->get('setting');
     }
 
     public function shop(): BootstrapService

@@ -11,6 +11,7 @@ use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Communication\Helpers\CommunicationHelper;
 use VitesseCms\Content\Factories\OpengraphFactory;
 use VitesseCms\Core\Interfaces\InjectableInterface;
+use VitesseCms\Core\Traits\DiInterfaceTrait;
 use VitesseCms\Core\Utils\DebugUtil;
 use VitesseCms\Core\Utils\TimerUtil;
 use VitesseCms\Datagroup\Repositories\DatagroupRepository;
@@ -24,6 +25,8 @@ use function in_array;
 
 abstract class AbstractEventController extends Controller implements InjectableInterface
 {
+    use DiInterfaceTrait;
+
     /**
      * @var array
      */
@@ -73,9 +76,9 @@ abstract class AbstractEventController extends Controller implements InjectableI
 
     public function redirect(
         ?string $url = null,
-        array $ajaxParams = [],
-        bool $showAlert = true,
-        bool $forcePageReload = false
+        array   $ajaxParams = [],
+        bool    $showAlert = true,
+        bool    $forcePageReload = false
     ): void
     {
         $result = true;
@@ -239,7 +242,7 @@ abstract class AbstractEventController extends Controller implements InjectableI
                 $this->assets->loadTheGoogle();
             endif;
         else :
-          $this->assets->loadTheGoogle();
+            $this->assets->loadTheGoogle();
         endif;
 
         if ($this->user->hasAdminAccess()) :
@@ -347,7 +350,7 @@ abstract class AbstractEventController extends Controller implements InjectableI
 
         ExportType::setFindValue('type', RssExportHelper::class);
         $this->view->setVar('rssFeeds', ExportType::findAll());
-        $this->eventsManager->fire(AbstractController::class.':prepareHtmlView',$this->view);
+        $this->eventsManager->fire(AbstractController::class . ':prepareHtmlView', $this->view);
     }
 
     protected function parsePositions(): void
