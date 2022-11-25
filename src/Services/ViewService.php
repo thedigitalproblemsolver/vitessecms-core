@@ -27,6 +27,7 @@ class ViewService implements ViewInterface
         $this->coreTemplateDir = $coreTemplateDir;
         $this->vendorNameDir = $vendorNameDir;
         $this->view = $view;
+        $this->currentItem = null;
     }
 
     /**

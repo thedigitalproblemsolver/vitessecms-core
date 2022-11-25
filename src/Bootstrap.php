@@ -104,7 +104,7 @@ try {
         endif;
 
         echo $application->content->parseContent(
-            $application->handle()->getContent(),
+            $application->handle($_SERVER['REQUEST_URI'])->getContent(),
             $parseTags,
             $parseSettings
         );
