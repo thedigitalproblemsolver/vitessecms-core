@@ -83,10 +83,9 @@ $bootstrap
     ->search();
 
 $application = $bootstrap->application()->attachListeners();
-
 try {
     if (!$bootstrap->getUser()->hasAdminAccess()) :
-        $content = $application->content->parseContent($application->handle('')->getContent());
+        $content = $application->content->parseContent($application->handle($_SERVER['REQUEST_URI'])->getContent());
         if ($cacheKey !== null) :
             $application->cache->save($cacheKey, $content);
         endif;
