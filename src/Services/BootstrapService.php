@@ -433,10 +433,17 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function log(): BootstrapService
     {
-        $this->setShared('log', new LogService());
+        $this->setShared('log', new LogService($this->getUser(), $this->getRequest()));
 
         return $this;
     }
+
+    public function getUser(): User
+    {
+        return $this->get('user');
+    }
+
+    //TODO split in setting service and hadle action in application
 
     public function setting(): BootstrapService
     {
@@ -449,7 +456,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    //TODO split in setting service and hadle action in application
     public function router(): BootstrapService
     {
         $this->setShared('router', new RouterService(
@@ -478,11 +484,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->set('currentItem', $this->getView()->getVar('currentItem'));
 
         return $this;
-    }
-
-    public function getUser(): User
-    {
-        return $this->get('user');
     }
 
     public function assets(): BootstrapService
