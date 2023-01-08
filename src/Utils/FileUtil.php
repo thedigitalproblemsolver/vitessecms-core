@@ -4,7 +4,6 @@ namespace VitesseCms\Core\Utils;
 
 use Phalcon\Di\Di;
 use Phalcon\Tag;
-use Phalcon\Utils\Slug;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Media\Utils\MediaUtil;
