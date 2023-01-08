@@ -19,6 +19,7 @@ use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Manager as Session;
+use Pheanstalk\Pheanstalk;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -359,15 +360,13 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function queue(): BootstrapService
     {
         $this->setShared('jobQueue', function (): BeanstalkService {
-            $beanstalk = new BeanstalkService(
-                [
-                    'host' => $this->getConfiguration()->getBeanstalkHost(),
-                    'port' => $this->getConfiguration()->getBeanstalkPort(),
-                ]
+            $beanstalk = Pheanstalk::create(
+                $this->getConfiguration()->getBeanstalkHost(),
+                $this->getConfiguration()->getBeanstalkPort()
             );
-            $beanstalk->choose(md5($this->getUrl()->getBaseUri()));
+            $beanstalk->watchOnly(md5($this->getUrl()->getBaseUri()));
 
-            return $beanstalk;
+            return new BeanstalkService($beanstalk);
         });
 
         return $this;

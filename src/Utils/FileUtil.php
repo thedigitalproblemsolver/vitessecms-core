@@ -8,6 +8,7 @@ use Phalcon\Utils\Slug;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Media\Utils\MediaUtil;
+use VitesseCms\Sef\Utils\SefUtil;
 
 /**
  * TODO make really a static util without internal dependancies
@@ -28,9 +29,9 @@ class FileUtil
     {
         self::setFile($file);
 
-        return Slug::generate(
+        return SefUtil::generateSlugFromString(
                 self::$file->getBasename('.' . self::getExtension())
-            ) . '.' . Slug::generate(self::getExtension());
+            ) . '.' . SefUtil::generateSlugFromString(self::getExtension());
     }
 
     public static function setFile(string $file = null): void
