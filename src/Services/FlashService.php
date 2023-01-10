@@ -2,8 +2,7 @@
 
 namespace VitesseCms\Core\Services;
 
-use Phalcon\Flash\Session;
-use VitesseCms\Language\Helpers\LanguageHelper;
+use Phalcon\Flash\AbstractFlash;
 use VitesseCms\Language\Services\LanguageService;
 
 class FlashService
@@ -11,55 +10,55 @@ class FlashService
     /**
      * @var LanguageService
      */
-    protected $language;
+    protected LanguageService $language;
 
     /**
-     * @var Session
+     * @var AbstractFlash
      */
-    protected $session;
+    protected AbstractFlash $flash;
 
-    public function __construct(LanguageService $languageService, Session $session)
+    public function __construct(LanguageService $languageService, AbstractFlash $session)
     {
         $this->language = $languageService;
-        $this->session = $session;
+        $this->flash = $session;
     }
 
     public function setWarning(string $translation, array $replace = []): void
     {
-        $this->session->warning($this->language->get($translation, $replace));
+        $this->flash->warning($this->language->get($translation, $replace));
     }
 
     public function setSucces(string $translation, array $replace = []): void
     {
-        $this->session->success($this->language->get($translation, $replace));
+        $this->flash->success($this->language->get($translation, $replace));
     }
 
     public function setNotice(string $translation, array $replace = []): void
     {
-        $this->session->notice($this->language->get($translation, $replace));
+        $this->flash->notice($this->language->get($translation, $replace));
     }
 
     public function setError(string $translation, array $replace = []): void
     {
-        $this->session->error($this->language->get($translation, $replace));
-    }
-
-    public function has($type = null): bool
-    {
-        return $this->session->has($type);
+        $this->flash->error($this->language->get($translation, $replace));
     }
 
     public function output(): string
     {
-        if (!$this->session->has()):
+        if (!$this->flash->has()):
             return '';
         endif;
 
         ob_start();
-        $this->session->output();
+        $this->flash->output();
         $flash = ob_get_contents();
         ob_end_clean();
 
         return $this->language->parsePlaceholders($flash);
+    }
+
+    public function has($type = null): bool
+    {
+        return $this->flash->has($type);
     }
 }

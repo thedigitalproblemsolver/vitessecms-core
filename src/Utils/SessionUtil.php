@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Utils;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Session\Adapter\Files as Session;
 
 /**
@@ -26,16 +26,6 @@ class SessionUtil
         self::init();
 
         return self::$session->get($name);
-    }
-
-    /**
-     * init
-     */
-    protected static function init(): void
-    {
-        if (!is_object(self::$session)) {
-            self::$session = Di::getDefault()->get('session');
-        }
     }
 
     /**
@@ -69,5 +59,15 @@ class SessionUtil
         self::init();
 
         self::$session->remove($name);
+    }
+
+    /**
+     * init
+     */
+    protected static function init(): void
+    {
+        if (!is_object(self::$session)) {
+            self::$session = Di::getDefault()->get('session');
+        }
     }
 }

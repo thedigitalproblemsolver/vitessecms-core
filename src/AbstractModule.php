@@ -2,9 +2,8 @@
 
 namespace VitesseCms\Core;
 
-use Phalcon\DiInterface;
+use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\Dispatcher;
-use Phalcon\Mvc\ModuleDefinitionInterface;
 use VitesseCms\Core\Interfaces\ModuleInterface;
 use VitesseCms\Core\Interfaces\RepositoryCollectionInterface;
 

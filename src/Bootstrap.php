@@ -24,7 +24,7 @@ require_once __DIR__ . '/Utils/DebugUtil.php';
 require_once __DIR__ . '/../../core/src/AbstractEnum.php';
 require_once __DIR__ . '/Enum/EnvEnum.php';
 
-$dotenv = Dotenv::createUnsafeImmutable(__DIR__.'/../../../../');
+$dotenv = Dotenv::createUnsafeImmutable(__DIR__ . '/../../../../');
 $dotenv->load();
 
 $cacheLifeTime = (int)getenv(EnvEnum::CACHE_LIFE_TIME);
@@ -47,8 +47,8 @@ if (
     )
     && (count($_GET) === 0 || isset($_GET['_url']))
     && substr_count($_SERVER['REQUEST_URI'], 'admin') === 0
-    && substr_count( $_SERVER['REQUEST_URI'], 'import/index/index') === 0
-    && substr_count( $_SERVER['REQUEST_URI'], 'job/JobQueue/execute') === 0
+    && substr_count($_SERVER['REQUEST_URI'], 'import/index/index') === 0
+    && substr_count($_SERVER['REQUEST_URI'], 'job/JobQueue/execute') === 0
     && !$bootstrap->getConfiguration()->hasMovedTo()
 ) :
     $cacheKey = str_replace('/', '_', $_SERVER['REQUEST_URI']);
@@ -83,10 +83,9 @@ $bootstrap
     ->search();
 
 $application = $bootstrap->application()->attachListeners();
-
 try {
     if (!$bootstrap->getUser()->hasAdminAccess()) :
-        $content = $application->content->parseContent($application->handle()->getContent());
+        $content = $application->content->parseContent($application->handle($_SERVER['REQUEST_URI'])->getContent());
         if ($cacheKey !== null) :
             $application->cache->save($cacheKey, $content);
         endif;
@@ -97,15 +96,15 @@ try {
             $application->cache->delete($cacheKey);
         endif;
 
-        $parseTags= false;
+        $parseTags = false;
         $parseSettings = false;
-        if(!AdminUtil::isAdminPage()):
-            $parseTags= true;
+        if (!AdminUtil::isAdminPage()):
+            $parseTags = true;
             $parseSettings = true;
         endif;
 
         echo $application->content->parseContent(
-            $application->handle()->getContent(),
+            $application->handle($_SERVER['REQUEST_URI'])->getContent(),
             $parseTags,
             $parseSettings
         );

@@ -5,17 +5,21 @@ namespace VitesseCms\Core\Services;
 use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
 use Phalcon\Assets\Filters\Jsmin;
-use Phalcon\Crypt;
+use Phalcon\Autoload\Loader;
 use Phalcon\Di\FactoryDefault;
+use Phalcon\Encryption\Crypt;
+use Phalcon\Encryption\Security;
 use Phalcon\Events\Manager;
+use Phalcon\Flash\Session as Flash;
+use Phalcon\Html\Escaper;
+use Phalcon\Html\TagFactory;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
-use Phalcon\Loader;
-use Phalcon\Mvc\Collection\Manager as CollectionManager;
+use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\ViewBaseInterface;
-use Phalcon\Security;
-use Phalcon\Session\Adapter\Files as Session;
+use Phalcon\Session\Adapter\Stream;
+use Phalcon\Session\Manager as Session;
+use Pheanstalk\Pheanstalk;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -183,11 +187,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         else :
             Language::setFindValue('short', $domainConfig->getLanguageShort());
             $language = Language::findFirst();
-            if($language) :
+            if ($language) :
                 $this->getConfiguration()->setLanguage($language);
             endif;
         endif;
-        $this->setShared('language', new LanguageService());
+        $this->setShared('language', new LanguageService($this->getConfiguration()));
 
         return $this;
     }
@@ -233,6 +237,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('session', function (): Session {
             $session = new Session();
+            $session->setAdapter(new Stream(['savePath' => '/tmp']));
             $session->start();
 
             return $session;
@@ -240,6 +245,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->getSession();
 
         return $this;
+    }
+
+    public function getSession(): Session
+    {
+        return $this->get('session');
     }
 
     public function setCookies(): BootstrapService
@@ -273,21 +283,25 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 ->selectDatabase($configuration->getMongoDatabase())
         );
 
-        $this->setShared('collectionManager', new CollectionManager());
+        $this->setShared('collectionsManager', new CollectionManager());
 
         return $this;
     }
 
     public function flash(): BootstrapService
     {
+        $flash = new Flash();
+        $flash->setCssClasses([
+            'error' => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice' => 'alert alert-info',
+            'warning' => 'alert alert-warning',
+        ]);
+        $flash->setDI($this);
+
         $this->setShared('flash', new FlashService (
                 $this->getLanguage(),
-                new \Phalcon\Flash\Session([
-                    'error' => 'alert alert-danger',
-                    'success' => 'alert alert-success',
-                    'notice' => 'alert alert-info',
-                    'warning' => 'alert alert-warning',
-                ])
+                $flash
             )
         );
 
@@ -301,8 +315,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function user(): BootstrapService
     {
-        if ($this->get('session')->get('auth') !== null) :
-            $result = User::findById($this->get('session')->get('auth')['id']);
+        if ($this->getSession()->get('auth') !== null) :
+            $result = User::findById($this->getSession()->get('auth')['id']);
             if ($result) :
                 $this->setShared('user', $result);
             else :
@@ -313,11 +327,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         endif;
 
         return $this;
-    }
-
-    public function getUser(): User
-    {
-        return $this->get('user');
     }
 
     public function view(): BootstrapService
@@ -332,17 +341,15 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             );
             $viewService->setViewsDir($this->getConfiguration()->getTemplateDir() . 'views/');
             $viewService->setPartialsDir($this->getConfiguration()->getTemplateDir() . 'views/partials/');
-            $viewService->registerEngines(
-                [
-                    '.mustache' => function (ViewBaseInterface $view): MustacheEngine {
-                        return new MustacheEngine(
-                            $view,
-                            new Engine(['partials_loader' => new Loader_FilesystemLoader($this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]),
-                            null
-                        );
-                    },
-                ]
+            $loader_FilesystemLoader = new Engine(['partials_loader' => new Loader_FilesystemLoader(
+                    $this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]
             );
+            $mustacheEngine = new MustacheEngine(
+                $view,
+                $loader_FilesystemLoader,
+                null
+            );
+            $viewService->registerEngines(['.mustache' => $mustacheEngine]);
 
             return $viewService;
         });
@@ -353,28 +360,27 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function queue(): BootstrapService
     {
         $this->setShared('jobQueue', function (): BeanstalkService {
-            $beanstalk = new BeanstalkService(
-                [
-                    'host' => $this->getConfiguration()->getBeanstalkHost(),
-                    'port' => $this->getConfiguration()->getBeanstalkPort(),
-                ]
+            $beanstalk = Pheanstalk::create(
+                $this->getConfiguration()->getBeanstalkHost(),
+                $this->getConfiguration()->getBeanstalkPort()
             );
-            $beanstalk->choose(md5($this->getUrl()->getBaseUri()));
+            $beanstalk->watchOnly(md5($this->getUrl()->getBaseUri()));
 
-            return $beanstalk;
+            return new BeanstalkService($beanstalk);
         });
 
         return $this;
     }
 
-    public function getEventsManager(): Manager
-    {
-        return $this->get('eventsManager');
-    }
-
     public function content(): BootstrapService
     {
-        $this->setShared('content', new ContentService($this->getView()));
+        $this->setShared('content', new ContentService(
+            $this->getView(),
+            $this->getUrl(),
+            $this->getEventsManager(),
+            $this->getLanguage(),
+            $this->getSetting()
+        ));
 
         return $this;
     }
@@ -382,6 +388,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getView(): ViewService
     {
         return $this->get('view');
+    }
+
+    public function getEventsManager(): Manager
+    {
+        return $this->get('eventsManager');
+    }
+
+    public function getSetting(): SettingService
+    {
+        return $this->get('setting');
     }
 
     public function mailer(): BootstrapService
@@ -399,14 +415,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    public function getSetting(): SettingService
-    {
-        return $this->get('setting');
-    }
-
     public function shop(): BootstrapService
     {
-        if($this->getConfiguration()->isEcommerce()):
+        if ($this->getConfiguration()->isEcommerce()):
             $this->setShared('shop',
                 new ShopService(
                     new CartHelper(),
@@ -421,10 +432,17 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function log(): BootstrapService
     {
-        $this->setShared('log', new LogService());
+        $this->setShared('log', new LogService($this->getUser(), $this->getRequest()));
 
         return $this;
     }
+
+    public function getUser(): User
+    {
+        return $this->get('user');
+    }
+
+    //TODO split in setting service and hadle action in application
 
     public function setting(): BootstrapService
     {
@@ -437,7 +455,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    //TODO split in setting service and hadle action in application
     public function router(): BootstrapService
     {
         $this->setShared('router', new RouterService(
@@ -472,7 +489,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('assets', new AssetsService(
             $this->getConfiguration()->getWebDir(),
-            new Jsmin()
+            new Jsmin(),
+            new TagFactory(new Escaper())
         ));
 
         return $this;
@@ -552,11 +570,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getBlock(): BlockService
     {
         return $this->get('block');
-    }
-
-    public function getSession(): Session
-    {
-        return $this->get('session');
     }
 
     public function isAdmin(): bool

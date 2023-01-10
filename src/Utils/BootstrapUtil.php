@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Utils;
 
-use Phalcon\Loader;
+use Phalcon\Autoload\Loader;
 
 class BootstrapUtil
 {
@@ -16,11 +16,11 @@ class BootstrapUtil
                 $moduleNamespace = ucfirst($moduleDirParts[1]);
             endif;
             if ($moduleDirParts[2] === $account) :
-                $moduleNamespace = SystemUtil::createNamespaceFromPath($moduleDir.'/Module.php',false);
+                $moduleNamespace = SystemUtil::createNamespaceFromPath($moduleDir . '/Module.php', false);
             endif;
 
-            $loader->registerDirs([$moduleDir], true);
-            $loader->registerNamespaces(['VitesseCms\\' . $moduleNamespace => $moduleDir], true);
+            $loader->addDirectory($moduleDir);
+            $loader->addNamespace('VitesseCms\\' . $moduleNamespace, $moduleDir);
 
             $subDirs = DirectoryUtil::getChildren($moduleDir);
             foreach ($subDirs as $subDir) :
@@ -30,11 +30,11 @@ class BootstrapUtil
                 $namespace = 'VitesseCms\\' . $moduleNamespace . '\\' . ucfirst($subDirParts[0]);
                 if ($subDirParts[3] === $account) :
                     $files = DirectoryUtil::getFilelist($subDir);
-                    $namespace = SystemUtil::createNamespaceFromPath(array_key_first($files),false);
+                    $namespace = SystemUtil::createNamespaceFromPath(array_key_first($files), false);
                 endif;
 
-                $loader->registerDirs([$subDir], true);
-                $loader->registerNamespaces([$namespace => $subDir], true);
+                $loader->addDirectory($subDir);
+                $loader->addNamespace($namespace, $subDir);
             endforeach;
         endforeach;
 

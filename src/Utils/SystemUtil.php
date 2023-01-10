@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Utils;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use SplFileInfo;
 use VitesseCms\Configuration\Services\ConfigService;
 
@@ -42,7 +42,7 @@ class SystemUtil
                 $children = DirectoryUtil::getChildren($directory);
                 unset($children['vitessecms']);
                 foreach ($children as $key => $dir) :
-                    if(is_dir($dir . '/src')):
+                    if (is_dir($dir . '/src')):
                         $return[$key] = $dir . '/src';
                     endif;
                 endforeach;
