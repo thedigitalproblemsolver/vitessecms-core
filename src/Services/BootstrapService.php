@@ -283,7 +283,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
                 ->selectDatabase($configuration->getMongoDatabase())
         );
 
-        $this->setShared('collectionsManager', new CollectionManager());
+        $collectionManager = new CollectionManager();
+        $this->setShared('collectionsManager', $collectionManager);
+
+        //sohow this is needed for backwards compatibility
+        $this->setShared('collectionManager', $collectionManager);
 
         return $this;
     }
