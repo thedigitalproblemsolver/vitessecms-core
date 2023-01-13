@@ -51,7 +51,7 @@ if (
     && substr_count($_SERVER['REQUEST_URI'], 'job/JobQueue/execute') === 0
     && !$bootstrap->getConfiguration()->hasMovedTo()
 ) :
-    $cacheKey = str_replace('/', '_', $_SERVER['REQUEST_URI']);
+    $cacheKey = $bootstrap->getCache()->getCacheKey(str_replace('/', '_', $_SERVER['REQUEST_URI']));
     $cacheResult = $bootstrap->getCache()->get($cacheKey);
     if ($cacheResult !== null) :
         echo $cacheResult;
