@@ -67,12 +67,12 @@ class RouterService extends Router
     protected $itemRepository;
 
     public function __construct(
-        User $user,
-        Request $request,
-        ConfigService $config,
-        UrlService $url,
-        CacheService $cache,
-        ViewService $view,
+        User           $user,
+        Request        $request,
+        ConfigService  $config,
+        UrlService     $url,
+        CacheService   $cache,
+        ViewService    $view,
         ItemRepository $itemRepository
     )
     {
@@ -218,7 +218,7 @@ class RouterService extends Router
             'controller' => 'index',
             'action' => 'index',
         ];
-
+        
         $this->add($this->urlParts['path'], $parts);
         $this->add($this->urlParts['path'] . $this->config->getLanguageShort() . '/', $parts);
         $this->add('/' . $this->config->getLanguageShort() . $this->urlParts['path'], $parts);
@@ -280,37 +280,6 @@ class RouterService extends Router
                     break;
             endswitch;
         endif;
-    }
-
-    public function getModuleName(): string
-    {
-        $module = (string)parent::getModuleName();
-
-        if (!$module) :
-            $module = (string)$this->_defaultModule;
-        endif;
-
-        return $module;
-    }
-
-    public function getControllerName(): string
-    {
-        $controller = parent::getControllerName();
-        if (!$controller) :
-            $controller = $this->_defaultController;
-        endif;
-
-        return $controller;
-    }
-
-    public function getActionName(): string
-    {
-        $action = parent::getActionName();
-        if (!$action) :
-            $action = $this->_defaultAction;
-        endif;
-
-        return $action;
     }
 
     public function getParams(): array

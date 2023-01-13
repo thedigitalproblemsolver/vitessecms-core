@@ -2,7 +2,7 @@
 
 namespace VitesseCms\Core\Utils;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Http\Response\Cookies;
 
 /**
@@ -42,16 +42,6 @@ class CookieUtil
     }
 
     /**
-     * init
-     */
-    protected static function init(): void
-    {
-        if (!is_object(self::$cookies)) {
-            self::$cookies = Di::getDefault()->get('cookies');
-        }
-    }
-
-    /**
      * @param string $name
      */
     public static function delete(string $name): void
@@ -84,5 +74,15 @@ class CookieUtil
         endif;
 
         return self::$cookies;
+    }
+
+    /**
+     * init
+     */
+    protected static function init(): void
+    {
+        if (!is_object(self::$cookies)) {
+            self::$cookies = Di::getDefault()->get('cookies');
+        }
     }
 }

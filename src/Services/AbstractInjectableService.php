@@ -4,7 +4,7 @@ namespace VitesseCms\Core\Services;
 
 use VitesseCms\Core\AbstractInjectable;
 
-class AbstractInjectableService extends AbstractInjectable
+abstract class AbstractInjectableService extends AbstractInjectable
 {
 
 }

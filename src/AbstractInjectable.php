@@ -2,9 +2,10 @@
 
 namespace VitesseCms\Core;
 
-use Phalcon\Mvc\User\Component;
 use VitesseCms\Core\Interfaces\InjectableInterface;
+use VitesseCms\Core\Traits\DiInterfaceTrait;
 
-abstract class AbstractInjectable extends Component implements InjectableInterface
+abstract class AbstractInjectable implements InjectableInterface
 {
+    use DiInterfaceTrait;
 }
