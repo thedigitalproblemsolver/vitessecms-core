@@ -9,7 +9,7 @@
   ],
   "homepage": "https://github.com/thedigitalproblemsolver/VitesseCMS",
   "license": "GPL-2.0-or-later",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "authors": [
     {
       "name": "Jasper Jaklofsky",
@@ -28,7 +28,6 @@
     "ext-mongodb": "*",
     "ext-json": "*",
     "ext-zlib": "*",
-    "php": "^7.4",
     "twbs/bootstrap": "^4.3",
     "components/flag-icon-css": "^2.8",
     "seiyria/bootstrap-slider": "^4.8",
