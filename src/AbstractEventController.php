@@ -9,7 +9,6 @@ use Phalcon\Mvc\Controller;
 use Phalcon\Tag;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Communication\Helpers\CommunicationHelper;
-use VitesseCms\Content\Factories\OpengraphFactory;
 use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Traits\DiInterfaceTrait;
 use VitesseCms\Core\Utils\DebugUtil;
@@ -203,17 +202,6 @@ abstract class AbstractEventController extends Controller implements InjectableI
                 )
             );
         }
-
-        if ($this->view->hasCurrentItem()) :
-            $this->view->setVar(
-                'opengraph',
-                OpengraphFactory::createFormItem(
-                    $this->view->getCurrentItem(),
-                    $this->setting,
-                    $this->configuration
-                )->renderTags()
-            );
-        endif;
 
         $this->view->setVar('SEO_ROBOTS', 'index, follow');
         if (AdminUtil::isAdminPage()) :
