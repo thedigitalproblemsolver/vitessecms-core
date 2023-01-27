@@ -44,7 +44,7 @@
     "vitessecms/language": "~0.3.1",
     "vitessecms/media": "~0.3.0",
     "vitessecms/mustache": "~0.3.0",
-    "vitessecms/search": "~0.3.1",
+    "vitessecms/search": "~0.3.2",
     "vitessecms/sef": "~0.3.0",
     "vitessecms/setting": "~0.3.0",
     "vitessecms/user": "~0.3.1",
