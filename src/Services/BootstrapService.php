@@ -228,7 +228,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function setUrl(): BootstrapService
     {
-        $this->setShared('url', new UrlService($this->get('request')));
+        $this->setShared('url', new UrlService($this->getRequest()));
 
         return $this;
     }

@@ -2,22 +2,20 @@
 
 namespace VitesseCms\Core\Listeners\Services;
 
+use Phalcon\Events\Event;
 use VitesseCms\Core\Services\CacheService;
 
 class CacheServiceListener
 {
-    /**
-     * @var CacheService
-     */
-    private $cache;
+    private CacheService $cacheService;
 
-    public function __construct(CacheService $cache)
+    public function __construct(CacheService $cacheService)
     {
-        $this->cache = $cache;
+        $this->cacheService = $cacheService;
     }
 
     public function attach( Event $event): CacheService
     {
-        return $this->cache;
+        return $this->cacheService;
     }
 }
