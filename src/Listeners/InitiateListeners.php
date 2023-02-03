@@ -4,6 +4,7 @@ namespace VitesseCms\Core\Listeners;
 
 use VitesseCms\Core\Enum\CacheEnum;
 use VitesseCms\Core\Enum\FlashEnum;
+use VitesseCms\Core\Enum\RouterEnum;
 use VitesseCms\Core\Enum\SecurityEnum;
 use VitesseCms\Core\Enum\SessionEnum;
 use VitesseCms\Core\Enum\UrlEnum;
@@ -12,6 +13,7 @@ use VitesseCms\Core\Interfaces\InitiateListenersInterface;
 use VitesseCms\Core\Interfaces\InjectableInterface;
 use VitesseCms\Core\Listeners\Services\CacheServiceListener;
 use VitesseCms\Core\Listeners\Services\FlashServiceListener;
+use VitesseCms\Core\Listeners\Services\RouterServiceListener;
 use VitesseCms\Core\Listeners\Services\SecurityServiceListener;
 use VitesseCms\Core\Listeners\Services\SessionServiceListener;
 use VitesseCms\Core\Listeners\Services\UrlServiceListener;
@@ -27,5 +29,6 @@ class InitiateListeners implements InitiateListenersInterface
         $di->eventsManager->attach(FlashEnum::SERVICE_LISTENER, new FlashServiceListener($di->flash));
         $di->eventsManager->attach(SecurityEnum::SERVICE_LISTENER, new SecurityServiceListener($di->security));
         $di->eventsManager->attach(SessionEnum::SERVICE_LISTENER, new SessionServiceListener($di->session));
+        $di->eventsManager->attach(RouterEnum::SERVICE_LISTENER, new RouterServiceListener($di->router));
     }
 }
