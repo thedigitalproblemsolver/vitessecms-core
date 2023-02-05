@@ -64,7 +64,7 @@ abstract class AbstractControllerFrontend extends Controller
         return true;
     }
 
-    protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
+    protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): never
     {
         $this->response->setStatusCode($status, $message);
         $this->response->redirect($url);
