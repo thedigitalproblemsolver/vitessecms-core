@@ -26,6 +26,7 @@ use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
 use VitesseCms\User\Services\AclService;
 use VitesseCms\User\Utils\PermissionUtils;
+use stdClass;
 
 abstract class AbstractControllerFrontend extends Controller
 {
@@ -40,14 +41,14 @@ abstract class AbstractControllerFrontend extends Controller
 
     public function onConstruct()
     {
-        $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new \stdClass());
-        $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER, new \stdClass());
+        $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER, new stdClass());
     }
 
     protected function beforeExecuteRoute(): bool
@@ -93,12 +94,11 @@ abstract class AbstractControllerFrontend extends Controller
 
             $this->viewService->setVar(
                 $position,
-                $this->eventsManager->fire(\VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT, new RenderPartialDTO(
-                    'template_position',
-                    [
-                        'html' => $html,
-                        'class' => 'container-'.$position
-                    ]
+                $this->eventsManager->fire(
+                    \VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT,
+                    new RenderPartialDTO(
+                        'template_position',
+                        ['html' => $html, 'class' => 'container-'.$position]
                 ))
             );
         }
@@ -107,7 +107,7 @@ abstract class AbstractControllerFrontend extends Controller
     private function loadAssets(): void
     {
         $this->assetsService->loadSite();
-        $this->eventsManager->fire('RenderListener:buildJs', new \stdClass());
+        $this->eventsManager->fire('RenderListener:buildJs', new stdClass());
 
         $this->viewService->set('javascript', $this->assetsService->buildAssets('js'));
         $this->viewService->set('stylesheet', $this->assetsService->buildAssets('css'));
