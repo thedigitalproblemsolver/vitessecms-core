@@ -64,16 +64,29 @@ abstract class AbstractControllerFrontend extends Controller
         return true;
     }
 
-    protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): never
+    protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
     {
-        $this->response->setStatusCode($status, $message);
-        $this->response->redirect($url);
-        $this->viewService->disable();
-        $this->response->send();
+        if($this->request->isAjax()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setContent(json_encode([
+                'result' => true,
+                'successFunction' => 'redirect(\'' . $url . '\')'
+            ]));
+            $this->viewService->disable();
+            $this->response->send();
+        } else {
+            $this->response->setStatusCode($status, $message);
+            $this->response->redirect($url);
+            $this->viewService->disable();
+            $this->response->send();
+        }
+
+        die();
     }
 
     protected function afterExecuteRoute(): void
     {
+        $this->viewService->setVar('flash', $this->flashService->output());
         $this->renderPositions();
         $this->loadAssets();
     }
