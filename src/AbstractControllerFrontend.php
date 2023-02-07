@@ -2,31 +2,29 @@
 
 namespace VitesseCms\Core;
 
-use MongoDB\BSON\ObjectId;
 use Phalcon\Mvc\Controller;
+use stdClass;
 use VitesseCms\Block\DTO\RenderPositionDTO;
 use VitesseCms\Block\Enum\BlockPositionEnum;
 use VitesseCms\Configuration\Enums\ConfigurationEnum;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Enum\FlashEnum;
 use VitesseCms\Core\Enum\RouterEnum;
+use VitesseCms\Core\Enum\UrlEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Services\FlashService;
 use VitesseCms\Core\Services\RouterService;
+use VitesseCms\Core\Services\UrlService;
 use VitesseCms\Core\Services\ViewService;
 use VitesseCms\Log\Enums\LogEnum;
 use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Enums\AssetsEnum;
-use VitesseCms\Media\Enums\MediaEnum;
 use VitesseCms\Media\Services\AssetsService;
 use VitesseCms\Mustache\DTO\RenderPartialDTO;
-use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Enum\AclEnum;
 use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
 use VitesseCms\User\Services\AclService;
-use VitesseCms\User\Utils\PermissionUtils;
-use stdClass;
 
 abstract class AbstractControllerFrontend extends Controller
 {
@@ -38,6 +36,7 @@ abstract class AbstractControllerFrontend extends Controller
     private AssetsService $assetsService;
     private ConfigService $configService;
     protected User $activeUser;
+    protected UrlService $urlService;
 
     public function onConstruct()
     {
@@ -49,6 +48,7 @@ abstract class AbstractControllerFrontend extends Controller
         $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
+        $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
     }
 
     protected function beforeExecuteRoute(): bool
@@ -56,7 +56,7 @@ abstract class AbstractControllerFrontend extends Controller
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
             $this->logService->message('access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern());
             $this->flashService->setError('USER_NO_ACCESS');
-            $this->redirect('/', 401, 'Unauthorized');
+            $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
 
             return false;
         }
@@ -66,7 +66,7 @@ abstract class AbstractControllerFrontend extends Controller
 
     protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
     {
-        if($this->request->isAjax()) {
+        if ($this->request->isAjax()) {
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setContent(json_encode([
                 'result' => true,
@@ -111,8 +111,8 @@ abstract class AbstractControllerFrontend extends Controller
                     \VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT,
                     new RenderPartialDTO(
                         'template_position',
-                        ['html' => $html, 'class' => 'container-'.$position]
-                ))
+                        ['html' => $html, 'class' => 'container-' . $position]
+                    ))
             );
         }
     }
