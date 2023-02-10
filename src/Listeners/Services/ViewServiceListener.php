@@ -7,18 +7,15 @@ use VitesseCms\Core\Services\ViewService;
 
 class ViewServiceListener
 {
-    /**
-     * @var ViewService
-     */
-    private $view;
+    private ViewService $viewService;
 
-    public function __construct(ViewService $view)
+    public function __construct(ViewService $viewService)
     {
-        $this->view = $view;
+        $this->viewService = $viewService;
     }
 
     public function attach( Event $event): ViewService
     {
-        return $this->view;
+        return $this->viewService;
     }
 }

@@ -7,18 +7,21 @@ use VitesseCms\Core\Services\FlashService;
 
 class FlashServiceListener
 {
-    /**
-     * @var FlashService
-     */
-    private $flash;
+    private FlashService $flashService;
 
-    public function __construct(FlashService $flash)
+    public function __construct(FlashService $flashService)
     {
-        $this->flash = $flash;
+        $this->flashService = $flashService;
     }
 
     public function attach( Event $event): FlashService
     {
-        return $this->flash;
+        return $this->flashService;
+    }
+
+    public function afterExecuteRoute()
+    {
+        echo 'hier';
+        die();
     }
 }
