@@ -51,7 +51,7 @@
     "vitessecms/setting": "~0.3.0",
     "vitessecms/user": "~0.4.0",
     "vitessecms/datagroup": "~0.3.0",
-    "vitessecms/job": "~0.3.0",
+    "vitessecms/job": "~0.4.0",
     "vitessecms/log": "~0.3.0"
   }
 }
