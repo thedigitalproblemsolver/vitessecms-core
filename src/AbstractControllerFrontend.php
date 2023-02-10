@@ -103,6 +103,16 @@ abstract class AbstractControllerFrontend extends Controller
         $this->loadAssets();
     }
 
+    protected function jsonResponse(array $data, bool $result = true): void
+    {
+        $this->response->setContentType('application/json', 'UTF-8');
+        echo json_encode(array_merge(['result' => $result], $data));
+        $this->viewService->disable();
+        $this->response->send();
+
+        die();
+    }
+
     private function renderPositions(array $positions): void
     {
         $dataGroups = ['all'];
