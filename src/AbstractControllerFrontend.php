@@ -37,6 +37,7 @@ abstract class AbstractControllerFrontend extends Controller
     private ConfigService $configService;
     protected User $activeUser;
     protected UrlService $urlService;
+    private bool $isEmbedded;
 
     public function onConstruct()
     {
@@ -49,6 +50,7 @@ abstract class AbstractControllerFrontend extends Controller
         $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
         $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
     protected function beforeExecuteRoute(): bool
@@ -66,6 +68,10 @@ abstract class AbstractControllerFrontend extends Controller
 
     protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
     {
+        if($this->isEmbedded) {
+            $url = $this->urlService->addParamsToQuery('embedded', '1', $url);
+        }
+
         if ($this->request->isAjax()) {
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setContent(json_encode([
@@ -87,11 +93,17 @@ abstract class AbstractControllerFrontend extends Controller
     protected function afterExecuteRoute(): void
     {
         $this->viewService->setVar('flash', $this->flashService->output());
-        $this->renderPositions();
+
+        $positions = $this->configService->getTemplatePositions();
+        if($this->isEmbedded) {
+            $positions = $this->configService->getTemplateEmbeddedPositions();
+        }
+
+        $this->renderPositions($positions);
         $this->loadAssets();
     }
 
-    private function renderPositions(): void
+    private function renderPositions(array $positions): void
     {
         $dataGroups = ['all'];
         if ($this->viewService->hasCurrentItem()) :
@@ -99,7 +111,7 @@ abstract class AbstractControllerFrontend extends Controller
             $dataGroups[] = $this->viewService->getCurrentItem()->getDatagroup();
         endif;
 
-        foreach ($this->configService->getTemplatePositions() as $position => $tmp) {
+        foreach ($positions as $position => $tmp) {
             $html = $this->eventsManager->fire(
                 BlockPositionEnum::RENDER_POSITION,
                 new RenderPositionDTO($position, [null, '', $this->activeUser->getRole()], $dataGroups)
@@ -119,7 +131,7 @@ abstract class AbstractControllerFrontend extends Controller
 
     private function loadAssets(): void
     {
-        $this->assetsService->loadSite();
+        $this->eventsManager->fire('RenderListener:loadAssets', new stdClass());
         $this->eventsManager->fire('RenderListener:buildJs', new stdClass());
 
         $this->viewService->set('javascript', $this->assetsService->buildAssets('js'));
