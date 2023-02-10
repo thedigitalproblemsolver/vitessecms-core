@@ -16,6 +16,7 @@ use Phalcon\Html\TagFactory;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response\Cookies;
 use Phalcon\Incubator\MongoDB\Mvc\Collection\Manager as CollectionManager;
+use Phalcon\Mvc\Router;
 use Phalcon\Mvc\View;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Manager as Session;
@@ -228,7 +229,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function setUrl(): BootstrapService
     {
-        $this->setShared('url', new UrlService($this->get('request')));
+        $this->setShared('url', new UrlService($this->getRequest()));
 
         return $this;
     }
@@ -468,7 +469,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             $this->getUrl(),
             $this->getCache(),
             $this->getView(),
-            new ItemRepository()
+            new ItemRepository(),
+            new Router()
         ));
 
         if (
@@ -493,7 +495,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     {
         $this->setShared('assets', new AssetsService(
             $this->getConfiguration()->getWebDir(),
-            new Jsmin(),
+            $this->getConfiguration()->getAccount(),
+            $this->getUrl()->getBaseUri(),
             new TagFactory(new Escaper())
         ));
 

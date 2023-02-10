@@ -57,8 +57,16 @@ class FlashService
         return $this->language->parsePlaceholders($flash);
     }
 
+    /**
+     * @deprecated use seperate function
+     */
     public function has($type = null): bool
     {
         return $this->flash->has($type);
+    }
+
+    public function hasError(): bool
+    {
+        return $this->flash->has('error');
     }
 }

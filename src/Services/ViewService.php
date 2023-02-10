@@ -149,6 +149,11 @@ class ViewService implements ViewInterface
         return $this->view->getVar($key);
     }
 
+    function getVarAsString(string $key): string
+    {
+        return (string) $this->view->getVar($key);
+    }
+
     public function setLayoutsDir($layoutsDir)
     {
         $this->view->setLayoutsDir($layoutsDir);

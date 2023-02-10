@@ -22,22 +22,22 @@ trait DiInterfaceTrait
         // TODO: Implement setDefault() method.
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         // TODO: Implement offsetExists() method.
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         // TODO: Implement offsetGet() method.
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         // TODO: Implement offsetSet() method.
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         // TODO: Implement offsetUnset() method.
     }

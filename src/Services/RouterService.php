@@ -4,6 +4,7 @@ namespace VitesseCms\Core\Services;
 
 use Phalcon\Http\Request;
 use Phalcon\Mvc\Router;
+use Phalcon\Mvc\Router\RouteInterface;
 use VitesseCms\Admin\Utils\AdminUtil;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Content\Models\Item;
@@ -14,7 +15,7 @@ use VitesseCms\Sef\Utils\SefUtil;
 use VitesseCms\User\Models\User;
 use function strlen;
 
-class RouterService extends Router
+class RouterService
 {
     /**
      * @var User
@@ -66,6 +67,8 @@ class RouterService extends Router
      */
     protected $itemRepository;
 
+    private Router $router;
+
     public function __construct(
         User           $user,
         Request        $request,
@@ -73,11 +76,10 @@ class RouterService extends Router
         UrlService     $url,
         CacheService   $cache,
         ViewService    $view,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository,
+        Router $router
     )
     {
-        parent::__construct();
-
         $this->user = $user;
         $this->request = $request;
         $this->config = $config;
@@ -86,6 +88,7 @@ class RouterService extends Router
         $this->view = $view;
         $this->modulePrefix = '';
         $this->itemRepository = $itemRepository;
+        $this->router = $router;
 
         if (substr_count($this->request->getServer('REQUEST_URI'), '//') > 0) :
             $this->doRedirect(str_replace('//', '/', $this->request->getServer('REQUEST_URI')));
@@ -284,7 +287,7 @@ class RouterService extends Router
 
     public function getParams(): array
     {
-        $params = parent::getParams();
+        $params = $this->router->getParams();
         if (!empty($this->_defaultParams)) :
             $params = $this->_defaultParams;
         endif;
@@ -295,5 +298,40 @@ class RouterService extends Router
     public function getModulePrefix(): string
     {
         return $this->modulePrefix;
+    }
+
+    public function add(string $pattern, $paths = null): RouteInterface
+    {
+        return $this->router->add($pattern, $paths);
+    }
+
+    public function handle(string $uri): void
+    {
+        $this->router->handle($uri);
+    }
+
+    public function getMatchedRoute(): ?RouteInterface
+    {
+        return $this->router->getMatchedRoute();
+    }
+
+    public function getModuleName(): string
+    {
+        return $this->router->getModuleName();
+    }
+
+    public function getNamespaceName(): string
+    {
+        return $this->router->getNamespaceName();
+    }
+
+    public function getControllerName(): string
+    {
+        return $this->router->getControllerName();
+    }
+
+    public function getActionName(): string
+    {
+        return $this->router->getActionName();
     }
 }
