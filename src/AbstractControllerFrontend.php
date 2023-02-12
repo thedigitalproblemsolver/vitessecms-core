@@ -10,6 +10,7 @@ use VitesseCms\Configuration\Enums\ConfigurationEnum;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Enum\FlashEnum;
 use VitesseCms\Core\Enum\RouterEnum;
+use VitesseCms\Core\Enum\TranslationEnum;
 use VitesseCms\Core\Enum\UrlEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Services\FlashService;
@@ -47,7 +48,7 @@ abstract class AbstractControllerFrontend extends Controller
         $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
         $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->isEmbedded = $this->request->get('embedded', 'bool', false);
@@ -57,7 +58,7 @@ abstract class AbstractControllerFrontend extends Controller
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
             $this->logService->message('access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern());
-            $this->flashService->setError('USER_NO_ACCESS');
+            $this->flashService->setError(TranslationEnum::CORE_ACTION_NOT_ALLOWED);
             $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
 
             return false;
