@@ -35,7 +35,7 @@ abstract class AbstractControllerFrontend extends Controller
     protected LogService $logService;
     private AclService $aclService;
     private AssetsService $assetsService;
-    private ConfigService $configService;
+    protected ConfigService $configService;
     protected User $activeUser;
     protected UrlService $urlService;
     private bool $isEmbedded;
