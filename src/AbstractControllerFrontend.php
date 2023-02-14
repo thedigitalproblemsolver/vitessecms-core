@@ -10,6 +10,7 @@ use VitesseCms\Configuration\Enums\ConfigurationEnum;
 use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Enum\FlashEnum;
 use VitesseCms\Core\Enum\RouterEnum;
+use VitesseCms\Core\Enum\TranslationEnum;
 use VitesseCms\Core\Enum\UrlEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Services\FlashService;
@@ -34,9 +35,10 @@ abstract class AbstractControllerFrontend extends Controller
     protected LogService $logService;
     private AclService $aclService;
     private AssetsService $assetsService;
-    private ConfigService $configService;
+    protected ConfigService $configService;
     protected User $activeUser;
     protected UrlService $urlService;
+    private bool $isEmbedded;
 
     public function onConstruct()
     {
@@ -46,16 +48,17 @@ abstract class AbstractControllerFrontend extends Controller
         $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
         $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
     protected function beforeExecuteRoute(): bool
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
             $this->logService->message('access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern());
-            $this->flashService->setError('USER_NO_ACCESS');
+            $this->flashService->setError(TranslationEnum::CORE_ACTION_NOT_ALLOWED);
             $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
 
             return false;
@@ -66,6 +69,10 @@ abstract class AbstractControllerFrontend extends Controller
 
     protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
     {
+        if($this->isEmbedded) {
+            $url = $this->urlService->addParamsToQuery('embedded', '1', $url);
+        }
+
         if ($this->request->isAjax()) {
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setContent(json_encode([
@@ -87,11 +94,27 @@ abstract class AbstractControllerFrontend extends Controller
     protected function afterExecuteRoute(): void
     {
         $this->viewService->setVar('flash', $this->flashService->output());
-        $this->renderPositions();
+
+        $positions = $this->configService->getTemplatePositions();
+        if($this->isEmbedded) {
+            $positions = $this->configService->getTemplateEmbeddedPositions();
+        }
+
+        $this->renderPositions($positions);
         $this->loadAssets();
     }
 
-    private function renderPositions(): void
+    protected function jsonResponse(array $data, bool $result = true): void
+    {
+        $this->response->setContentType('application/json', 'UTF-8');
+        echo json_encode(array_merge(['result' => $result], $data));
+        $this->viewService->disable();
+        $this->response->send();
+
+        die();
+    }
+
+    private function renderPositions(array $positions): void
     {
         $dataGroups = ['all'];
         if ($this->viewService->hasCurrentItem()) :
@@ -99,7 +122,7 @@ abstract class AbstractControllerFrontend extends Controller
             $dataGroups[] = $this->viewService->getCurrentItem()->getDatagroup();
         endif;
 
-        foreach ($this->configService->getTemplatePositions() as $position => $tmp) {
+        foreach ($positions as $position => $tmp) {
             $html = $this->eventsManager->fire(
                 BlockPositionEnum::RENDER_POSITION,
                 new RenderPositionDTO($position, [null, '', $this->activeUser->getRole()], $dataGroups)
@@ -119,7 +142,7 @@ abstract class AbstractControllerFrontend extends Controller
 
     private function loadAssets(): void
     {
-        $this->assetsService->loadSite();
+        $this->eventsManager->fire('RenderListener:loadAssets', new stdClass());
         $this->eventsManager->fire('RenderListener:buildJs', new stdClass());
 
         $this->viewService->set('javascript', $this->assetsService->buildAssets('js'));
