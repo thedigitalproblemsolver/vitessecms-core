@@ -106,13 +106,7 @@ class RouterService
         elseif (AdminUtil::isAdminPage()) :
             $this->setAdminPageRoute();
         else :
-            $cacheKey = $this->cache->getCacheKey($this->config->getLanguageShort() . substr($this->urlParts['path'], 1));
-            $item = $this->cache->get($cacheKey);
-            if (!$item) :
-                $item = $this->getItemFromSlug();
-                $this->cache->save($cacheKey, $item);
-            endif;
-
+            $item = $this->getItemFromSlug();
             if ($item) :
                 $this->setItemRoute($item);
             else :
@@ -221,7 +215,7 @@ class RouterService
             'controller' => 'index',
             'action' => 'index',
         ];
-        
+
         $this->add($this->urlParts['path'], $parts);
         $this->add($this->urlParts['path'] . $this->config->getLanguageShort() . '/', $parts);
         $this->add('/' . $this->config->getLanguageShort() . $this->urlParts['path'], $parts);
