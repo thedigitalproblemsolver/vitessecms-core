@@ -40,7 +40,7 @@
     "vitessecms/block": "~0.4.1",
     "vitessecms/communication": "~0.4.0",
     "vitessecms/configuration": "~0.4.1",
-    "vitessecms/content": "~0.4.2",
+    "vitessecms/content": "~0.4.3",
     "vitessecms/database": "~0.3.4",
     "vitessecms/datafield": "~0.3.2",
     "vitessecms/language": "~0.3.4",
