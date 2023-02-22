@@ -54,6 +54,8 @@ abstract class AbstractControllerFrontend extends Controller
         $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
+    public function indexAction(){}
+
     protected function beforeExecuteRoute(): bool
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
