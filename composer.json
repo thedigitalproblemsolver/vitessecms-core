@@ -38,7 +38,7 @@
     "vitessecms/form": "~0.4.3",
     "vitessecms/admin": "~0.4.0",
     "vitessecms/block": "~0.4.3",
-    "vitessecms/communication": "~0.4.0",
+    "vitessecms/communication": "~0.4.1",
     "vitessecms/configuration": "~0.4.1",
     "vitessecms/content": "~0.4.4",
     "vitessecms/database": "~0.3.4",
