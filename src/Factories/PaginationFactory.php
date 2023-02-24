@@ -21,7 +21,7 @@ class PaginationFactory
             [
                 'data' => $items,
                 'limit' => $limit,
-                'page' => $request->get($urlQueryKey),
+                'page' => $request->get($urlQueryKey)??1,
             ]
         ));
 
