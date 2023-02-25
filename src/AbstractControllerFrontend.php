@@ -95,7 +95,7 @@ abstract class AbstractControllerFrontend extends Controller
 
     protected function afterExecuteRoute(): void
     {
-        $this->viewService->setVar('flash', $this->flashService->output());
+        $this->setViewServiceVars();
 
         $positions = $this->configService->getTemplatePositions();
         if($this->isEmbedded) {
@@ -104,6 +104,12 @@ abstract class AbstractControllerFrontend extends Controller
 
         $this->renderPositions($positions);
         $this->loadAssets();
+    }
+
+    private function setViewServiceVars():void
+    {
+        $this->viewService->setVar('flash', $this->flashService->output());
+        $this->viewService->setVar('languageLocale', $this->configService->getLanguageShort());
     }
 
     protected function jsonResponse(array $data, bool $result = true): void
