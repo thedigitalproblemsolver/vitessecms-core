@@ -54,8 +54,6 @@ abstract class AbstractControllerFrontend extends Controller
         $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
-    public function indexAction(){}
-
     protected function beforeExecuteRoute(): bool
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
@@ -116,6 +114,16 @@ abstract class AbstractControllerFrontend extends Controller
     {
         $this->response->setContentType('application/json', 'UTF-8');
         echo json_encode(array_merge(['result' => $result], $data));
+        $this->viewService->disable();
+        $this->response->send();
+
+        die();
+    }
+
+    protected function xmlResponse(string $data, bool $result = true): void
+    {
+        $this->response->setContentType('text/xml', 'UTF-8');
+        echo $data;
         $this->viewService->disable();
         $this->response->send();
 
