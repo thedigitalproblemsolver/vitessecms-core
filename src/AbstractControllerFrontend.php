@@ -13,10 +13,12 @@ use VitesseCms\Core\Enum\RouterEnum;
 use VitesseCms\Core\Enum\TranslationEnum;
 use VitesseCms\Core\Enum\UrlEnum;
 use VitesseCms\Core\Enum\ViewEnum;
+use VitesseCms\Core\Interfaces\RenderInterface;
 use VitesseCms\Core\Services\FlashService;
 use VitesseCms\Core\Services\RouterService;
 use VitesseCms\Core\Services\UrlService;
 use VitesseCms\Core\Services\ViewService;
+use VitesseCms\Core\Traits\RenderTrait;
 use VitesseCms\Log\Enums\LogEnum;
 use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Enums\AssetsEnum;
@@ -27,8 +29,10 @@ use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
 use VitesseCms\User\Services\AclService;
 
-abstract class AbstractControllerFrontend extends Controller
+abstract class AbstractControllerFrontend extends Controller implements RenderInterface
 {
+    use RenderTrait;
+
     protected ViewService $viewService;
     protected RouterService $routerService;
     protected FlashService $flashService;
@@ -56,15 +60,7 @@ abstract class AbstractControllerFrontend extends Controller
 
     protected function beforeExecuteRoute(): bool
     {
-        if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
-            $this->logService->message('access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern());
-            $this->flashService->setError(TranslationEnum::CORE_ACTION_NOT_ALLOWED);
-            $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
-
-            return false;
-        }
-
-        return true;
+        return $this->checkAccess();
     }
 
     protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
