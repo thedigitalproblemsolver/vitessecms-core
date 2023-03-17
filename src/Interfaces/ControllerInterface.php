@@ -2,6 +2,6 @@
 
 namespace VitesseCms\Core\Interfaces;
 
-interface RenderInterface {
+interface ControllerInterface {
 
 }

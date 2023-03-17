@@ -8,53 +8,35 @@ use VitesseCms\Block\DTO\RenderPositionDTO;
 use VitesseCms\Block\Enum\BlockPositionEnum;
 use VitesseCms\Configuration\Enums\ConfigurationEnum;
 use VitesseCms\Configuration\Services\ConfigService;
-use VitesseCms\Core\Enum\FlashEnum;
-use VitesseCms\Core\Enum\RouterEnum;
 use VitesseCms\Core\Enum\TranslationEnum;
-use VitesseCms\Core\Enum\UrlEnum;
 use VitesseCms\Core\Enum\ViewEnum;
-use VitesseCms\Core\Interfaces\RenderInterface;
-use VitesseCms\Core\Services\FlashService;
-use VitesseCms\Core\Services\RouterService;
-use VitesseCms\Core\Services\UrlService;
+use VitesseCms\Core\Interfaces\ControllerInterface;
 use VitesseCms\Core\Services\ViewService;
-use VitesseCms\Core\Traits\RenderTrait;
-use VitesseCms\Log\Enums\LogEnum;
-use VitesseCms\Log\Services\LogService;
+use VitesseCms\Core\Traits\ControllerTrait;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Media\Services\AssetsService;
 use VitesseCms\Mustache\DTO\RenderPartialDTO;
-use VitesseCms\User\Enum\AclEnum;
 use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
-use VitesseCms\User\Services\AclService;
 
-abstract class AbstractControllerFrontend extends Controller implements RenderInterface
+abstract class AbstractControllerFrontend extends Controller implements ControllerInterface
 {
-    use RenderTrait;
+    use ControllerTrait;
 
     protected ViewService $viewService;
-    protected RouterService $routerService;
-    protected FlashService $flashService;
-    protected LogService $logService;
-    private AclService $aclService;
     private AssetsService $assetsService;
     protected ConfigService $configService;
     protected User $activeUser;
-    protected UrlService $urlService;
     private bool $isEmbedded;
 
     public function onConstruct()
     {
+        $this->attachRenderTraitServices();
+
         $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
-        $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
