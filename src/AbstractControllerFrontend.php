@@ -3,7 +3,7 @@
 namespace VitesseCms\Core;
 
 use Phalcon\Mvc\Controller;
-use stdClass;
+use \stdClass;
 use VitesseCms\Block\DTO\RenderPositionDTO;
 use VitesseCms\Block\Enum\BlockPositionEnum;
 use VitesseCms\Configuration\Enums\ConfigurationEnum;
@@ -11,7 +11,6 @@ use VitesseCms\Configuration\Services\ConfigService;
 use VitesseCms\Core\Enum\TranslationEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Interfaces\ControllerInterface;
-use VitesseCms\Core\Services\ViewService;
 use VitesseCms\Core\Traits\ControllerTrait;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Media\Services\AssetsService;
@@ -23,7 +22,6 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
 {
     use ControllerTrait;
 
-    protected ViewService $viewService;
     private AssetsService $assetsService;
     protected ConfigService $configService;
     protected User $activeUser;
@@ -33,40 +31,14 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
     {
         $this->attachRenderTraitServices();
 
-        $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
-        $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
     protected function beforeExecuteRoute(): bool
     {
         return $this->checkAccess();
-    }
-
-    protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
-    {
-        if($this->isEmbedded) {
-            $url = $this->urlService->addParamsToQuery('embedded', '1', $url);
-        }
-
-        if ($this->request->isAjax()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(json_encode([
-                'result' => true,
-                'successFunction' => 'redirect(\'' . $url . '\')'
-            ]));
-            $this->viewService->disable();
-            $this->response->send();
-        } else {
-            $this->response->setStatusCode($status, $message);
-            $this->response->redirect($url);
-            $this->viewService->disable();
-            $this->response->send();
-        }
-
-        die();
     }
 
     protected function afterExecuteRoute(): void
@@ -86,16 +58,6 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
     {
         $this->viewService->setVar('flash', $this->flashService->output());
         $this->viewService->setVar('languageLocale', $this->configService->getLanguageShort());
-    }
-
-    protected function jsonResponse(array $data, bool $result = true): void
-    {
-        $this->response->setContentType('application/json', 'UTF-8');
-        echo json_encode(array_merge(['result' => $result], $data));
-        $this->viewService->disable();
-        $this->response->send();
-
-        die();
     }
 
     protected function xmlResponse(string $data, bool $result = true): void
@@ -136,8 +98,8 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
 
     private function loadAssets(): void
     {
-        $this->eventsManager->fire('RenderListener:loadAssets', new stdClass());
-        $this->eventsManager->fire('RenderListener:buildJs', new stdClass());
+        $this->eventsManager->fire(AssetsEnum::RENDER_LISTENER_LOAD_ASSETS->value, new stdClass());
+        $this->eventsManager->fire(AssetsEnum::RENDER_LISTENER_BUILD_JAVASCRIPT->value, new stdClass());
 
         $this->viewService->set('javascript', $this->assetsService->buildAssets('js'));
         $this->viewService->set('stylesheet', $this->assetsService->buildAssets('css'));
