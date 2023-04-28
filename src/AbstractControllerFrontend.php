@@ -108,6 +108,7 @@ abstract class AbstractControllerFrontend extends Controller
     {
         $this->viewService->setVar('flash', $this->flashService->output());
         $this->viewService->setVar('languageLocale', $this->configService->getLanguageShort());
+        $this->eventsManager->fire(ViewEnum::SET_FRONTEND_VARS_SERVICE_LISTENER, new stdClass());
     }
 
     protected function jsonResponse(array $data, bool $result = true): void
