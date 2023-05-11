@@ -22,6 +22,7 @@ use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Media\Services\AssetsService;
 use VitesseCms\Mustache\DTO\RenderPartialDTO;
+use VitesseCms\Mustache\Enum\FrontendHtmlEnum;
 use VitesseCms\User\Enum\AclEnum;
 use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
@@ -47,7 +48,7 @@ abstract class AbstractControllerFrontend extends Controller
         $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
-        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
         $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
@@ -109,6 +110,8 @@ abstract class AbstractControllerFrontend extends Controller
         $this->viewService->setVar('flash', $this->flashService->output());
         $this->viewService->setVar('languageLocale', $this->configService->getLanguageShort());
         $this->eventsManager->fire(ViewEnum::SET_FRONTEND_VARS_SERVICE_LISTENER, new stdClass());
+        $this->eventsManager->fire(FrontendHtmlEnum::PARSE_HEADER_EVENT->value, new stdClass());
+        $this->viewService->setVar('htmlHead', $this->assetsService->getHeadCode());
     }
 
     protected function jsonResponse(array $data, bool $result = true): void
