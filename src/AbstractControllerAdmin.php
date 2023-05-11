@@ -3,14 +3,18 @@
 namespace VitesseCms\Core;
 
 use Phalcon\Mvc\Controller;
+use VitesseCms\Admin\Forms\AdminlistForm;
 use VitesseCms\Core\Interfaces\ControllerInterface;
 use VitesseCms\Core\Traits\ControllerTrait;
+use VitesseCms\Database\AbstractCollection;
+use VitesseCms\Mustache\DTO\RenderTemplateDTO;
+use VitesseCms\Mustache\Enum\ViewEnum;
 
-abstract class AbstractControllerFrontend extends Controller implements ControllerInterface
+abstract class AbstractControllerAdmin extends Controller implements ControllerInterface
 {
     use ControllerTrait;
 
-    public function onConstruct()
+    public function OnConstruct()
     {
         $this->attachRenderTraitServices();
     }
@@ -26,16 +30,6 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
             return  $this->configService->getTemplateEmbeddedPositions();
         }
 
-        return $this->configService->getTemplatePositions();
-    }
-
-    protected function xmlResponse(string $data, bool $result = true): void
-    {
-        $this->response->setContentType('text/xml', 'UTF-8');
-        echo $data;
-        $this->viewService->disable();
-        $this->response->send();
-
-        die();
+        return $this->configService->getTemplateAdminPositions();
     }
 }
