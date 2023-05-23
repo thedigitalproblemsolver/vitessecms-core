@@ -84,10 +84,12 @@ trait ControllerTrait
 
         if ($this->request->isAjax()) {
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(json_encode([
+            $ajaxParams = [
                 'result' => true,
-                'successFunction' => 'redirect(\'' . $url . '\')'
-            ]));
+                'successFunction' => 'redirect(\'' . $url . '\')',
+                'alert' => $this->flashService->output()
+            ];
+            $this->response->setContent(json_encode($ajaxParams));
             $this->viewService->disable();
             $this->response->send();
         } else {
@@ -102,9 +104,15 @@ trait ControllerTrait
 
     protected function afterExecuteRoute(): void
     {
-        $this->setViewServiceVars();
-        $this->renderPositions($this->getTemplatePositions());
-        $this->loadAssets();
+        if($this->request->isAjax()) {
+            echo $this->viewService->getVarAsString('content');
+            $this->viewService->disable();
+            $this->response->send();
+        } else {
+            $this->setViewServiceVars();
+            $this->renderPositions($this->getTemplatePositions());
+            $this->loadAssets();
+        }
     }
 
     private function renderPositions(array $positions): void
