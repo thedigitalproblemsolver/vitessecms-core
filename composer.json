@@ -30,7 +30,7 @@
     "ext-mongodb": "*",
     "ext-json": "*",
     "ext-zlib": "*",
-    "twbs/bootstrap": "^4.3",
+    "twbs/bootstrap": "^5.2.3",
     "components/flag-icon-css": "^2.8",
     "seiyria/bootstrap-slider": "^4.8",
     "itsjavi/bootstrap-colorpicker": "^3.4.0",
