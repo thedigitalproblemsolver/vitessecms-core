@@ -169,6 +169,7 @@ class RouterService
         $item = null;
         if ($this->urlParts['path'] === '/') :
             $item = $this->itemRepository->getHomePage();
+            $this->view->setVar('homepage', true);
         else :
             $item = $this->itemRepository->findBySlug(
                 substr($this->urlParts['path'], 1, strlen($this->urlParts['path'])),
