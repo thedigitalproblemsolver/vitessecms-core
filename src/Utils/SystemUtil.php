@@ -35,10 +35,12 @@ class SystemUtil
         $directories = [
             'rootdir' => $configService->getRootDir() . 'src',
             'accountdir' => $configService->getAccountDir(),
-            'verdornamedir' => $configService->getVendorNameDir()
+            'verdornamedir' => $configService->getVendorNameDir(),
+            'templatedir' => $configService->getTemplateDir()
         ];
+
         foreach ($directories as $type => $directory) :
-            if ($type === 'verdornamedir' || $type === 'accountdir') :
+            if ($type === 'verdornamedir' || $type === 'accountdir' || $type === 'templatedir') :
                 $children = DirectoryUtil::getChildren($directory);
                 unset($children['vitessecms']);
                 foreach ($children as $key => $dir) :
