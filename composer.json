@@ -44,7 +44,7 @@
     "vitessecms/media": "^1.1.0",
     "vitessecms/mustache": "^1.2.0",
     "vitessecms/search": "^1.0.0",
-    "vitessecms/sef": "^1.0.4",
+    "vitessecms/sef": "^1.0.5",
     "vitessecms/setting": "^1.0.1",
     "vitessecms/user": "^1.0.0",
     "vitessecms/datagroup": "^1.1.0",
