@@ -122,4 +122,9 @@ class UrlService extends Url
 
         return $urlParsed['path'] . '?' . http_build_query($queryParts);
     }
+
+    public function getCurrentUrl():string
+    {
+        return $this->getBaseUri().ltrim($this->request->getURI(true),'\/');
+    }
 }
