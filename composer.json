@@ -37,7 +37,7 @@
     "vitessecms/block": "^1.1.0",
     "vitessecms/communication": "^1.1.0",
     "vitessecms/configuration": "^1.0.0",
-    "vitessecms/content": "^1.1.0",
+    "vitessecms/content": "^1.2.0",
     "vitessecms/database": "^1.0.0",
     "vitessecms/datafield": "^1.1.0",
     "vitessecms/language": "^1.0.1",
