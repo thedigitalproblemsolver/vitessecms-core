@@ -119,6 +119,11 @@ trait BaseObjectTrait
         return (bool)$this->_($key, $languageShort);
     }
 
+    public function getString(string $key, string $languageShort = null): string
+    {
+        return (string)$this->_($key, $languageShort);
+    }
+
     public function getInt(string $key, string $languageShort = null): int
     {
         return (int)$this->_($key, $languageShort);
