@@ -15,7 +15,7 @@ use VitesseCms\Core\Services\FlashService;
 use VitesseCms\Core\Services\RouterService;
 use VitesseCms\Core\Services\UrlService;
 use VitesseCms\Core\Services\ViewService;
-use VitesseCms\Log\Enums\LogEnum;
+use VitesseCms\Log\Enums\LogServiceEnum;
 use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Media\Services\AssetsService;
@@ -44,7 +44,7 @@ trait ControllerTrait
         $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->logService = $this->eventsManager->fire(LogEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->logService = $this->eventsManager->fire(LogServiceEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
         $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
         $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
