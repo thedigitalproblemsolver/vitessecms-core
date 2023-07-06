@@ -53,20 +53,22 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
         endif;
 
         foreach ($positions as $position => $tmp) {
-            $html = $this->eventsManager->fire(
+            $html = trim($this->eventsManager->fire(
                 BlockPositionEnum::RENDER_POSITION,
                 new RenderPositionDTO($position, [null, '', $this->activeUser->getRole()], $dataGroups)
-            );
+            ));
 
-            $this->viewService->setVar(
-                $position,
-                $this->eventsManager->fire(
-                    \VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT,
-                    new RenderPartialDTO(
-                        'template_position',
-                        ['html' => $html, 'class' => 'container-' . $position]
-                    ))
-            );
+            if(!empty($html)) {
+                $this->viewService->setVar(
+                    $position,
+                    $this->eventsManager->fire(
+                        \VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT,
+                        new RenderPartialDTO(
+                            'template_position',
+                            ['html' => $html, 'class' => 'container-' . $position]
+                        ))
+                );
+            }
         }
     }
 
