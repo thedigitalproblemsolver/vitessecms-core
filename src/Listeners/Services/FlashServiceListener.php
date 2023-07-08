@@ -18,10 +18,4 @@ class FlashServiceListener
     {
         return $this->flashService;
     }
-
-    public function afterExecuteRoute()
-    {
-        echo 'hier';
-        die();
-    }
 }
