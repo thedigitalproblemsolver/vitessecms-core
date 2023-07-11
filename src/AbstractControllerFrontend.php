@@ -90,5 +90,19 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
         $this->eventsManager->fire(ViewEnum::SET_FRONTEND_VARS_SERVICE_LISTENER, new \stdClass());
         $this->eventsManager->fire(FrontendHtmlEnum::PARSE_HEADER_EVENT->value, new \stdClass());
         $this->viewService->setVar('htmlHead', $this->assetsService->getHeadCode());
+        $this->viewService->setVar('bodyClass', $this->getBodyClass());
+    }
+
+    private function getBodyClass():string
+    {
+        $return = [];
+        if($this->isEmbedded) {
+            $return[] = 'embedded';
+        }
+        if($this->viewService->hasCurrentItem() && $this->viewService->getCurrentItem()->isHomepage()) {
+            $return[] = 'home';
+        }
+
+        return implode(' ', $return);
     }
 }
