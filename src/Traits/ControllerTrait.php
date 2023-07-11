@@ -151,10 +151,4 @@ trait ControllerTrait
         $this->viewService->set('inlinejavascript', $this->assetsService->getInlineJs());
         $this->viewService->set('inlinestylesheet', $this->assetsService->getInlineCss());
     }
-
-    private function setViewServiceVars():void
-    {
-        $this->viewService->setVar('flash', $this->flashService->output());
-        $this->viewService->setVar('languageLocale', $this->configService->getLanguageShort());
-    }
 }
