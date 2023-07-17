@@ -72,17 +72,6 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
         }
     }
 
-    private function loadAssets(): void
-    {
-        $this->eventsManager->fire('RenderListener:loadAssets', new \stdClass());
-        $this->eventsManager->fire('RenderListener:buildJs', new \stdClass());
-
-        $this->viewService->set('javascript', $this->assetsService->buildAssets('js'));
-        $this->viewService->set('stylesheet', $this->assetsService->buildAssets('css'));
-        $this->viewService->set('inlinejavascript', $this->assetsService->getInlineJs());
-        $this->viewService->set('inlinestylesheet', $this->assetsService->getInlineCss());
-    }
-
     private function setViewServiceVars():void
     {
         $this->viewService->setVar('flash', $this->flashService->output());
