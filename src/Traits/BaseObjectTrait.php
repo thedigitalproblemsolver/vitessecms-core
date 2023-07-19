@@ -4,6 +4,7 @@ namespace VitesseCms\Core\Traits;
 
 use Phalcon\Di\Di;
 use VitesseCms\Core\Interfaces\BaseObjectInterface;
+use VitesseCms\Database\Interfaces\BaseCollectionInterface;
 use VitesseCms\Language\Models\Language;
 
 trait BaseObjectTrait
@@ -70,6 +71,9 @@ trait BaseObjectTrait
         return (bool)$this->_('hasChildren');
     }
 
+    /**
+     * @deprecated use typed getter like getInt, getBool end such
+     */
     public function _(string $key, string $languageShort = null)
     {
         $return = '';
@@ -127,6 +131,16 @@ trait BaseObjectTrait
     public function getInt(string $key, string $languageShort = null): int
     {
         return (int)$this->_($key, $languageShort);
+    }
+
+    public function getArray(string $key, string $languageShort = null): array
+    {
+        return (array)$this->_($key, $languageShort);
+    }
+
+    public function getCollection(string $key, string $languageShort = null): ?BaseCollectionInterface
+    {
+        return $this->_($key, $languageShort);
     }
 
     public function hasSlug(): bool
