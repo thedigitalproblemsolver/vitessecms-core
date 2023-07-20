@@ -83,6 +83,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../../../../composer.json');
         $this->isAdmin = false;
+        $this->getEventsManager()->enablePriorities(true);
     }
 
     public function loadConfig(): BootstrapService
