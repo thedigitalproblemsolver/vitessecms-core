@@ -119,7 +119,6 @@ class RouterService
     public function doRedirect(string $location): void
     {
         header('HTTP/1.1 301 Moved Permanently');
-        header('X-Robots-Tag: noindex');
         header('Location: ' . $location);
         die();
     }
