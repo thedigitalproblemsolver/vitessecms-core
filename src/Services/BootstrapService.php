@@ -83,6 +83,7 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../../../../composer.json');
         $this->isAdmin = false;
+        $this->getEventsManager()->enablePriorities(true);
     }
 
     public function loadConfig(): BootstrapService
@@ -365,11 +366,13 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function queue(): BootstrapService
     {
         $this->setShared('jobQueue', function (): BeanstalkService {
+            $tube = md5($this->getUrl()->getBaseUri());
             $beanstalk = Pheanstalk::create(
                 $this->getConfiguration()->getBeanstalkHost(),
                 $this->getConfiguration()->getBeanstalkPort()
             );
-            $beanstalk->watchOnly(md5($this->getUrl()->getBaseUri()));
+            $beanstalk->watchOnly($tube);
+            $beanstalk->useTube($tube);
 
             return new BeanstalkService($beanstalk);
         });

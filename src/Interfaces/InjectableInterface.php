@@ -3,10 +3,10 @@
 namespace VitesseCms\Core\Interfaces;
 
 use Phalcon\Di\DiInterface;
+use Phalcon\Encryption\Security;
 use Phalcon\Events\Manager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
-use Phalcon\Security;
 use Phalcon\Session\Adapter\Files;
 use VitesseCms\Block\Services\BlockService;
 use VitesseCms\Communication\Services\MailchimpService;
