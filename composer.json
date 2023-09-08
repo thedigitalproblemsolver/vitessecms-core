@@ -34,7 +34,7 @@
     "vlucas/phpdotenv": "~5.4",
     "vitessecms/form": "^1.1.2",
     "vitessecms/admin": "^1.5.2",
-    "vitessecms/block": "^1.4.0",
+    "vitessecms/block": "^1.5.0",
     "vitessecms/communication": "^1.2.0",
     "vitessecms/configuration": "^1.0.0",
     "vitessecms/content": "^1.4.0",
