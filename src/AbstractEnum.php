@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core;
 
 abstract class AbstractEnum
 {
-    private final function __construct()
+    final private function __construct()
     {
     }
 }

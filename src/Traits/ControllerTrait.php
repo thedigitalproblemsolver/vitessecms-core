@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Traits;
 
@@ -24,11 +25,10 @@ use VitesseCms\User\Enum\AclEnum;
 use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
 use VitesseCms\User\Services\AclService;
-use \stdClass;
+use stdClass;
 
 trait ControllerTrait
 {
-    private AclService $aclService;
     protected RouterService $routerService;
     protected FlashService $flashService;
     protected LogService $logService;
@@ -37,26 +37,15 @@ trait ControllerTrait
     protected User $activeUser;
     protected AssetsService $assetsService;
     protected ConfigService $configService;
+    private AclService $aclService;
     private bool $isEmbedded;
-
-    private function attachRenderTraitServices(): void
-    {
-        $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
-        $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->logService = $this->eventsManager->fire(LogServiceEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
-        $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
-        $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
-        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
-        $this->configService = $this->eventsManager->fire(ConfigurationEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
-        $this->isEmbedded = $this->request->get('embedded', 'bool', false);
-    }
 
     protected function checkAccess(): bool
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
-            $this->logService->message('access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern());
+            $this->logService->message(
+                'access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern()
+            );
             $this->flashService->setError(TranslationEnum::CORE_ACTION_NOT_ALLOWED->name);
             $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
 
@@ -78,7 +67,7 @@ trait ControllerTrait
 
     protected function redirect(string $url, int $status = 301, string $message = 'Moved Permanently'): void
     {
-        if($this->isEmbedded) {
+        if ($this->isEmbedded) {
             $url = $this->urlService->addParamsToQuery('embedded', '1', $url);
         }
 
@@ -104,7 +93,7 @@ trait ControllerTrait
 
     protected function afterExecuteRoute(): void
     {
-        if($this->request->isAjax()) {
+        if ($this->request->isAjax()) {
             echo $this->viewService->getVarAsString('content');
             $this->viewService->disable();
             $this->response->send();
@@ -113,6 +102,23 @@ trait ControllerTrait
             $this->renderPositions($this->getTemplatePositions());
             $this->loadAssets();
         }
+    }
+
+    private function attachRenderTraitServices(): void
+    {
+        $this->aclService = $this->eventsManager->fire(AclEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
+        $this->routerService = $this->eventsManager->fire(RouterEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->flashService = $this->eventsManager->fire(FlashEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->logService = $this->eventsManager->fire(LogServiceEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
+        $this->urlService = $this->eventsManager->fire(UrlEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->viewService = $this->eventsManager->fire(ViewEnum::ATTACH_SERVICE_LISTENER, new stdClass());
+        $this->activeUser = $this->eventsManager->fire(UserEnum::GET_ACTIVE_USER_LISTENER->value, new stdClass());
+        $this->assetsService = $this->eventsManager->fire(AssetsEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
+        $this->configService = $this->eventsManager->fire(
+            ConfigurationEnum::ATTACH_SERVICE_LISTENER->value,
+            new stdClass()
+        );
+        $this->isEmbedded = $this->request->get('embedded', 'bool', false);
     }
 
     private function renderPositions(array $positions): void
@@ -136,7 +142,8 @@ trait ControllerTrait
                     new RenderPartialDTO(
                         'template_position',
                         ['html' => $html, 'class' => 'container-' . $position]
-                    ))
+                    )
+                )
             );
         }
     }
