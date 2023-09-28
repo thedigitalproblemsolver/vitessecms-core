@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
 
@@ -32,6 +33,12 @@ class FlashService
     {
         $this->flash->success($this->language->get($translation, $replace));
     }
+
+    public function setSuccess(string $translation, array $replace = []): void
+    {
+        $this->flash->success($this->language->get($translation, $replace));
+    }
+
 
     public function setNotice(string $translation, array $replace = []): void
     {
