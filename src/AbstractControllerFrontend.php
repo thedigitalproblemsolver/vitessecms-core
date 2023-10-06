@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace VitesseCms\Core;
@@ -85,6 +86,7 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
         $this->eventsManager->fire(FrontendHtmlEnum::PARSE_HEADER_EVENT->value, new stdClass());
         $this->viewService->setVar('htmlHead', $this->assetsService->getHeadCode());
         $this->viewService->setVar('bodyClass', $this->getBodyClass());
+        $this->viewService->setVar('hideAsideMenu', $this->configService->hideAsideMenu());
     }
 
     private function getBodyClass(): string
