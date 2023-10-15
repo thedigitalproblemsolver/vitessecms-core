@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
 
@@ -13,6 +15,7 @@ use VitesseCms\Core\Helpers\ItemHelper;
 use VitesseCms\Sef\Helpers\SefHelper;
 use VitesseCms\Sef\Utils\SefUtil;
 use VitesseCms\User\Models\User;
+
 use function strlen;
 
 class RouterService
@@ -70,16 +73,15 @@ class RouterService
     private Router $router;
 
     public function __construct(
-        User           $user,
-        Request        $request,
-        ConfigService  $config,
-        UrlService     $url,
-        CacheService   $cache,
-        ViewService    $view,
+        User $user,
+        Request $request,
+        ConfigService $config,
+        UrlService $url,
+        CacheService $cache,
+        ViewService $view,
         ItemRepository $itemRepository,
         Router $router
-    )
-    {
+    ) {
         $this->user = $user;
         $this->request = $request;
         $this->config = $config;
@@ -97,10 +99,11 @@ class RouterService
         $this->urlParts = parse_url($this->request->getServer('REQUEST_URI'));
         $this->urlParts['path'] = str_replace(
             '/' . $this->config->getLanguageShort() . '/',
-            '/', $this->urlParts['path']
+            '/',
+            $this->urlParts['path']
         );
         $this->urlPath = explode('/', $this->urlParts['path']);
-
+        
         if (User::count() === 0) :
             $this->setInstallerRoute();
         elseif (AdminUtil::isAdminPage()) :
@@ -126,7 +129,8 @@ class RouterService
     protected function setInstallerRoute(): void
     {
         if (count($this->urlPath) === 5) :
-            $this->add($this->urlParts['path'],
+            $this->add(
+                $this->urlParts['path'],
                 [
                     'namespace' => 'VitesseCms\\' . ucfirst(strtolower($this->urlPath[1])) . '\\Controllers',
                     'module' => strtolower($this->urlPath[1]),
@@ -142,10 +146,17 @@ class RouterService
         endif;
     }
 
+    public function add(string $pattern, $paths = null): RouteInterface
+    {
+        return $this->router->add($pattern, $paths);
+    }
+
     protected function setAdminPageRoute(): void
     {
         if ($this->config->getAccount() === $this->urlPath[2]) :
-            $namespace = 'VitesseCms\\' . ucfirst($this->urlPath[2]) . '\\' . ucfirst($this->urlPath[3]) . '\\Controllers';
+            $namespace = 'VitesseCms\\' . ucfirst($this->urlPath[2]) . '\\' . ucfirst(
+                    $this->urlPath[3]
+                ) . '\\Controllers';
             $pattern = '/admin/' . $this->config->getAccount() . '/:module/:controller/:action/:params';
         else :
             $namespace = 'VitesseCms\\' . ucfirst($this->urlPath[2]) . '\\Controllers';
@@ -182,8 +193,13 @@ class RouterService
                 );
                 if ($item !== null) :
                     header('HTTP/1.1 301 Moved Permanently');
-                    header('Location: ' . $this->url->getBaseUri() . substr($this->urlParts['path'], 1,
-                            strlen($this->urlParts['path'])) . '/');
+                    header(
+                        'Location: ' . $this->url->getBaseUri() . substr(
+                            $this->urlParts['path'],
+                            1,
+                            strlen($this->urlParts['path'])
+                        ) . '/'
+                    );
                     die();
                 endif;
             endif;
@@ -228,7 +244,9 @@ class RouterService
     public function setSystemRoute(): void
     {
         if ($this->config->getAccount() === $this->urlPath[1]) :
-            $namespace = 'VitesseCms\\' . ucfirst($this->urlPath[1]) . '\\' . ucfirst($this->urlPath[2]) . '\\Controllers';
+            $namespace = 'VitesseCms\\' . ucfirst($this->urlPath[1]) . '\\' . ucfirst(
+                    $this->urlPath[2]
+                ) . '\\Controllers';
             $this->add(
                 '/' . $this->config->getAccount() . '/:module/:controller/:action/:params',
                 [
@@ -292,11 +310,6 @@ class RouterService
     public function getModulePrefix(): string
     {
         return $this->modulePrefix;
-    }
-
-    public function add(string $pattern, $paths = null): RouteInterface
-    {
-        return $this->router->add($pattern, $paths);
     }
 
     public function handle(string $uri): void

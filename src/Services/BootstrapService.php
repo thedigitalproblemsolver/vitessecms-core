@@ -142,49 +142,50 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function setLanguage(): BootstrapService
     {
         $domainConfig = $this->getConfiguration();
-        if (!$domainConfig->hasLanguage()) :
+        if (!$domainConfig->hasLanguage()) {
             $uri = explode('/', $this->getRequest()->getURI());
             Language::setFindValue(
                 'domain',
                 $this->getUrl()->getProtocol() . '://' . $domainConfig->getHost() . '/' . $uri[1] . '/'
             );
+            
             /** @var Language $language */
             $language = Language::findFirst();
-            if (!$language) :
+            if (!$language) {
                 Language::setFindValue(
                     'domain',
                     $this->getUrl()->getProtocol() . '://' . $domainConfig->getHost()
                 );
 
                 $language = Language::findFirst();
-                if (!$language && DebugUtil::isDev()):
+                if (!$language && DebugUtil::isDev()) {
                     Language::setFindValue(
                         'domain',
                         'https://' . $domainConfig->getHost() . '/' . $uri[1] . '/'
                     );
 
                     $language = Language::findFirst();
-                    if (!$language) :
+                    if (!$language) {
                         Language::setFindValue(
                             'domain',
                             'http://' . $domainConfig->getHost()
                         );
                         $language = Language::findFirst();
-                    endif;
-                endif;
-            endif;
+                    }
+                }
+            }
 
-            if ($language !== null) :
+            if ($language !== null) {
                 $this->getUrl()->setBaseUri($this->getUrl()->getBaseUri() . $uri[1] . '/');
                 $this->getConfiguration()->setLanguage($language);
-            endif;
-        else :
+            }
+        } else {
             Language::setFindValue('short', $domainConfig->getLanguageShort());
             $language = Language::findFirst();
-            if ($language) :
+            if ($language) {
                 $this->getConfiguration()->setLanguage($language);
-            endif;
-        endif;
+            }
+        }
         $this->setShared('language', new LanguageService($this->getConfiguration()));
 
         return $this;
