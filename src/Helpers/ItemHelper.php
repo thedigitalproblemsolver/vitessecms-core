@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Helpers;
 
@@ -120,8 +121,7 @@ class ItemHelper
         string $parentId = null,
         array $return = [],
         string $postfix = ''
-    ): array
-    {
+    ): array {
         Item::setFindValue('parentId', $parentId);
         Item::addFindOrder('name');
         $items = Item::findAll();
@@ -147,7 +147,7 @@ class ItemHelper
             foreach ($datafields as $datafieldObject) :
                 /** @var Datafield $datafield */
                 $datafield = Datafield::findById($datafieldObject['id']);
-                if ($datafield) :
+                if ($datafield && class_exists($datafield->getType())) :
                     $datafield->getType()::beforeMaincontent($item, $datafield);
                 endif;
             endforeach;
