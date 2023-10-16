@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace VitesseCms\Core;
 
@@ -20,21 +22,15 @@ use VitesseCms\Media\Enums\MediaEnum;
 use VitesseCms\Setting\Enum\CallingNameEnum;
 use VitesseCms\Setting\Models\Setting;
 use VitesseCms\User\Utils\PermissionUtils;
+
 use function in_array;
 
 abstract class AbstractEventController extends Controller implements InjectableInterface
 {
     use DiInterfaceTrait;
 
-    /**
-     * @var array
-     */
-    protected $parseAsJob = [];
-
-    /**
-     * @var bool
-     */
-    protected $isJobProcess = false;
+    protected array $parseAsJob = [];
+    protected bool $isJobProcess = false;
 
     public function onConstruct()
     {
@@ -63,7 +59,8 @@ abstract class AbstractEventController extends Controller implements InjectableI
             $this->log->write(
                 new ObjectID($this->view->getVar('currentId')),
                 Item::class,
-                'access denied for : ' . $this->view->getVar('aclModulePrefix') . $this->router->getModuleName() . '/' . $this->router->getControllerName() . '/' . $this->router->getActionName()
+                'access denied for : ' . $this->view->getVar('aclModulePrefix') . $this->router->getModuleName(
+                ) . '/' . $this->router->getControllerName() . '/' . $this->router->getActionName()
             );
 
             $this->flash->setError('USER_NO_ACCESS');
@@ -75,11 +72,10 @@ abstract class AbstractEventController extends Controller implements InjectableI
 
     public function redirect(
         ?string $url = null,
-        array   $ajaxParams = [],
-        bool    $showAlert = true,
-        bool    $forcePageReload = false
-    ): void
-    {
+        array $ajaxParams = [],
+        bool $showAlert = true,
+        bool $forcePageReload = false
+    ): void {
         $result = true;
         if ($this->flash->has('error')) :
             $result = false;
@@ -167,7 +163,8 @@ abstract class AbstractEventController extends Controller implements InjectableI
         $this->view->setVar('bodyClass', $this->view->getVar('bodyClass') . ' embedded container-fluid');
 
         if ($this->view->getVar('content') === null) :
-            $this->view->setVar('content',
+            $this->view->setVar(
+                'content',
                 $this->block->parseTemplatePosition(
                     'maincontent',
                     $this->setting->get('layout_blockposition-class' . $position)
@@ -193,7 +190,9 @@ abstract class AbstractEventController extends Controller implements InjectableI
         $this->view->setVar('hideAsideMenu', $this->config->get('hideAsideMenu'));
         $this->view->setVar('languageLocale', $this->configuration->getLanguageLocale());
         if ($this->setting->has('SITE_LABEL_MOTTO')) {
-            $this->view->setVar('SITE_TITLE_LABEL_MOTTO', strip_tags(
+            $this->view->setVar(
+                'SITE_TITLE_LABEL_MOTTO',
+                strip_tags(
                     str_replace(
                         '<br>',
                         ' ',
@@ -272,7 +271,8 @@ abstract class AbstractEventController extends Controller implements InjectableI
         endforeach;
 
         $filename = md5($cacheHash);
-        $combinedFile = 'assets/' . $this->configuration->getAccount() . '/' . $type . '/cache/' . $filename . '.' . $type;
+        $combinedFile = 'assets/' . $this->configuration->getAccount(
+            ) . '/' . $type . '/cache/' . $filename . '.' . $type;
 
         $collection->join(true);
         $collection->setTargetPath($this->configuration->getWebDir() . $combinedFile);
@@ -316,16 +316,20 @@ abstract class AbstractEventController extends Controller implements InjectableI
     {
         if ($this->user->hasAdminAccess()) :
             $this->view->setVar('bodyClass', 'admin');
-            $this->view->setVar('adminToolbar', $this->view->renderTemplate(
-                'navbar',
-                'partials',
-                ['navbar' => (new AdminUtil(
-                    $this->user,
-                    $this->eventsManager,
-                    new DatagroupRepository()
-                ))->getToolbar()
-                ]
-            ));
+            $this->view->setVar(
+                'adminToolbar',
+                $this->view->renderTemplate(
+                    'navbar',
+                    'partials',
+                    [
+                        'navbar' => (new AdminUtil(
+                            $this->user,
+                            $this->eventsManager,
+                            new DatagroupRepository()
+                        ))->getToolbar()
+                    ]
+                )
+            );
         endif;
 
         if ($this->view->hasCurrentItem() && $this->view->getCurrentItem()->isHomepage()) :
@@ -343,14 +347,19 @@ abstract class AbstractEventController extends Controller implements InjectableI
 
     protected function parsePositions(): void
     {
-        foreach ($this->configuration->getTemplatePositions() as $position => $tmp) :
+        $positions = $this->configuration->getTemplatePositions();
+        if (AdminUtil::isAdminPage()) {
+            $positions = $this->configuration->getTemplateAdminPositions();
+        }
+
+        foreach ($positions as $position => $tmp) {
             if (
                 $position !== 'maincontent'
                 || (
                     $position === 'maincontent'
                     && $this->view->hasCurrentItem()
                 )
-            ) :
+            ) {
                 $this->view->setVar(
                     $position,
                     $this->block->parseTemplatePosition(
@@ -358,7 +367,7 @@ abstract class AbstractEventController extends Controller implements InjectableI
                         $this->setting->get('layout_blockposition-class' . $position)
                     )
                 );
-            endif;
-        endforeach;
+            }
+        }
     }
 }

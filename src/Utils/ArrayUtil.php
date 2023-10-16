@@ -2,6 +2,8 @@
 
 namespace VitesseCms\Core\Utils;
 
+use function is_int;
+
 /**
  * Class ArrayUtil
  */
@@ -20,10 +22,9 @@ class ArrayUtil
         array $array,
         array $orderArray,
         string $strip = ''
-    ): array
-    {
+    ): array {
         foreach ($array as $key => $value) :
-            if (\is_int($key) && isset($value['id']) && MongoUtil::isObjectId($value['id'])) :
+            if (is_int($key) && isset($value['id']) && MongoUtil::isObjectId($value['id'])) :
                 $array[$value['id']] = $value;
                 unset($array[$key]);
             endif;

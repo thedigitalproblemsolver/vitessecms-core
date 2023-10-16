@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Traits;
 
@@ -35,12 +37,11 @@ trait BaseObjectTrait
 
     public function add(
         string $name,
-               $value,
+        $value,
         string $key = null,
-        bool   $multilang = false,
+        bool $multilang = false,
         string $languageShort = null
-    ): void
-    {
+    ): void {
         if ($multilang) :
             die('nog te implementeren');
         else:
@@ -133,6 +134,11 @@ trait BaseObjectTrait
         return (int)$this->_($key, $languageShort);
     }
 
+    public function getFloat(string $key, string $languageShort = null): float
+    {
+        return (float)$this->_($key, $languageShort);
+    }
+
     public function getArray(string $key, string $languageShort = null): array
     {
         return (array)$this->_($key, $languageShort);
@@ -146,7 +152,6 @@ trait BaseObjectTrait
     public function hasSlug(): bool
     {
         return (bool)$this->_('slug');
-
     }
 
     public function hasParent(): bool
@@ -168,11 +173,10 @@ trait BaseObjectTrait
 
     public function set(
         string $key,
-               $value,
-        bool   $multilang = false,
+        $value,
+        bool $multilang = false,
         string $languageShort = null
-    ): BaseObjectInterface
-    {
+    ): BaseObjectInterface {
         if ($multilang) :
             if (!isset($this->$key) || !is_array($this->$key)) :
                 $this->$key = [];

@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
 
 use Elasticsearch\ClientBuilder;
 use MongoDB\Client;
-use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Autoload\Loader;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Encryption\Crypt;
@@ -61,29 +62,21 @@ require_once __DIR__ . '/../Interfaces/InjectableInterface.php';
 
 class BootstrapService extends FactoryDefault implements InjectableInterface
 {
-    /**
-     * @var string
-     */
-    protected $systemDir;
-
-    /**
-     * @var int
-     */
-    protected $mtime;
-
-    /**
-     * @var bool
-     */
-    private $isAdmin;
+    private int $mtime;
+    private bool $isAdmin;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->systemDir = __DIR__;
         $this->mtime = (int)filemtime(__DIR__ . '/../../../../../composer.json');
         $this->isAdmin = false;
         $this->getEventsManager()->enablePriorities(true);
+    }
+
+    public function getEventsManager(): Manager
+    {
+        return $this->get('eventsManager');
     }
 
     public function loadConfig(): BootstrapService
@@ -97,7 +90,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             if (DebugUtil::isDev()) :
                 $file = 'config_dev.ini';
             endif;
-            $accountConfigFile = __DIR__ . '/../../../../../config/account/' . $domainConfig->getAccount() . '/' . $file;
+            $accountConfigFile = __DIR__ . '/../../../../../config/account/' . $domainConfig->getAccount(
+                ) . '/' . $file;
 
             $domainConfig->merge(new AccountConfigUtil($accountConfigFile));
             $domainConfig->setDirectories();
@@ -125,8 +119,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         return $this;
     }
 
-    //TODO use repository
-
     public function getCache(): CacheService
     {
         return $this->get('cache');
@@ -150,49 +142,36 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function setLanguage(): BootstrapService
     {
         $domainConfig = $this->getConfiguration();
-        if (!$domainConfig->hasLanguage()) :
+        if (!$domainConfig->hasLanguage()) {
             $uri = explode('/', $this->getRequest()->getURI());
+            $postfix = $uri[1] . '/';
             Language::setFindValue(
                 'domain',
                 $this->getUrl()->getProtocol() . '://' . $domainConfig->getHost() . '/' . $uri[1] . '/'
             );
+
             /** @var Language $language */
             $language = Language::findFirst();
-            if (!$language) :
+            if ($language === null) {
                 Language::setFindValue(
                     'domain',
                     $this->getUrl()->getProtocol() . '://' . $domainConfig->getHost()
                 );
-
                 $language = Language::findFirst();
-                if (!$language && DebugUtil::isDev()):
-                    Language::setFindValue(
-                        'domain',
-                        'https://' . $domainConfig->getHost() . '/' . $uri[1] . '/'
-                    );
+                $postfix = '';
+            }
 
-                    $language = Language::findFirst();
-                    if (!$language) :
-                        Language::setFindValue(
-                            'domain',
-                            'http://' . $domainConfig->getHost()
-                        );
-                        $language = Language::findFirst();
-                    endif;
-                endif;
-            endif;
-
-            if ($language !== null) :
-                $this->getUrl()->setBaseUri($this->getUrl()->getBaseUri() . $uri[1] . '/');
+            if ($language !== null) {
+                $this->getUrl()->setBaseUri($this->getUrl()->getBaseUri() . $postfix);
                 $this->getConfiguration()->setLanguage($language);
-            endif;
-        else :
+            }
+        } else {
             Language::setFindValue('short', $domainConfig->getLanguageShort());
             $language = Language::findFirst();
-            if ($language) :
+            if ($language) {
                 $this->getConfiguration()->setLanguage($language);
-            endif;
-        endif;
+            }
+        }
         $this->setShared('language', new LanguageService($this->getConfiguration()));
 
         return $this;
@@ -305,7 +284,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
         ]);
         $flash->setDI($this);
 
-        $this->setShared('flash', new FlashService (
+        $this->setShared(
+            'flash',
+            new FlashService (
                 $this->getLanguage(),
                 $flash
             )
@@ -347,8 +328,11 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             );
             $viewService->setViewsDir($this->getConfiguration()->getTemplateDir() . 'views/');
             $viewService->setPartialsDir($this->getConfiguration()->getTemplateDir() . 'views/partials/');
-            $loader_FilesystemLoader = new Engine(['partials_loader' => new Loader_FilesystemLoader(
-                    $this->getConfiguration()->getCoreTemplateDir() . 'views/partials/')]
+            $loader_FilesystemLoader = new Engine([
+                    'partials_loader' => new Loader_FilesystemLoader(
+                        $this->getConfiguration()->getCoreTemplateDir() . 'views/partials/'
+                    )
+                ]
             );
             $mustacheEngine = new MustacheEngine(
                 $view,
@@ -382,13 +366,16 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function content(): BootstrapService
     {
-        $this->setShared('content', new ContentService(
-            $this->getView(),
-            $this->getUrl(),
-            $this->getEventsManager(),
-            $this->getLanguage(),
-            $this->getSetting()
-        ));
+        $this->setShared(
+            'content',
+            new ContentService(
+                $this->getView(),
+                $this->getUrl(),
+                $this->getEventsManager(),
+                $this->getLanguage(),
+                $this->getSetting()
+            )
+        );
 
         return $this;
     }
@@ -396,11 +383,6 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function getView(): ViewService
     {
         return $this->get('view');
-    }
-
-    public function getEventsManager(): Manager
-    {
-        return $this->get('eventsManager');
     }
 
     public function getSetting(): SettingService
@@ -426,7 +408,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
     public function shop(): BootstrapService
     {
         if ($this->getConfiguration()->isEcommerce()):
-            $this->setShared('shop',
+            $this->setShared(
+                'shop',
                 new ShopService(
                     new CartHelper(),
                     new DiscountHelper(),
@@ -454,27 +437,33 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function setting(): BootstrapService
     {
-        $this->setShared('setting', new SettingService(
-            $this->getCache(),
-            $this->getConfiguration(),
-            new SettingRepository()
-        ));
+        $this->setShared(
+            'setting',
+            new SettingService(
+                $this->getCache(),
+                $this->getConfiguration(),
+                new SettingRepository()
+            )
+        );
 
         return $this;
     }
 
     public function router(): BootstrapService
     {
-        $this->setShared('router', new RouterService(
-            $this->getUser(),
-            $this->getRequest(),
-            $this->getConfiguration(),
-            $this->getUrl(),
-            $this->getCache(),
-            $this->getView(),
-            new ItemRepository(),
-            new Router()
-        ));
+        $this->setShared(
+            'router',
+            new RouterService(
+                $this->getUser(),
+                $this->getRequest(),
+                $this->getConfiguration(),
+                $this->getUrl(),
+                $this->getCache(),
+                $this->getView(),
+                new ItemRepository(),
+                new Router()
+            )
+        );
 
         if (
             !empty($this->getView()->getVar('currentItem'))
@@ -496,22 +485,28 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function assets(): BootstrapService
     {
-        $this->setShared('assets', new AssetsService(
-            $this->getConfiguration()->getWebDir(),
-            $this->getConfiguration()->getAccount(),
-            $this->getUrl()->getBaseUri(),
-            new TagFactory(new Escaper())
-        ));
+        $this->setShared(
+            'assets',
+            new AssetsService(
+                $this->getConfiguration()->getWebDir(),
+                $this->getConfiguration()->getAccount(),
+                $this->getUrl()->getBaseUri(),
+                new TagFactory(new Escaper())
+            )
+        );
 
         return $this;
     }
 
     public function acl(): BootstrapService
     {
-        $this->setShared('acl', new AclService(
-            $this->getUser(),
-            $this->getRouter()
-        ));
+        $this->setShared(
+            'acl',
+            new AclService(
+                $this->getUser(),
+                $this->getRouter()
+            )
+        );
 
         return $this;
     }
@@ -546,33 +541,42 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
 
     public function block(): BootstrapService
     {
-        $this->setShared('block', new BlockService(
-            $this->getView(),
-            $this->getUser(),
-            new BlockPositionRepository(),
-            new BlockRepository(),
-            $this->getCache(),
-            $this->getConfiguration()
-        ));
+        $this->setShared(
+            'block',
+            new BlockService(
+                $this->getView(),
+                $this->getUser(),
+                new BlockPositionRepository(),
+                new BlockRepository(),
+                $this->getCache(),
+                $this->getConfiguration()
+            )
+        );
 
         return $this;
     }
 
     public function form(): BootstrapService
     {
-        $this->setShared('form', new FormService(
-            new ElementFactory($this->getLanguage())
-        ));
+        $this->setShared(
+            'form',
+            new FormService(
+                new ElementFactory($this->getLanguage())
+            )
+        );
 
         return $this;
     }
 
     public function search(): BootstrapService
     {
-        $this->setShared('search', new Elasticsearch(
-            ClientBuilder::create()->setHosts([$this->getConfiguration()->getElasticSearchHost()])->build(),
-            $this->getConfiguration()->getAccount()
-        ));
+        $this->setShared(
+            'search',
+            new Elasticsearch(
+                ClientBuilder::create()->setHosts([$this->getConfiguration()->getElasticSearchHost()])->build(),
+                $this->getConfiguration()->getAccount()
+            )
+        );
 
         return $this;
     }

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
 
@@ -36,9 +37,8 @@ class ViewService implements ViewInterface
     public function renderTemplate(
         string $template,
         string $templatePath,
-        array  $params = []
-    ): string
-    {
+        array $params = []
+    ): string {
         if (empty($templatePath)):
             $templatePath = $this->coreTemplateDir;
             $template = str_replace($templatePath, '', $template);
@@ -101,7 +101,7 @@ class ViewService implements ViewInterface
         return $this;
     }
 
-    function setVar($key, $value)
+    public function setVar($key, $value)
     {
         $this->view->setVar($key, $value);
     }
@@ -124,12 +124,12 @@ class ViewService implements ViewInterface
         return $this;
     }
 
-    function setViewsDir($viewsDir)
+    public function setViewsDir($viewsDir)
     {
         $this->view->setViewsDir($viewsDir);
     }
 
-    function setPartialsDir($partialsDir)
+    public function setPartialsDir($partialsDir)
     {
         $this->view->setPartialsDir($partialsDir);
     }
@@ -139,19 +139,19 @@ class ViewService implements ViewInterface
         return $this->view->getPartialsDir();
     }
 
-    function registerEngines(array $engines): void
+    public function registerEngines(array $engines): void
     {
         $this->view->registerEngines($engines);
     }
 
-    function getVar(string $key)
+    public function getVar(string $key)
     {
         return $this->view->getVar($key);
     }
 
-    function getVarAsString(string $key): string
+    public function getVarAsString(string $key): string
     {
-        return (string) $this->view->getVar($key);
+        return (string)$this->view->getVar($key);
     }
 
     public function setLayoutsDir($layoutsDir)
