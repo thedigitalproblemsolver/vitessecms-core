@@ -13,6 +13,7 @@ use VitesseCms\Core\Interfaces\ControllerInterface;
 use VitesseCms\Core\Traits\ControllerTrait;
 use VitesseCms\Mustache\DTO\RenderPartialDTO;
 use VitesseCms\Mustache\Enum\FrontendHtmlEnum;
+use VitesseCms\Setting\Enum\CallingNameEnum;
 
 abstract class AbstractControllerFrontend extends Controller implements ControllerInterface
 {
@@ -87,6 +88,10 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
         $this->viewService->setVar('htmlHead', $this->assetsService->getHeadCode());
         $this->viewService->setVar('bodyClass', $this->getBodyClass());
         $this->viewService->setVar('hideAsideMenu', $this->configService->hideAsideMenu());
+        $this->viewService->setVar(
+            CallingNameEnum::FAVICON,
+            $this->settingService->getString(CallingNameEnum::FAVICON)
+        );
     }
 
     private function getBodyClass(): string
