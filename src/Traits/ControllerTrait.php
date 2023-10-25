@@ -23,6 +23,8 @@ use VitesseCms\Log\Services\LogService;
 use VitesseCms\Media\Enums\AssetsEnum;
 use VitesseCms\Media\Services\AssetsService;
 use VitesseCms\Mustache\DTO\RenderPartialDTO;
+use VitesseCms\Setting\Enum\SettingEnum;
+use VitesseCms\Setting\Services\SettingService;
 use VitesseCms\User\Enum\AclEnum;
 use VitesseCms\User\Enum\UserEnum;
 use VitesseCms\User\Models\User;
@@ -39,6 +41,7 @@ trait ControllerTrait
     protected AssetsService $assetsService;
     protected ConfigService $configService;
     private AclService $aclService;
+    private SettingService $settingService;
     private bool $isEmbedded;
 
     protected function checkAccess(): bool
@@ -158,5 +161,6 @@ trait ControllerTrait
             new stdClass()
         );
         $this->isEmbedded = $this->request->get('embedded', 'bool', false);
+        $this->settingService = $this->eventsManager->fire(SettingEnum::ATTACH_SERVICE_LISTENER->value, new stdClass());
     }
 }
