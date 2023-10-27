@@ -8,6 +8,8 @@ use Phalcon\Mvc\Controller;
 use stdClass;
 use VitesseCms\Block\DTO\RenderPositionDTO;
 use VitesseCms\Block\Enum\BlockPositionEnum;
+use VitesseCms\Core\DTO\BeforeExecuteFrontendRouteDTO;
+use VitesseCms\Core\Enum\FrontendEnum;
 use VitesseCms\Core\Enum\ViewEnum;
 use VitesseCms\Core\Interfaces\ControllerInterface;
 use VitesseCms\Core\Traits\ControllerTrait;
@@ -26,7 +28,18 @@ abstract class AbstractControllerFrontend extends Controller implements Controll
 
     protected function beforeExecuteRoute(): bool
     {
-        return $this->checkAccess();
+        if (!$this->checkAccess()) {
+            return false;
+        }
+
+        $this->eventsManager->fire(
+            FrontendEnum::BEFORE_EXECUTE_ROUTE->value,
+            new BeforeExecuteFrontendRouteDTO(
+                $this->viewService->getCurrentItem()
+            )
+        );
+
+        return true;
     }
 
     protected function xmlResponse(string $data, bool $result = true): void
