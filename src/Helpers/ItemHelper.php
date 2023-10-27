@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace VitesseCms\Core\Helpers;
@@ -9,7 +10,7 @@ use VitesseCms\Datagroup\Models\Datagroup;
 use VitesseCms\User\Models\User;
 use VitesseCms\User\Utils\PermissionUtils;
 
-class ItemHelper
+final class ItemHelper
 {
     public static function getRowStateClass(bool $published): string
     {
