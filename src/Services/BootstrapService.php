@@ -396,9 +396,9 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             'mailer',
             new MailerService(
                 $this->getSetting(),
-                $this->getConfiguration(),
                 $this->get('content'),
-                $this->getView()
+                $this->getView(),
+                $this->getEventsManager()
             )
         );
 
