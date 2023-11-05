@@ -22,6 +22,8 @@ use Phalcon\Mvc\View;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Manager as Session;
 use Pheanstalk\Pheanstalk;
+use VitesseCms\Block\Models\Block;
+use VitesseCms\Block\Models\BlockPosition;
 use VitesseCms\Block\Repositories\BlockPositionRepository;
 use VitesseCms\Block\Repositories\BlockRepository;
 use VitesseCms\Block\Services\BlockService;
@@ -546,8 +548,8 @@ class BootstrapService extends FactoryDefault implements InjectableInterface
             new BlockService(
                 $this->getView(),
                 $this->getUser(),
-                new BlockPositionRepository(),
-                new BlockRepository(),
+                new BlockPositionRepository(BlockPosition::class),
+                new BlockRepository(Block::class),
                 $this->getCache(),
                 $this->getConfiguration()
             )
