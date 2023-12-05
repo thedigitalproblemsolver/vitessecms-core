@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
 
@@ -51,9 +52,12 @@ class UrlService extends Url
 
     public function exists(string $url = null): bool
     {
-        if (filter_var($url, FILTER_VALIDATE_URL)) :
-            return (bool)strpos(get_headers($url)[0], '200');
-        endif;
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            $headers = @get_headers($url);
+            if (is_array($headers)) {
+                return (bool)strpos($headers[0], '200');
+            }
+        }
 
         return false;
     }
@@ -123,8 +127,8 @@ class UrlService extends Url
         return $urlParsed['path'] . '?' . http_build_query($queryParts);
     }
 
-    public function getCurrentUrl():string
+    public function getCurrentUrl(): string
     {
-        return $this->getBaseUri().ltrim($this->request->getURI(true),'\/');
+        return $this->getBaseUri() . ltrim($this->request->getURI(true), '\/');
     }
 }
