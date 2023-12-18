@@ -2,7 +2,7 @@ var sys = {
     templates: {},
     baseUri: '',
     init: function () {
-        sys.baseUri =  $('base').attr('href').replace(/\/$/, '');
+        sys.baseUri = $('base').attr('href').replace(/\/$/, '');
         sys.rewriteLinks();
 
         ui.activateMenuPanel();
@@ -32,11 +32,11 @@ var sys = {
         }
 
         $('.load-block').each(function () {
-            if($(this).data('block') !== '') {
+            if ($(this).data('block') !== '') {
                 ajax._(
                     null,
-                    {'blockId': $(this).data('block')},
-                    'block/index/renderHtml/',
+                    {},
+                    'block/index/renderHtml/' + $(this).data('block'),
                     '#' + $(this).attr('id')
                 );
             }
@@ -47,7 +47,7 @@ var sys = {
     rewriteLinks: function () {
         if (inIframe()) {
             $("a[href!='" + sys.baseUri + "*']").each(function () {
-                $(this).attr('href', addParam('embedded','1', $(this).attr('href')));
+                $(this).attr('href', addParam('embedded', '1', $(this).attr('href')));
             });
         }
     },
