@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace VitesseCms\Core\Services;
@@ -12,23 +13,14 @@ use VitesseCms\Core\Utils\DirectoryUtil;
 class ViewService implements ViewInterface
 {
     protected ConfigService $configuration;
+    protected ?Item $currentItem = null;
+    protected ?string $currentId = null;
 
-    protected ViewInterface $view;
-
-    protected ?Item $currentItem;
-
-    protected string $currentId;
-
-    protected string $coreTemplateDir;
-
-    protected string $vendorNameDir;
-
-    public function __construct(string $coreTemplateDir, string $vendorNameDir, ViewInterface $view)
-    {
-        $this->coreTemplateDir = $coreTemplateDir;
-        $this->vendorNameDir = $vendorNameDir;
-        $this->view = $view;
-        $this->currentItem = null;
+    public function __construct(
+        private readonly string $coreTemplateDir,
+        private readonly string $vendorNameDir,
+        private readonly ViewInterface $view
+    ) {
     }
 
     /**
@@ -111,7 +103,7 @@ class ViewService implements ViewInterface
         return $this->currentItem !== null;
     }
 
-    public function getCurrentId(): string
+    public function getCurrentId(): ?string
     {
         return $this->currentId;
     }
@@ -144,14 +136,14 @@ class ViewService implements ViewInterface
         $this->view->registerEngines($engines);
     }
 
-    public function getVar(string $key)
-    {
-        return $this->view->getVar($key);
-    }
-
     public function getVarAsString(string $key): string
     {
         return (string)$this->view->getVar($key);
+    }
+
+    public function getVar(string $key)
+    {
+        return $this->view->getVar($key);
     }
 
     public function setLayoutsDir($layoutsDir)
