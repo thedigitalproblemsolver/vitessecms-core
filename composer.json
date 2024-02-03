@@ -33,7 +33,7 @@
     "components/flag-icon-css": "^2.8",
     "vlucas/phpdotenv": "~5.4",
     "vitessecms/form": "^1.4.0",
-    "vitessecms/admin": "^1.12.0",
+    "vitessecms/admin": "^1.13.0",
     "vitessecms/block": "^1.11.0",
     "vitessecms/communication": "^1.7.0",
     "vitessecms/configuration": "^1.2.0",
