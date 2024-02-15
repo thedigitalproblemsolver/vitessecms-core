@@ -1,7 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Interfaces;
 
-interface ControllerInterface {
+use Phalcon\Events\Manager;
+use Phalcon\Http\Request;
+
+/**
+ * @property Manager $eventsManager
+ * @property Request $request
+ */
+interface ControllerInterface
+{
 
 }

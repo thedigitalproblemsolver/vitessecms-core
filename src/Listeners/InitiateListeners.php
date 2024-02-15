@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace VitesseCms\Core\Listeners;
 
@@ -21,14 +22,23 @@ use VitesseCms\Core\Listeners\Services\ViewServiceListener;
 
 class InitiateListeners implements InitiateListenersInterface
 {
-    public static function setListeners(InjectableInterface $di): void
+    public static function setListeners(InjectableInterface $injectable): void
     {
-        $di->eventsManager->attach(CacheEnum::SERVICE_LISTENER, new CacheServiceListener($di->cache));
-        $di->eventsManager->attach(UrlEnum::SERVICE_LISTENER, new UrlServiceListener($di->url));
-        $di->eventsManager->attach(ViewEnum::SERVICE_LISTENER, new ViewServiceListener($di->view));
-        $di->eventsManager->attach(FlashEnum::SERVICE_LISTENER, new FlashServiceListener($di->flash));
-        $di->eventsManager->attach(SecurityEnum::SERVICE_LISTENER, new SecurityServiceListener($di->security));
-        $di->eventsManager->attach(SessionEnum::SERVICE_LISTENER, new SessionServiceListener($di->session));
-        $di->eventsManager->attach(RouterEnum::SERVICE_LISTENER, new RouterServiceListener($di->router));
+        $injectable->eventsManager->attach(CacheEnum::SERVICE_LISTENER, new CacheServiceListener($injectable->cache));
+        $injectable->eventsManager->attach(UrlEnum::SERVICE_LISTENER, new UrlServiceListener($injectable->url));
+        $injectable->eventsManager->attach(ViewEnum::SERVICE_LISTENER, new ViewServiceListener($injectable->view));
+        $injectable->eventsManager->attach(FlashEnum::SERVICE_LISTENER, new FlashServiceListener($injectable->flash));
+        $injectable->eventsManager->attach(
+            SecurityEnum::SERVICE_LISTENER,
+            new SecurityServiceListener($injectable->security)
+        );
+        $injectable->eventsManager->attach(
+            SessionEnum::SERVICE_LISTENER,
+            new SessionServiceListener($injectable->session)
+        );
+        $injectable->eventsManager->attach(
+            RouterEnum::SERVICE_LISTENER,
+            new RouterServiceListener($injectable->router)
+        );
     }
 }

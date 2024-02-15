@@ -48,7 +48,7 @@ trait ControllerTrait
     {
         if (!$this->aclService->hasAccess($this->routerService->getActionName())) {
             $this->logService->message(
-                'access denied for : ' . $this->routerService->getMatchedRoute()->getCompiledPattern()
+                'access denied for : '.$this->routerService->getMatchedRoute()->getCompiledPattern()
             );
             $this->flashService->setError(TranslationEnum::CORE_ACTION_NOT_ALLOWED->name);
             $this->redirect($this->urlService->getBaseUri(), 401, 'Unauthorized');
@@ -69,8 +69,8 @@ trait ControllerTrait
             $this->response->setContentType('application/json', 'UTF-8');
             $ajaxParams = [
                 'result' => true,
-                'successFunction' => 'redirect(\'' . $url . '\')',
-                'alert' => $this->flashService->output()
+                'successFunction' => 'redirect(\''.$url.'\')',
+                'alert' => $this->flashService->output(),
             ];
             $this->response->setContent(json_encode($ajaxParams));
             $this->viewService->disable();
@@ -112,7 +112,7 @@ trait ControllerTrait
     {
         $dataGroups = ['all'];
         if ($this->viewService->hasCurrentItem()) :
-            $dataGroups[] = 'page:' . $this->viewService->getCurrentItem()->getId();
+            $dataGroups[] = 'page:'.$this->viewService->getCurrentItem()->getId();
             $dataGroups[] = $this->viewService->getCurrentItem()->getDatagroup();
         endif;
 
@@ -128,7 +128,7 @@ trait ControllerTrait
                     \VitesseCms\Mustache\Enum\ViewEnum::RENDER_PARTIAL_EVENT,
                     new RenderPartialDTO(
                         'template_position',
-                        ['html' => $html, 'class' => 'container-' . $position]
+                        ['html' => $html, 'class' => 'container-'.$position]
                     )
                 )
             );
@@ -144,6 +144,7 @@ trait ControllerTrait
         $this->viewService->set('stylesheet', $this->assetsService->buildAssets('css'));
         $this->viewService->set('inlinejavascript', $this->assetsService->getInlineJs());
         $this->viewService->set('inlinestylesheet', $this->assetsService->getInlineCss());
+        $this->viewService->set('inlinebabel', $this->assetsService->getInlineBabel());
     }
 
     private function attachRenderTraitServices(): void

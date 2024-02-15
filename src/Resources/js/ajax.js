@@ -1,6 +1,6 @@
 var ajax = {
     call: null,
-    delay:0,
+    delay: 0,
     successFunction: '',
     _: function (Id, data, targetUrl, targetId) {
         var url = null;
@@ -37,6 +37,10 @@ var ajax = {
             ajax.successFunction = data.successFunction;
         }
 
+        if (element !== null && typeof element.data('successfunction') === 'string') {
+            ajax.successFunction = element.data('successfunction');
+        }
+
         if (typeof targetUrl === 'string') {
             url = targetUrl;
         }
@@ -52,8 +56,8 @@ var ajax = {
             url: url,
             data: data,
             delay: delay,
-            successFunction:successFunction,
-            targetId:targetId,
+            successFunction: successFunction,
+            targetId: targetId,
             success: function (response) {
                 if (typeof response === 'string' && $(targetId).length > 0) {
                     ui.fill(targetId, response);
